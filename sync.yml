@@ -1,0 +1,41 @@
+name: Sync from hadata194/project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download HTML files from source
+        run: |
+          python3 << 'EOF'
+          import json, urllib.request
+          url = "https://api.github.com/repos/hadata194/project/contents/"
+          req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "sync-bot"})
+          with urllib.request.urlopen(req) as r:
+              files = json.load(r)
+          for f in files:
+              name = f.get("name", "")
+              if name.endswith(".html") and name != "index.html":
+                  print("Downloading", name)
+                  urllib.request.urlretrieve(f["download_url"], name)
+          print("Done")
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add *.html || true
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Sync HTML files from hadata194/project"
+            git push
+          fi

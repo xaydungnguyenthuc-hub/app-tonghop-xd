@@ -1,0 +1,97 @@
+name: Rebrand tools AS to NTCONS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rebrand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download originals and rebrand
+        run: |
+          set -e
+          # Map: source name on hadata194 -> target name in this repo
+          declare -A MAP=(
+            ["AS_CumBe_LPG_3D_R16.html"]="NTCONS_CumBe_LPG_3D_R16.html"
+            ["AS_CumBe_LPG_3D_R15.html"]="NTCONS_CumBe_LPG_3D_R15.html"
+            ["AS_CumBe_LPG_3D_R24.html"]="NTCONS_CumBe_LPG_3D_R24.html"
+            ["AS_Be_BTCT_3D_R15_Maps_Separate_Control.html"]="NTCONS_Be_BTCT_3D_R15_Maps_Separate_Control.html"
+            ["AS_Cau_kien_3D_DXF_R8.html"]="NTCONS_Cau_kien_3D_DXF_R8.html"
+            ["AS_Thang_long_thep_3D_R5.html"]="NTCONS_Thang_long_thep_3D_R5.html"
+            ["AS_Tinh_dac_trung_tiet_dien_R3.html"]="NTCONS_Tinh_dac_trung_tiet_dien_R3.html"
+          )
+          BASE="https://hadata194.github.io/project"
+          for src in "${!MAP[@]}"; do
+            dst="${MAP[$src]}"
+            echo "Fetching $src -> $dst"
+            curl -fsSL "$BASE/$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$src'''))")" -o "$dst" || \
+              curl -fsSL "https://raw.githubusercontent.com/hadata194/project/main/$src" -o "$dst" || true
+            if [ ! -s "$dst" ]; then echo "SKIP missing $src"; continue; fi
+            python3 - "$dst" <<'PY'
+          import sys, re
+          path = sys.argv[1]
+          t = open(path, encoding="utf-8", errors="replace").read()
+          reps = [
+            ("AS Engineering Tool", "NTCONS Engineering Tool"),
+            ("AS Engineering", "NTCONS Engineering"),
+            ("AS Concrete Components", "NTCONS Concrete Components"),
+            ("AS Structure", "NTCONS Structure"),
+            ("AS IFC Export R8", "NTCONS IFC Export R8"),
+            ("AS HTML Tool", "NTCONS HTML Tool"),
+            ("AS Cau kien 3D", "NTCONS Cau kien 3D"),
+            ("AS_CAU_KIEN_R8", "NTCONS_CAU_KIEN_R8"),
+            ("AS SECTION", "NTCONS SECTION"),
+            ("AS Section", "NTCONS Section"),
+            ("AS • CỤM BỂ", "NTCONS • CỤM BỂ"),
+            ("AS • ", "NTCONS • "),
+            ("AS• ", "NTCONS• "),
+            ('class="logo">AS</div>', 'class="logo">NT</div>'),
+            ('class="mark">AS</div>', 'class="mark">NT</div>'),
+            ('class="mark">AS</span>', 'class="mark">NT</span>'),
+            ('aria-hidden="true">AS</div>', 'aria-hidden="true">NT</div>'),
+            ("AS_Be_BTCT", "NTCONS_Be_BTCT"),
+            ("AS_Thang_long", "NTCONS_Thang_long"),
+            ("AS_dac_trung", "NTCONS_dac_trung"),
+            ("AS_tiet_dien", "NTCONS_tiet_dien"),
+            ("AS_SECTION", "NTCONS_SECTION"),
+            ("AS_VOID", "NTCONS_VOID"),
+            ("AS_AXIS", "NTCONS_AXIS"),
+            ("AS_TEXT", "NTCONS_TEXT"),
+            ("AS_Component", "NTCONS_Component"),
+            ("AS_StructureType", "NTCONS_StructureType"),
+            ("AS_DXF_Layer", "NTCONS_DXF_Layer"),
+            ("AS_Volume", "NTCONS_Volume"),
+            ("AS_Total", "NTCONS_Total"),
+            ("AS_Dim_", "NTCONS_Dim_"),
+            ("Pset_AS_", "Pset_NTCONS_"),
+            ("AS_Bang_khoi", "NTCONS_Bang_khoi"),
+            ("`AS-${", "`NTCONS-${"),
+            ("`AS_${", "`NTCONS_${"),
+            ("'AS_${", "'NTCONS_${"),
+          ]
+          for a,b in reps:
+            t = t.replace(a,b)
+          t = re.sub(r'(<h1[^>]*>)\s*AS\s*[•·]\s*', r'\1NTCONS • ', t)
+          t = re.sub(r'(<h1[^>]*>)\s*AS\s+', r'\1NTCONS ', t)
+          t = re.sub(r'(<title[^>]*>)\s*AS\s*', r'\1NTCONS ', t)
+          open(path, 'w', encoding='utf-8').write(t)
+          print('rebranded', path, len(t))
+          PY
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add NTCONS_*.html || true
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Restore + rebrand technical tools: AS → NTCONS"
+            git push
+          fi
