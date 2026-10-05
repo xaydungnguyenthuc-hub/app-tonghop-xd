@@ -1,9 +1,8 @@
-# minigame_cam
+# app-tonghop-xd
 
-Kho công cụ HTML tĩnh của **NTCONS** — demo 3D kỹ thuật, tiện ích offline và trang giới thiệu liên minh chuyên gia.
+Kho công cụ HTML tĩnh của **NTCONS** — demo kỹ thuật 3D, tiện ích offline và trang giới thiệu liên minh chuyên gia.
 
-**Live:** [https://minigame-cam.vercel.app/](https://minigame-cam.vercel.app/)  
-**Repo:** [trixd2026-max/minigame_cam](https://github.com/trixd2026-max/minigame_cam)
+**Repo:** [xaydungnguyenthuc-hub/app-tonghop-xd](https://github.com/xaydungnguyenthuc-hub/app-tonghop-xd)
 
 ---
 
@@ -13,8 +12,9 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo 3D kỹ thuật, tiện ích
 |------|----------|
 | Trang chủ | `index.html` — danh mục tự động tất cả file HTML |
 | NTCONS | Trang thương hiệu, QR Zalo, liên hệ |
-| Demo 3D | Drone Sky, Dải Ngân Hà, mô hình BTCT / LPG / cầu kiện… |
-| Tiện ích | Tarot, Đổi Âm–Dương lịch offline |
+| Demo / công cụ kỹ thuật | Bê BTCT, Cầu kiện 3D, Đặc trưng tiết diện, Thang Long… |
+| Tiện ích | Bói bài (Tarot), Lịch Âm–Dương offline |
+| Cẩm nang & quy trình | Quản lý ĐTXD, quy hoạch cấp xã, VBPL, render kiến trúc… |
 
 ---
 
@@ -25,31 +25,31 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo 3D kỹ thuật, tiện ích
 | [index.html](./index.html) | Danh mục công cụ — tự đọc danh sách file từ GitHub API |
 | [NTCONS.html](./NTCONS.html) | Trang giới thiệu NTCONS · Liên minh chuyên gia |
 | [ntcons-logo.png](./ntcons-logo.png) | Logo NTCONS |
-| [zalo-qr.png](./zalo-qr.png) | Mã QR Zalo (`https://zalo.me/0389216492`) |
+| [zalo-qr.png](./zalo-qr.png) | Mã QR Zalo |
 
 ---
 
-## Demo 3D & không gian
+## Công cụ kỹ thuật & demo 3D
 
 | File | Mô tả |
 |------|--------|
-| [Drone Sky Milky.html](./Drone%20Sky%20Milky.html) | Nhà 3D · Galaxy · điều khiển drone |
-| [Drone Sky.html](./Drone%20Sky.html) | Nhà 3D interactive |
-| [DAI NGAN HA.html](./DAI%20NGAN%20HA.html) | Dải Ngân Hà procedural |
+| [Be BTCT.html](./Be%20BTCT.html) | Bê BTCT 3D |
+| [Cau Kien 3D.html](./Cau%20Kien%203D.html) | Cầu kiện 3D |
+| [Dac Tinh Tiet Dien.html](./Dac%20Tinh%20Tiet%20Dien.html) | Tính đặc trưng tiết diện |
+| [Thang Long.html](./Thang%20Long.html) | Thang long thép 3D |
+| [WindNTcons-main.html](./WindNTcons-main.html) | Wind NTCONS |
 
 ---
 
-## Công cụ kỹ thuật NTCONS
+## Cẩm nang & quy trình
 
 | File | Mô tả |
 |------|--------|
-| [NTCONS_Be_BTCT_3D_R15_Maps_Separate_Control.html](./NTCONS_Be_BTCT_3D_R15_Maps_Separate_Control.html) | Bê BTCT 3D R15 — maps & control tách |
-| [NTCONS_Cau_kien_3D_DXF_R8.html](./NTCONS_Cau_kien_3D_DXF_R8.html) | Cầu kiện 3D DXF R8 |
-| [NTCONS_CumBe_LPG_3D_R15.html](./NTCONS_CumBe_LPG_3D_R15.html) | Cụm bể LPG 3D R15 |
-| [NTCONS_CumBe_LPG_3D_R16.html](./NTCONS_CumBe_LPG_3D_R16.html) | Cụm bể LPG 3D R16 |
-| [NTCONS_CumBe_LPG_3D_R24.html](./NTCONS_CumBe_LPG_3D_R24.html) | Cụm bể LPG 3D R24 |
-| [NTCONS_Thang_long_thep_3D_R5.html](./NTCONS_Thang_long_thep_3D_R5.html) | Thang long thép 3D R5 |
-| [NTCONS_Tinh_dac_trung_tiet_dien_R3.html](./NTCONS_Tinh_dac_trung_tiet_dien_R3.html) | Tính đặc trưng tiết diện R3 |
+| [camnanquanlydtxd-main.html](./camnanquanlydtxd-main.html) | Cẩm nang quản lý ĐTXD |
+| [chondamxoan-giocotsanmong-main.html](./chondamxoan-giocotsanmong-main.html) | Chọn đầm xoắn / gio cốt sàn móng |
+| [quytrinhquyhoachcapxa-main.html](./quytrinhquyhoachcapxa-main.html) | Quy trình quy hoạch cấp xã |
+| [renderkientruc-main.html](./renderkientruc-main.html) | Render kiến trúc |
+| [thuvienvbpl-main.html](./thuvienvbpl-main.html) | Thư viện VBPL |
 
 ---
 
@@ -57,37 +57,41 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo 3D kỹ thuật, tiện ích
 
 | File | Mô tả |
 |------|--------|
-| [NTCONS_Tarot_R4.html](./NTCONS_Tarot_R4.html) | NTCONS Tarot R4 — 78 lá (Rider–Waite–Smith) |
-| [Doi_Am_Duong_Lich_Offline_1800_2199_v2.html](./Doi_Am_Duong_Lich_Offline_1800_2199_v2.html) | Đổi Âm–Dương lịch offline (1800–2199) |
+| [Boi Bai.html](./Boi%20Bai.html) | Bói bài (Tarot) |
+| [Lich am Duong.html](./Lich%20am%20Duong.html) | Đổi Âm–Dương lịch offline |
 
 ---
 
 ## Deploy
 
-- **Production:** [https://minigame-cam.vercel.app/](https://minigame-cam.vercel.app/)
-- **Vercel project:** `minigame-cam` (team `trixd2026-9658s-projects`)
 - Stack: static HTML/CSS/JS — không cần build
 - Nhánh deploy: `main`
-
-Mọi file `.html` (trừ `index.html`) được `index.html` nhận diện tự động qua GitHub API và hiện trên trang chủ.
+- Mọi file `.html` (trừ `index.html`) được `index.html` nhận diện tự động qua GitHub API và hiện trên trang chủ.
 
 ---
 
 ## Ghi chú
 
-- Repo private; trang public qua Vercel.
-- Thương hiệu **NTCONS** (đổi từ AS Group / AS_*).
-- Liên hệ Zalo: quét QR trên [NTCONS.html](./NTCONS.html) hoặc mở [zalo.me/0389216492](https://zalo.me/0389216492).
+- Thương hiệu **NTCONS**
+- Liên hệ Zalo: quét QR trên [NTCONS.html](./NTCONS.html)
 
 ```
-minigame_cam/
+app-tonghop-xd/
 ├── index.html
 ├── NTCONS.html
 ├── ntcons-logo.png
 ├── zalo-qr.png
-├── Drone Sky*.html
-├── DAI NGAN HA.html
-├── NTCONS_*.html          # công cụ kỹ thuật + Tarot
-├── Doi_Am_Duong_Lich_*.html
+├── Be BTCT.html
+├── Cau Kien 3D.html
+├── Dac Tinh Tiet Dien.html
+├── Thang Long.html
+├── WindNTcons-main.html
+├── camnanquanlydtxd-main.html
+├── chondamxoan-giocotsanmong-main.html
+├── quytrinhquyhoachcapxa-main.html
+├── renderkientruc-main.html
+├── thuvienvbpl-main.html
+├── Boi Bai.html
+├── Lich am Duong.html
 └── README.md
 ```

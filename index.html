@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#16324f">
-  <meta name="description" content="Danh mục công cụ minigame_cam: NTCONS, Tarot, Âm Dương lịch, Drone Sky 3D và các demo kỹ thuật.">
-  <title>minigame_cam</title>
+  <meta name="description" content="Danh mục công cụ NTCONS: kỹ thuật 3D, cẩm nang ĐTXD, Tarot, lịch Âm Dương và các tiện ích offline.">
+  <title>app-tonghop-xd · NTCONS</title>
   <style>
     :root {
       color-scheme: light;
@@ -65,7 +65,7 @@
     h1 {
       margin: 0;
       color: var(--navy);
-      font-size: clamp(2rem, 7vw, 4.2rem);
+      font-size: clamp(1.8rem, 6vw, 3.4rem);
       line-height: 0.95;
       letter-spacing: -0.055em;
     }
@@ -308,8 +308,8 @@
     <header>
       <div>
         <p class="eyebrow">Kho công cụ trực tuyến</p>
-        <h1>minigame_cam</h1>
-        <p class="intro">Danh mục công cụ NTCONS & demo 3D. Bấm Mở link để dùng trực tiếp — không cần tự ghép đường dẫn.</p>
+        <h1>app-tonghop-xd</h1>
+        <p class="intro">Danh mục công cụ NTCONS & demo kỹ thuật. Bấm Mở link để dùng trực tiếp — không cần tự ghép đường dẫn.</p>
       </div>
       <div class="count" aria-live="polite">
         <strong id="count">0</strong>
@@ -328,7 +328,7 @@
     <p class="status" id="status" aria-live="polite">Đang đọc danh sách công cụ…</p>
     <section class="grid" id="grid" aria-live="polite"></section>
 
-    <footer>minigame_cam · NTCONS · Deploy trên Vercel</footer>
+    <footer>app-tonghop-xd · NTCONS · Deploy trên Vercel</footer>
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite">Đã sao chép đường dẫn</div>
@@ -337,10 +337,10 @@
     "use strict";
 
     const CONFIG = Object.freeze({
-      owner: "trixd2026-max",
-      repo: "minigame_cam",
+      owner: "xaydungnguyenthuc-hub",
+      repo: "app-tonghop-xd",
       branch: "main",
-      pagesBase: "https://minigame-cam.vercel.app/"
+      pagesBase: "https://app-tonghop-xd.vercel.app/"
     });
 
     const grid = document.querySelector("#grid");
@@ -361,21 +361,21 @@
       const filename = path.split("/").pop().replace(/\.html?$/i, "");
       const titles = {
         "NTCONS": "NTCONS — Liên minh chuyên gia",
-        "NTCONS_Tarot_R4": "NTCONS Tarot R4 — 78 lá bài",
-        "NTCONS_Be_BTCT_3D_R15_Maps_Separate_Control": "NTCONS Be BTCT 3D R15 Maps Separate Control",
-        "NTCONS_Cau_kien_3D_DXF_R8": "NTCONS Cầu kiện 3D DXF R8",
-        "NTCONS_CumBe_LPG_3D_R15": "NTCONS CumBe LPG 3D R15",
-        "NTCONS_CumBe_LPG_3D_R16": "NTCONS CumBe LPG 3D R16",
-        "NTCONS_CumBe_LPG_3D_R24": "NTCONS CumBe LPG 3D R24",
-        "NTCONS_Thang_long_thep_3D_R5": "NTCONS Thang long thép 3D R5",
-        "NTCONS_Tinh_dac_trung_tiet_dien_R3": "NTCONS Tính đặc trưng tiết diện R3",
-        "Doi_Am_Duong_Lich_Offline_1800_2199_v2": "Đổi Âm Dương Lịch (1800–2199)",
-        "Drone Sky Milky": "Drone Sky Milky — Nhà 3D · Galaxy",
-        "Drone Sky": "Drone Sky — Nhà 3D",
-        "DAI NGAN HA": "Dải Ngân Hà — Galaxy procedural"
+        "Be BTCT": "Bê BTCT 3D",
+        "Cau Kien 3D": "Cầu kiện 3D",
+        "Dac Tinh Tiet Dien": "Tính đặc trưng tiết diện",
+        "Thang Long": "Thang long thép 3D",
+        "WindNTcons-main": "Wind NTCONS",
+        "camnanquanlydtxd-main": "Cẩm nang quản lý ĐTXD",
+        "chondamxoan-giocotsanmong-main": "Chọn đầm xoắn / gio cốt sàn móng",
+        "quytrinhquyhoachcapxa-main": "Quy trình quy hoạch cấp xã",
+        "renderkientruc-main": "Render kiến trúc",
+        "thuvienvbpl-main": "Thư viện VBPL",
+        "Boi Bai": "Bói bài (Tarot)",
+        "Lich am Duong": "Đổi Âm Dương lịch offline"
       };
       if (titles[filename]) return titles[filename];
-      const cleaned = filename.replace(/^AS[_\s-]*/i, "NTCONS ").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+      const cleaned = filename.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
       return cleaned ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : filename;
     }
 
@@ -475,21 +475,21 @@
       grid.replaceChildren(...visible.map(createCard));
     }
 
-    // Danh sách tĩnh — luôn hoạt động dù repo private / GitHub API lỗi
+    // Danh sách tĩnh — luôn hoạt động dù GitHub API lỗi
     const FALLBACK_FILES = [
-      "DAI NGAN HA.html",
-      "Doi_Am_Duong_Lich_Offline_1800_2199_v2.html",
-      "Drone Sky Milky.html",
-      "Drone Sky.html",
+      "Be BTCT.html",
+      "Boi Bai.html",
+      "Cau Kien 3D.html",
+      "Dac Tinh Tiet Dien.html",
+      "Lich am Duong.html",
       "NTCONS.html",
-      "NTCONS_Be_BTCT_3D_R15_Maps_Separate_Control.html",
-      "NTCONS_Cau_kien_3D_DXF_R8.html",
-      "NTCONS_CumBe_LPG_3D_R15.html",
-      "NTCONS_CumBe_LPG_3D_R16.html",
-      "NTCONS_CumBe_LPG_3D_R24.html",
-      "NTCONS_Tarot_R4.html",
-      "NTCONS_Thang_long_thep_3D_R5.html",
-      "NTCONS_Tinh_dac_trung_tiet_dien_R3.html"
+      "Thang Long.html",
+      "WindNTcons-main.html",
+      "camnanquanlydtxd-main.html",
+      "chondamxoan-giocotsanmong-main.html",
+      "quytrinhquyhoachcapxa-main.html",
+      "renderkientruc-main.html",
+      "thuvienvbpl-main.html"
     ].map(path => ({ path, type: "blob" }));
 
     async function loadFiles() {
