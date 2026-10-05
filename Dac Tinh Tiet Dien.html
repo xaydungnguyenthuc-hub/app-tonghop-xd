@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0b1f36">
+  <title>NTCONS Section — Đặc trưng hình học tiết diện</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1f36'/%3E%3Cpath d='M14 46 27 16h10l13 30h-9l-2.5-6H25.5L23 46zm14-14h8l-4-10z' fill='white'/%3E%3C/svg%3E">
+  <style>
+    :root{--navy:#0b1f36;--navy2:#163858;--ink:#111820;--muted:#526170;--line:#cbd3da;--surface:#f4f6f8;--white:#fff;--accent:#c88724;--blue:#075a9c;--red:#b42318;--green:#147a4b;--shadow:0 12px 30px rgba(11,31,54,.09);--radius:18px}
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+    body{margin:0;background:#fff;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.62;overflow-x:hidden}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .topbar{background:var(--navy);color:#fff;border-bottom:4px solid var(--accent)}
+    .topbar-inner{max-width:1180px;margin:auto;min-height:76px;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.02em}
+    .mark{width:42px;height:42px;border:2px solid #fff;border-radius:10px;display:grid;place-items:center;font-size:20px}
+    .brand small{display:block;font-size:13px;font-weight:500;color:#c8d4df;letter-spacing:.04em}
+    .version{font-size:14px;border:1px solid #7890a6;border-radius:999px;padding:5px 11px;white-space:nowrap}
+    .hero{background:linear-gradient(135deg,#fff 0%,#f4f7fa 68%,#e7edf2 100%);border-bottom:1px solid var(--line)}
+    .hero-inner{max-width:1180px;margin:auto;padding:44px 22px 38px}
+    .eyebrow{color:var(--blue);font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+    h1{font-size:clamp(36px,5vw,58px);line-height:1.06;letter-spacing:-.035em;margin:10px 0 16px;max-width:900px}
+    .lead{font-size:19px;color:#344454;max-width:870px;margin:0}
+    main{max-width:1180px;margin:0 auto;padding:30px 22px 60px}
+    .tabs{display:flex;gap:9px;overflow-x:auto;padding:2px 1px 14px;scrollbar-width:thin}
+    .tab{border:1px solid #9facb7;background:#fff;color:var(--navy);border-radius:999px;padding:10px 18px;font-weight:750;white-space:nowrap}
+    .tab[aria-selected="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .workgrid{display:grid;grid-template-columns:minmax(330px,.85fr) minmax(480px,1.15fr);gap:22px;align-items:start}
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .panel-head{padding:20px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+    .panel-head h2{font-size:24px;line-height:1.25;margin:0 0 4px}
+    .panel-head p{font-size:15px;color:var(--muted);margin:0}
+    .panel-body{padding:22px}
+    .field{margin-bottom:17px}
+    label{display:block;font-size:15px;font-weight:750;margin:0 0 6px;color:#243443}
+    select,input{width:100%;min-height:48px;border:1px solid #8e9ba6;border-radius:10px;background:#fff;color:#111;padding:9px 12px;outline:none}
+    select:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,90,156,.13)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .input-wrap{position:relative}
+    .input-wrap input{padding-right:54px;color:#064f8b;font-weight:750}
+    .input-unit{position:absolute;right:12px;top:12px;color:#586977;font-size:14px;pointer-events:none}
+    .preset-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+    .preset{border:1px solid #aab5be;background:#fff;border-radius:8px;color:#23384a;padding:5px 9px;font-size:14px}
+    .preset:hover{border-color:var(--blue);color:var(--blue)}
+    .note{background:#eef5fa;border-left:4px solid var(--blue);padding:11px 13px;color:#29475f;font-size:14px;border-radius:4px;margin:5px 0 18px}
+    .error{display:none;background:#fff0ef;color:var(--red);border:1px solid #f2b8b5;border-radius:10px;padding:10px 12px;margin-bottom:16px;font-size:15px;font-weight:650}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:1px solid var(--navy);border-radius:10px;padding:10px 15px;font-weight:760;min-height:46px;background:#fff;color:var(--navy)}
+    .btn.primary{background:var(--navy);color:#fff}
+    .btn:hover{filter:brightness(.96)}
+    .diagram-wrap{padding:18px;background:#f8fafb;border:1px solid #d9e0e5;border-radius:14px;margin-bottom:18px}
+    #sectionSvg{display:block;width:100%;height:310px;background:#fff;border-radius:10px}
+    .diagram-caption{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+    .results-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:12px}
+    .results-head h3{font-size:22px;margin:0}
+    .result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .result{border:1px solid #d1d8de;border-radius:12px;padding:12px 13px;min-height:92px;background:#fff;overflow-wrap:anywhere}
+    .result.primary{border-top:4px solid var(--navy)}
+    .result .symbol{display:block;font-weight:800;color:#394c5c;font-size:15px}
+    .result .value{display:block;font-size:20px;line-height:1.25;font-weight:820;color:var(--navy);margin-top:7px}
+    .result .unit{font-size:13px;color:var(--muted);font-weight:650}
+    .subhead{font-size:18px;margin:24px 0 10px;color:var(--navy)}
+    .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+    table{width:100%;border-collapse:collapse;min-width:620px;font-size:15px}
+    th,td{padding:10px 12px;border-bottom:1px solid #dbe1e6;text-align:right}
+    th:first-child,td:first-child{text-align:left}
+    th{background:#eef2f5;color:#273a49}
+    tr:last-child td{border-bottom:0}
+    .formula{margin-top:24px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    .formula summary{padding:15px 18px;font-weight:800;color:var(--navy);cursor:pointer}
+    .formula-content{padding:0 18px 18px;color:#354958}
+    .formula-content ul{margin:8px 0 0;padding-left:22px}
+    .formula-content li{margin:7px 0}
+    footer{border-top:1px solid var(--line);background:var(--surface);color:#4a5a68}
+    footer div{max-width:1180px;margin:auto;padding:20px 22px;font-size:14px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .toast{position:fixed;right:20px;bottom:20px;background:var(--navy);color:#fff;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;z-index:5}
+    .toast.show{opacity:1;transform:none}
+    @media(max-width:900px){.workgrid{grid-template-columns:1fr}.result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar-inner,.hero-inner,main{padding-left:16px;padding-right:16px}}
+    @media(max-width:540px){body{font-size:17px}.topbar-inner{min-height:68px}.brand small{display:none}.hero-inner{padding-top:32px;padding-bottom:30px}.lead{font-size:17px}.row2,.result-grid{grid-template-columns:1fr}.panel-body,.panel-head{padding:17px}.result{min-height:80px}#sectionSvg{height:260px}.actions .btn{flex:1 1 140px}.version{font-size:12px}}
+    @media print{.topbar,.hero,.tabs,.input-panel,.actions,.formula,footer,.toast{display:none!important}main{padding:0;max-width:none}.workgrid{display:block}.panel{box-shadow:none;border:0}.panel-head{background:#fff;padding:0 0 12px}.panel-body{padding:0}.result-grid{grid-template-columns:repeat(3,1fr)}.diagram-wrap{break-inside:avoid}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="mark">NT</span><span>NTCONS SECTION<small>CÔNG CỤ KỸ THUẬT KẾT CẤU</small></span></div>
+      <span class="version">R3 · 20/09/2026</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Đặc trưng hình học tiết diện</div>
+      <h1>Tính nhanh tiết diện bê tông, cọc và thép</h1>
+      <p class="lead">Chọn hình dạng, nhập kích thước và nhận ngay diện tích, trọng tâm, mômen tĩnh, mômen quán tính, mômen chống uốn, bán kính quán tính và trục chính.</p>
+    </div>
+  </section>
+
+  <main>
+    <nav class="tabs" aria-label="Nhóm tiết diện">
+      <button class="tab" data-cat="concrete" aria-selected="true">Bê tông</button>
+      <button class="tab" data-cat="pile" aria-selected="false">Cọc</button>
+      <button class="tab" data-cat="steel" aria-selected="false">Kết cấu thép</button>
+    </nav>
+
+    <div class="workgrid">
+      <section class="panel input-panel" aria-labelledby="inputTitle">
+        <div class="panel-head"><h2 id="inputTitle">Thông số đầu vào</h2><p>Kích thước mặc định nhập theo milimét.</p></div>
+        <div class="panel-body">
+          <div class="field"><label for="shapeSelect">Loại tiết diện</label><select id="shapeSelect"></select></div>
+          <div class="field" id="presetField"><label>Mẫu kích thước nhanh</label><div class="preset-row" id="presetRow"></div></div>
+          <div class="row2">
+            <div class="field"><label for="inputUnit">Đơn vị nhập</label><select id="inputUnit"><option value="1">mm</option><option value="10">cm</option><option value="1000">m</option></select></div>
+            <div class="field"><label for="outputUnit">Đơn vị kết quả</label><select id="outputUnit"><option value="10">cm</option><option value="1">mm</option><option value="1000">m</option></select></div>
+          </div>
+          <div id="dimensionFields"></div>
+          <div class="field"><label for="density">Khối lượng riêng ρ</label><div class="input-wrap"><input id="density" type="number" min="1" step="10"><span class="input-unit">kg/m³</span></div></div>
+          <div class="note" id="shapeNote">Các đặc trưng được tính qua trục trọng tâm song song với cạnh ngoài.</div>
+          <div class="error" id="errorBox" role="alert"></div>
+          <div class="actions">
+            <button class="btn primary" id="calcBtn">Tính toán</button>
+            <button class="btn" id="copyBtn">Sao chép kết quả</button>
+            <button class="btn" id="excelBtn">Xuất Excel (.xlsx)</button>
+            <button class="btn" id="cadBtn">Xuất CAD (.dxf)</button>
+            <button class="btn" id="csvBtn">Tải CSV</button>
+            <button class="btn" onclick="window.print()">In / PDF</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="resultTitle">
+        <div class="panel-head"><h2 id="resultTitle">Kết quả tính toán</h2><p id="resultSubtitle">Tiết diện chữ nhật · trục qua trọng tâm</p></div>
+        <div class="panel-body">
+          <div class="diagram-wrap">
+            <svg id="sectionSvg" viewBox="0 0 520 340" role="img" aria-label="Sơ đồ tiết diện và hệ trục trọng tâm"></svg>
+            <div class="diagram-caption"><span id="sizeCaption"></span><span>Gốc O tại góc trái dưới của hình bao</span></div>
+          </div>
+          <div class="results-head"><h3>Thông số chính</h3><span id="axisCaption" class="unit"></span></div>
+          <div class="result-grid" id="resultGrid"></div>
+          <h3 class="subhead">Mômen chống uốn theo bốn mép</h3>
+          <div class="table-scroll"><table><thead><tr><th>Mép</th><th>Khoảng cách c</th><th>Mômen chống uốn W</th></tr></thead><tbody id="modulusBody"></tbody></table></div>
+          <details class="formula">
+            <summary>Quy ước và công thức sử dụng</summary>
+            <div class="formula-content">
+              <ul>
+                <li><strong>Mx,0 = ∫y·dA</strong> và <strong>My,0 = ∫x·dA</strong> là mômen tĩnh đối với trục qua mép dưới và mép trái. Mômen tĩnh đối với trục trọng tâm bằng 0.</li>
+                <li><strong>Ix, Iy, Ixy</strong> tính qua trọng tâm; <strong>rx = √(Ix/A)</strong>, <strong>ry = √(Iy/A)</strong>.</li>
+                <li><strong>W = I/c</strong>; với tiết diện không đối xứng, giá trị ở hai mép có thể khác nhau.</li>
+                <li><strong>I1, I2</strong> là mômen quán tính chính. Góc θ đo ngược chiều kim đồng hồ từ trục x đến trục chính ứng với I1.</li>
+                <li><strong>Jp = Ix + Iy</strong> là mômen quán tính cực hình học, không thay cho hằng số xoắn của tiết diện thép thành mỏng.</li>
+                <li>Tiết diện thép được lý tưởng hóa cạnh vuông, chưa kể bán kính lượn góc và dung sai cán.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer><div><span>AS Group · Structural calculation tool</span><span>Kết quả cần được kiểm tra lại khi dùng cho hồ sơ thiết kế chính thức.</span></div></footer>
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script>
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const shapeDefs = {
+    concrete: [
+      {id:'rect',name:'Chữ nhật đặc',params:[['b','Bề rộng b',300],['h','Chiều cao h',500]],density:2500,note:'Tiết diện bê tông đặc hình chữ nhật.'},
+      {id:'circle',name:'Tròn đặc',params:[['d','Đường kính D',500]],density:2500,note:'Tiết diện tròn đặc; Ix = Iy và Ixy = 0.'},
+      {id:'rectHollow',name:'Hộp chữ nhật rỗng',params:[['b','Bề rộng ngoài b',500],['h','Chiều cao ngoài h',700],['t','Bề dày đều t',100]],density:2500,note:'Lỗ rỗng đặt đồng tâm, bề dày đều bốn phía.'},
+      {id:'tee',name:'Chữ T',params:[['b','Bề rộng cánh b',800],['h','Tổng chiều cao h',700],['bw','Bề rộng sườn bw',250],['tf','Chiều dày cánh tf',180]],density:2500,note:'Cánh nằm phía trên, sườn đặt giữa cánh.'},
+      {id:'ell',name:'Chữ L',params:[['b','Bề rộng tổng b',500],['h','Chiều cao tổng h',700],['tv','Dày nhánh đứng tv',180],['th','Dày nhánh ngang th',180]],density:2500,note:'Hai nhánh nằm bên trái và phía dưới.'}
+    ],
+    pile: [
+      {id:'pileSquare',name:'Cọc vuông đặc',params:[['b','Cạnh cọc b',400]],density:2500,presets:[['300',300],['350',350],['400',400],['450',450]],note:'Cọc BTCT vuông đặc.'},
+      {id:'pileRect',name:'Cọc chữ nhật đặc',params:[['b','Bề rộng b',300],['h','Chiều cao h',500]],density:2500,note:'Cọc BTCT chữ nhật đặc.'},
+      {id:'pileCircle',name:'Cọc tròn đặc / khoan nhồi',params:[['d','Đường kính D',800]],density:2500,presets:[['D600',600],['D800',800],['D1000',1000],['D1200',1200]],note:'Tiết diện bê tông tròn đặc.'},
+      {id:'spun',name:'Cọc ly tâm rỗng',params:[['d','Đường kính ngoài D',500],['t','Bề dày thành t',90]],density:2500,presets:[['D300×60',300,60],['D400×75',400,75],['D500×90',500,90],['D600×100',600,100]],note:'Mặt cắt vành khăn đồng tâm; kiểm tra kích thước thực tế theo catalogue nhà sản xuất.'},
+      {id:'pileSquareHollow',name:'Cọc vuông rỗng',params:[['b','Cạnh ngoài b',500],['t','Bề dày thành t',100]],density:2500,note:'Lỗ vuông đồng tâm, bề dày đều.'}
+    ],
+    steel: [
+      {id:'iShape',name:'Thép I / H',params:[['h','Chiều cao h',200],['b','Bề rộng cánh b',200],['tw','Dày bụng tw',8],['tf','Dày cánh tf',12]],density:7850,presets:[['H100',100,100,6,8],['H150',150,150,7,10],['H200',200,200,8,12],['H250',250,250,9,14],['H300',300,300,10,15]],note:'Tiết diện I/H lý tưởng hóa, chưa kể bán kính lượn giữa bụng và cánh.'},
+      {id:'channel',name:'Thép U / C',params:[['h','Chiều cao h',200],['b','Bề rộng cánh b',75],['tw','Dày bụng tw',7],['tf','Dày cánh tf',10]],density:7850,note:'Cánh hướng sang phải; chưa kể độ dốc cánh và bán kính lượn.'},
+      {id:'angle',name:'Thép góc L',params:[['b','Bề rộng nhánh ngang b',75],['h','Chiều cao nhánh đứng h',75],['t','Bề dày t',6]],density:7850,presets:[['L50×5',50,50,5],['L63×6',63,63,6],['L75×6',75,75,6],['L90×8',90,90,8],['L100×10',100,100,10]],note:'Thép góc cạnh vuông, chưa kể bán kính lượn.'},
+      {id:'rhs',name:'Thép hộp chữ nhật / vuông',params:[['b','Bề rộng ngoài b',100],['h','Chiều cao ngoài h',150],['t','Bề dày t',5]],density:7850,presets:[['100×100×4',100,100,4],['100×150×5',100,150,5],['150×150×6',150,150,6],['200×200×8',200,200,8]],note:'Hộp lý tưởng hóa góc vuông; catalogue thực tế có góc bo.'},
+      {id:'chs',name:'Ống thép tròn',params:[['d','Đường kính ngoài D',114.3],['t','Bề dày t',4.5]],density:7850,presets:[['D60.3×3.2',60.3,3.2],['D89.1×4',89.1,4],['D114.3×4.5',114.3,4.5],['D168.3×6',168.3,6]],note:'Mặt cắt vành khăn, đường kính và bề dày theo kích thước danh nghĩa nhập vào.'},
+      {id:'steelTee',name:'Thép chữ T',params:[['h','Tổng chiều cao h',150],['b','Bề rộng cánh b',150],['tw','Dày bụng tw',7],['tf','Dày cánh tf',10]],density:7850,note:'Cánh nằm phía trên, bụng đặt giữa.'},
+      {id:'flat',name:'Bản / thanh chữ nhật đặc',params:[['b','Bề rộng b',100],['h','Chiều dày h',10]],density:7850,note:'Thanh hoặc bản thép chữ nhật đặc.'}
+    ]
+  };
+
+  let category='concrete', current=null, lastResult=null, lastInputFactor=1;
+  const rectPart=(x,y,w,h,s=1)=>({type:'rect',x,y,w,h,s,A:s*w*h,cx:x+w/2,cy:y+h/2,Ix:s*w*h**3/12,Iy:s*h*w**3/12,Ixy:0});
+  const circlePart=(cx,cy,r,s=1)=>({type:'circle',cx,cy,r,s,A:s*Math.PI*r*r,Ix:s*Math.PI*r**4/4,Iy:s*Math.PI*r**4/4,Ixy:0});
+
+  function getDef(){return shapeDefs[category].find(d=>d.id===$('#shapeSelect').value)||shapeDefs[category][0]}
+  function renderShapeList(){
+    const sel=$('#shapeSelect'); sel.innerHTML=shapeDefs[category].map(d=>`<option value="${d.id}">${d.name}</option>`).join('');
+    renderInputs();
+  }
+  function renderInputs(){
+    current=getDef(); const unitName=$('#inputUnit').selectedOptions[0].text,inputFactor=Number($('#inputUnit').value);
+    $('#dimensionFields').innerHTML=current.params.map(([k,label,val])=>`<div class="field"><label for="p_${k}">${label}</label><div class="input-wrap"><input id="p_${k}" data-key="${k}" type="number" min="0" step="any" value="${val/inputFactor}"><span class="input-unit">${unitName}</span></div></div>`).join('');
+    $('#density').value=current.density; $('#shapeNote').textContent=current.note;
+    const ps=current.presets||[]; $('#presetField').style.display=ps.length?'block':'none';
+    $('#presetRow').innerHTML=ps.map((p,i)=>`<button class="preset" data-preset="${i}">${p[0]}</button>`).join('');
+    document.querySelectorAll('#dimensionFields input').forEach(el=>el.addEventListener('input',calculate));
+    document.querySelectorAll('.preset').forEach(el=>el.addEventListener('click',()=>applyPreset(+el.dataset.preset)));
+    calculate();
+  }
+  function applyPreset(i){const p=current.presets[i],f=Number($('#inputUnit').value); current.params.forEach((x,j)=>$('#p_'+x[0]).value=p[j+1]/f); calculate()}
+  function paramsMM(){const f=+$('#inputUnit').value; const o={}; document.querySelectorAll('#dimensionFields input').forEach(el=>o[el.dataset.key]=+el.value*f); return o}
+  function buildGeometry(id,p){
+    let parts=[],w=0,h=0;
+    const positive=Object.values(p).every(v=>Number.isFinite(v)&&v>0); if(!positive) throw Error('Tất cả kích thước phải lớn hơn 0.');
+    switch(id){
+      case'rect':case'pileRect':case'flat': parts=[rectPart(0,0,p.b,p.h)];w=p.b;h=p.h;break;
+      case'pileSquare': parts=[rectPart(0,0,p.b,p.b)];w=h=p.b;break;
+      case'circle':case'pileCircle': parts=[circlePart(p.d/2,p.d/2,p.d/2)];w=h=p.d;break;
+      case'rectHollow':case'rhs': if(2*p.t>=Math.min(p.b,p.h))throw Error('Bề dày t phải nhỏ hơn một nửa kích thước ngoài.'); parts=[rectPart(0,0,p.b,p.h),rectPart(p.t,p.t,p.b-2*p.t,p.h-2*p.t,-1)];w=p.b;h=p.h;break;
+      case'pileSquareHollow': if(2*p.t>=p.b)throw Error('Bề dày t phải nhỏ hơn b/2.'); parts=[rectPart(0,0,p.b,p.b),rectPart(p.t,p.t,p.b-2*p.t,p.b-2*p.t,-1)];w=h=p.b;break;
+      case'spun':case'chs': if(2*p.t>=p.d)throw Error('Bề dày t phải nhỏ hơn D/2.'); parts=[circlePart(p.d/2,p.d/2,p.d/2),circlePart(p.d/2,p.d/2,p.d/2-p.t,-1)];w=h=p.d;break;
+      case'tee': if(p.bw>=p.b||p.tf>=p.h)throw Error('Cần bw < b và tf < h.'); parts=[rectPart(0,p.h-p.tf,p.b,p.tf),rectPart((p.b-p.bw)/2,0,p.bw,p.h-p.tf)];w=p.b;h=p.h;break;
+      case'ell': if(p.tv>=p.b||p.th>=p.h)throw Error('Cần tv < b và th < h.'); parts=[rectPart(0,0,p.tv,p.h),rectPart(p.tv,0,p.b-p.tv,p.th)];w=p.b;h=p.h;break;
+      case'iShape': if(2*p.tf>=p.h||p.tw>=p.b)throw Error('Cần 2tf < h và tw < b.'); parts=[rectPart(0,0,p.b,p.tf),rectPart((p.b-p.tw)/2,p.tf,p.tw,p.h-2*p.tf),rectPart(0,p.h-p.tf,p.b,p.tf)];w=p.b;h=p.h;break;
+      case'channel': if(2*p.tf>=p.h||p.tw>=p.b)throw Error('Cần 2tf < h và tw < b.'); parts=[rectPart(0,0,p.tw,p.h),rectPart(p.tw,0,p.b-p.tw,p.tf),rectPart(p.tw,p.h-p.tf,p.b-p.tw,p.tf)];w=p.b;h=p.h;break;
+      case'angle': if(p.t>=Math.min(p.b,p.h))throw Error('Bề dày t phải nhỏ hơn kích thước hai nhánh.'); parts=[rectPart(0,0,p.t,p.h),rectPart(p.t,0,p.b-p.t,p.t)];w=p.b;h=p.h;break;
+      case'steelTee': if(p.tw>=p.b||p.tf>=p.h)throw Error('Cần tw < b và tf < h.'); parts=[rectPart(0,p.h-p.tf,p.b,p.tf),rectPart((p.b-p.tw)/2,0,p.tw,p.h-p.tf)];w=p.b;h=p.h;break;
+      default:throw Error('Chưa nhận diện loại tiết diện.');
+    }
+    return{parts,w,h};
+  }
+  function sectionProperties(g){
+    const A=g.parts.reduce((s,q)=>s+q.A,0); if(A<=0)throw Error('Diện tích tiết diện không hợp lệ.');
+    const cx=g.parts.reduce((s,q)=>s+q.A*q.cx,0)/A, cy=g.parts.reduce((s,q)=>s+q.A*q.cy,0)/A;
+    const Ix=g.parts.reduce((s,q)=>s+q.Ix+q.A*(q.cy-cy)**2,0), Iy=g.parts.reduce((s,q)=>s+q.Iy+q.A*(q.cx-cx)**2,0);
+    const Ixy=g.parts.reduce((s,q)=>s+q.Ixy+q.A*(q.cx-cx)*(q.cy-cy),0);
+    const avg=(Ix+Iy)/2, rad=Math.hypot((Ix-Iy)/2,Ixy), I1=avg+rad, I2=avg-rad;
+    const theta=.5*Math.atan2(-2*Ixy,Ix-Iy)*180/Math.PI;
+    return{A,cx,cy,Ix,Iy,Ixy,I1,I2,theta,rx:Math.sqrt(Ix/A),ry:Math.sqrt(Iy/A),r1:Math.sqrt(I1/A),r2:Math.sqrt(I2/A),Jp:Ix+Iy,Mx0:A*cy,My0:A*cx,cTop:g.h-cy,cBottom:cy,cRight:g.w-cx,cLeft:cx,Wtop:Ix/(g.h-cy),Wbottom:Ix/cy,Wright:Iy/(g.w-cx),Wleft:Iy/cx};
+  }
+  function unitLabel(power){const n=$('#outputUnit').selectedOptions[0].text;return power===1?n:`${n}<sup>${power}</sup>`}
+  function conv(v,p){return v/(Number($('#outputUnit').value)**p)}
+  function fmt(v){if(!Number.isFinite(v))return'—'; const a=Math.abs(v); if(a===0)return'0'; if(a>=1e9||a<.001)return v.toExponential(4); return new Intl.NumberFormat('vi-VN',{maximumFractionDigits:a<10?4:a<1000?3:2}).format(v)}
+  function card(symbol,label,value,power,primary=false,customUnit=''){const shown=power===null?value:conv(value,power),unit=customUnit||(power===null?'':unitLabel(power));return `<div class="result${primary?' primary':''}" title="${label}"><span class="symbol">${symbol} · ${label}</span><span class="value">${fmt(shown)} <span class="unit">${unit}</span></span></div>`}
+  function renderResults(r,g,p){
+    $('#resultSubtitle').textContent=current.name+' · trục x–y qua trọng tâm';
+    $('#axisCaption').textContent=`G(${fmt(conv(r.cx,1))}; ${fmt(conv(r.cy,1))}) ${$('#outputUnit').selectedOptions[0].text}`;
+    $('#sizeCaption').textContent=current.params.map(([k,l])=>`${k} = ${fmt(conv(p[k],1))}`).join(' · ')+' '+$('#outputUnit').selectedOptions[0].text;
+    $('#resultGrid').innerHTML=[
+      card('A','Diện tích',r.A,2,true),card('x̄','Tọa độ trọng tâm x',r.cx,1),card('ȳ','Tọa độ trọng tâm y',r.cy,1),
+      card('M<sub>x,0</sub>','Mômen tĩnh qua mép dưới',r.Mx0,3),card('M<sub>y,0</sub>','Mômen tĩnh qua mép trái',r.My0,3),card('I<sub>xy</sub>','Mômen quán tính ly tâm',r.Ixy,4),
+      card('I<sub>x</sub>','Mômen quán tính trục x',r.Ix,4,true),card('I<sub>y</sub>','Mômen quán tính trục y',r.Iy,4,true),card('J<sub>p</sub>','Mômen quán tính cực',r.Jp,4),
+      card('r<sub>x</sub>','Bán kính quán tính x',r.rx,1),card('r<sub>y</sub>','Bán kính quán tính y',r.ry,1),card('θ','Góc trục chính',r.theta,null,false,'°'),
+      card('I<sub>1</sub>','Mômen quán tính chính lớn',r.I1,4),card('I<sub>2</sub>','Mômen quán tính chính nhỏ',r.I2,4),card('r<sub>1</sub>','Bán kính quán tính chính lớn',r.r1,1),
+      card('r<sub>2</sub>','Bán kính quán tính chính nhỏ',r.r2,1),card('m','Khối lượng trên mét',r.mass,null,false,'kg/m'),card('g','Tĩnh tải trên mét',r.weight,null,false,'kN/m')
+    ].join('');
+    const rows=[['Trên',r.cTop,r.Wtop],['Dưới',r.cBottom,r.Wbottom],['Phải',r.cRight,r.Wright],['Trái',r.cLeft,r.Wleft]];
+    $('#modulusBody').innerHTML=rows.map(x=>`<tr><td>${x[0]}</td><td>${fmt(conv(x[1],1))} ${unitLabel(1)}</td><td>${fmt(conv(x[2],3))} ${unitLabel(3)}</td></tr>`).join('');
+    drawSection(g,r);
+  }
+  function drawSection(g,r){
+    const svg=$('#sectionSvg'), W=520,H=340,pad=55, scale=Math.min((W-2*pad)/g.w,(H-2*pad)/g.h), ox=(W-g.w*scale)/2, oy=(H-g.h*scale)/2;
+    const sy=y=>H-(oy+y*scale), sx=x=>ox+x*scale;
+    let defs='<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#6f879b" stroke-width="2"/></pattern><marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#b42318"/></marker></defs>';
+    let shapes=g.parts.map(q=>q.type==='rect'?`<rect x="${sx(q.x)}" y="${sy(q.y+q.h)}" width="${q.w*scale}" height="${q.h*scale}" fill="${q.s>0?'url(#hatch)':'#fff'}" stroke="#0b1f36" stroke-width="2"/>`:`<circle cx="${sx(q.cx)}" cy="${sy(q.cy)}" r="${q.r*scale}" fill="${q.s>0?'url(#hatch)':'#fff'}" stroke="#0b1f36" stroke-width="2"/>`).join('');
+    const gx=sx(r.cx),gy=sy(r.cy), axis=`<line x1="${ox-28}" y1="${gy}" x2="${ox+g.w*scale+35}" y2="${gy}" stroke="#b42318" stroke-width="1.8" marker-end="url(#arrow)"/><line x1="${gx}" y1="${oy+g.h*scale+28}" x2="${gx}" y2="${oy-30}" stroke="#b42318" stroke-width="1.8" marker-end="url(#arrow)"/><circle cx="${gx}" cy="${gy}" r="4.5" fill="#b42318"/><text x="${ox+g.w*scale+38}" y="${gy+5}" fill="#b42318" font-size="16" font-weight="700">x</text><text x="${gx+8}" y="${oy-32}" fill="#b42318" font-size="16" font-weight="700">y</text><text x="${gx+8}" y="${gy+20}" fill="#b42318" font-size="14">G</text>`;
+    const dims=`<text x="${W/2}" y="${H-10}" text-anchor="middle" fill="#526170" font-size="14">b = ${fmt(conv(g.w,1))} ${$('#outputUnit').selectedOptions[0].text}</text><text x="14" y="${H/2}" text-anchor="middle" fill="#526170" font-size="14" transform="rotate(-90 14 ${H/2})">h = ${fmt(conv(g.h,1))} ${$('#outputUnit').selectedOptions[0].text}</text>`;
+    svg.innerHTML=defs+shapes+axis+dims;
+  }
+  function calculate(){
+    try{current=getDef(); const p=paramsMM(),g=buildGeometry(current.id,p),r=sectionProperties(g),rho=+$('#density').value;if(!(rho>0))throw Error('Khối lượng riêng phải lớn hơn 0.');r.mass=r.A*1e-6*rho;r.weight=r.mass*9.80665/1000;lastResult={r,g,p,name:current.name,rho};$('#errorBox').style.display='none';renderResults(r,g,p)}catch(e){$('#errorBox').textContent=e.message;$('#errorBox').style.display='block'}
+  }
+  function resultText(){if(!lastResult)return'';const{r,name}=lastResult,u=$('#outputUnit').selectedOptions[0].text,f=(v,p)=>fmt(conv(v,p));return `${name}\nA = ${f(r.A,2)} ${u}²\nx̄ = ${f(r.cx,1)} ${u}; ȳ = ${f(r.cy,1)} ${u}\nMx,0 = ${f(r.Mx0,3)} ${u}³; My,0 = ${f(r.My0,3)} ${u}³\nIx = ${f(r.Ix,4)} ${u}⁴; Iy = ${f(r.Iy,4)} ${u}⁴; Ixy = ${f(r.Ixy,4)} ${u}⁴\nWx,trên = ${f(r.Wtop,3)} ${u}³; Wx,dưới = ${f(r.Wbottom,3)} ${u}³\nWy,phải = ${f(r.Wright,3)} ${u}³; Wy,trái = ${f(r.Wleft,3)} ${u}³\nrx = ${f(r.rx,1)} ${u}; ry = ${f(r.ry,1)} ${u}\nI1 = ${f(r.I1,4)} ${u}⁴; I2 = ${f(r.I2,4)} ${u}⁴; θ = ${fmt(r.theta)}°\nKhối lượng = ${fmt(r.mass)} kg/m; tĩnh tải = ${fmt(r.weight)} kN/m`}
+  function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+  async function copyResults(){const value=resultText();try{await navigator.clipboard.writeText(value);toast('Đã sao chép kết quả')}catch(e){const box=document.createElement('textarea');box.value=value;box.style.position='fixed';box.style.opacity='0';document.body.appendChild(box);box.select();const ok=document.execCommand('copy');box.remove();toast(ok?'Đã sao chép kết quả':'Không thể sao chép tự động')}}
+  function downloadCsv(){if(!lastResult)return;const{r,name}=lastResult,u=$('#outputUnit').selectedOptions[0].text;const data=[['Tiết diện',name,''],['Thông số','Giá trị','Đơn vị'],['A',conv(r.A,2),u+'2'],['x_bar',conv(r.cx,1),u],['y_bar',conv(r.cy,1),u],['Mx_0',conv(r.Mx0,3),u+'3'],['My_0',conv(r.My0,3),u+'3'],['Ix',conv(r.Ix,4),u+'4'],['Iy',conv(r.Iy,4),u+'4'],['Ixy',conv(r.Ixy,4),u+'4'],['rx',conv(r.rx,1),u],['ry',conv(r.ry,1),u],['I1',conv(r.I1,4),u+'4'],['I2',conv(r.I2,4),u+'4'],['theta',r.theta,'deg'],['mass',r.mass,'kg/m'],['weight',r.weight,'kN/m']];const csv='\ufeff'+data.map(row=>row.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='NTCONS_dac_trung_tiet_dien.csv';a.click();URL.revokeObjectURL(a.href);toast('Đã tạo file CSV')}
+
+  function saveBlob(blob,fileName){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+  function xmlEscape(v){return String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
+  function u16(n){return new Uint8Array([n&255,(n>>>8)&255])}
+  function u32(n){return new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255])}
+  function joinBytes(parts){const size=parts.reduce((s,p)=>s+p.length,0),out=new Uint8Array(size);let at=0;parts.forEach(p=>{out.set(p,at);at+=p.length});return out}
+  const crcTable=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+  function crc32(bytes){let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0}
+  function zipStore(files){
+    const enc=new TextEncoder(),locals=[],centrals=[];let offset=0;
+    const now=new Date(),dosTime=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1),dosDate=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+    for(const file of files){const name=enc.encode(file.name),data=typeof file.data==='string'?enc.encode(file.data):file.data,crc=crc32(data);
+      const local=joinBytes([u32(0x04034b50),u16(20),u16(0),u16(0),u16(dosTime),u16(dosDate),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),name,data]);
+      const central=joinBytes([u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(dosTime),u16(dosDate),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),name]);
+      locals.push(local);centrals.push(central);offset+=local.length;
+    }
+    const centralBlock=joinBytes(centrals),end=joinBytes([u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(centralBlock.length),u32(offset),u16(0)]);
+    return new Blob([...locals,centralBlock,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  }
+  function exportExcel(){
+    if(!lastResult)return;const{r,p,name,rho}=lastResult,outU=$('#outputUnit').selectedOptions[0].text,inU=$('#inputUnit').selectedOptions[0].text,inF=Number($('#inputUnit').value);
+    const rows=[{kind:'title',c:['NTCONS SECTION — ĐẶC TRƯNG HÌNH HỌC TIẾT DIỆN','','']},{kind:'normal',c:['Loại tiết diện',name,'']},{kind:'header',c:['THÔNG SỐ ĐẦU VÀO','GIÁ TRỊ','ĐƠN VỊ']}];
+    current.params.forEach(([k,label])=>rows.push({kind:'input',c:[label,p[k]/inF,inU]}));
+    rows.push({kind:'input',c:['Khối lượng riêng ρ',rho,'kg/m3']},{kind:'blank',c:['','','']},{kind:'header',c:['KẾT QUẢ','GIÁ TRỊ','ĐƠN VỊ']});
+    const add=(label,value,unit)=>rows.push({kind:'result',c:[label,value,unit]});
+    add('Diện tích A',conv(r.A,2),outU+'2');add('Tọa độ trọng tâm x_bar',conv(r.cx,1),outU);add('Tọa độ trọng tâm y_bar',conv(r.cy,1),outU);
+    add('Mômen tĩnh Mx,0',conv(r.Mx0,3),outU+'3');add('Mômen tĩnh My,0',conv(r.My0,3),outU+'3');add('Mômen quán tính Ix',conv(r.Ix,4),outU+'4');add('Mômen quán tính Iy',conv(r.Iy,4),outU+'4');add('Mômen quán tính ly tâm Ixy',conv(r.Ixy,4),outU+'4');add('Mômen quán tính cực Jp',conv(r.Jp,4),outU+'4');
+    add('Wx mép trên',conv(r.Wtop,3),outU+'3');add('Wx mép dưới',conv(r.Wbottom,3),outU+'3');add('Wy mép phải',conv(r.Wright,3),outU+'3');add('Wy mép trái',conv(r.Wleft,3),outU+'3');
+    add('Bán kính quán tính rx',conv(r.rx,1),outU);add('Bán kính quán tính ry',conv(r.ry,1),outU);add('Mômen quán tính chính I1',conv(r.I1,4),outU+'4');add('Mômen quán tính chính I2',conv(r.I2,4),outU+'4');add('Bán kính quán tính chính r1',conv(r.r1,1),outU);add('Bán kính quán tính chính r2',conv(r.r2,1),outU);add('Góc trục chính θ',r.theta,'deg');add('Khối lượng trên mét',r.mass,'kg/m');add('Tĩnh tải trên mét',r.weight,'kN/m');
+    const col=n=>String.fromCharCode(65+n);
+    const sheetRows=rows.map((row,ri)=>{const cells=row.c.map((v,ci)=>{if(v==='')return'';let style=0;if(row.kind==='title')style=1;else if(row.kind==='header')style=2;else if(row.kind==='input'&&ci===1)style=3;else if(row.kind==='result'&&ci===1)style=4;const ref=col(ci)+(ri+1),s=' s="'+style+'"';return typeof v==='number'?'<c r="'+ref+'"'+s+'><v>'+v+'</v></c>':'<c r="'+ref+'" t="inlineStr"'+s+'><is><t>'+xmlEscape(v)+'</t></is></c>'}).join('');return'<row r="'+(ri+1)+'" ht="'+(row.kind==='title'?28:20)+'" customHeight="1">'+cells+'</row>'}).join('');
+    const sheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="3" topLeftCell="A4" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="38" customWidth="1"/><col min="2" max="2" width="22" customWidth="1"/><col min="3" max="3" width="15" customWidth="1"/></cols><sheetData>'+sheetRows+'</sheetData><mergeCells count="1"><mergeCell ref="A1:C1"/></mergeCells><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/></worksheet>';
+    const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="5"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="14"/><name val="Calibri"/></font><font><b/><color rgb="FF111820"/><name val="Calibri"/></font><font><color rgb="FF0070C0"/><name val="Calibri"/></font><font><b/><color rgb="FFC00000"/><name val="Calibri"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B1F36"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE9EEF2"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border/><border><left style="thin"><color rgb="FF7F8C96"/></left><right style="thin"><color rgb="FF7F8C96"/></right><top style="thin"><color rgb="FF7F8C96"/></top><bottom style="thin"><color rgb="FF7F8C96"/></bottom></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="5"><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center"/></xf><xf numFmtId="0" fontId="3" fillId="0" borderId="1" xfId="0"/><xf numFmtId="0" fontId="4" fillId="0" borderId="1" xfId="0"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+    const files=[
+      {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+      {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+      {name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="THONG SO" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+      {name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+      {name:'xl/styles.xml',data:styles},{name:'xl/worksheets/sheet1.xml',data:sheet}
+    ];
+    saveBlob(zipStore(files),'NTCONS_dac_trung_tiet_dien_'+current.id+'.xlsx');toast('Đã xuất Excel .xlsx');
+  }
+  function xlsxColR3(n){let s='';while(n>0){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
+  function xlsxCellR3(col,row,value,style=0,kind='value'){
+    const ref=xlsxColR3(col)+row,s=' s="'+style+'"';
+    if(value===null||value===undefined||value==='')return'<c r="'+ref+'"'+s+'/>';
+    if(kind==='formula'||kind==='formulaString'){const t=kind==='formulaString'?' t="str"':'';return'<c r="'+ref+'"'+s+t+'><f>'+xmlEscape(String(value).replace(/^=/,''))+'</f></c>'}
+    if(typeof value==='number')return'<c r="'+ref+'"'+s+'><v>'+value+'</v></c>';
+    return'<c r="'+ref+'" t="inlineStr"'+s+'><is><t xml:space="preserve">'+xmlEscape(value)+'</t></is></c>';
+  }
+  function xlsxRowsR3(cells,rowOptions={}){
+    const byRow={};cells.forEach(c=>(byRow[c.row]||(byRow[c.row]=[])).push(c));
+    return Object.keys(byRow).map(Number).sort((a,b)=>a-b).map(row=>{const opt=rowOptions[row]||{},attrs=' r="'+row+'"'+(opt.height?' ht="'+opt.height+'" customHeight="1"':'')+(opt.hidden?' hidden="1"':'');const body=byRow[row].sort((a,b)=>a.col-b.col).map(c=>xlsxCellR3(c.col,row,c.value,c.style||0,c.kind||'value')).join('');return'<row'+attrs+'>'+body+'</row>'}).join('');
+  }
+  function exportExcelR3(){
+    if(!lastResult)return;
+    const allDefs=[...shapeDefs.concrete,...shapeDefs.pile,...shapeDefs.steel],groupLabel={concrete:'Bê tông',pile:'Cọc',steel:'Kết cấu thép'},groupName={concrete:'Concrete',pile:'Pile',steel:'Steel'};
+    const inU=$('#inputUnit').selectedOptions[0].text,outU=$('#outputUnit').selectedOptions[0].text,p=lastResult.p;
+    let initialPreset='Mặc định';const defaultSame=current.params.every(x=>Math.abs((p[x[0]]||0)-x[2])<1e-7);(current.presets||[]).forEach(pr=>{const same=current.params.every((x,i)=>Math.abs((p[x[0]]||0)-pr[i+1])<1e-7);if(same)initialPreset=pr[0]});if(!defaultSame&&initialPreset==='Mặc định')initialPreset='Theo web hiện tại';
+    const initialGroup=groupLabel[category],main=[],data=[],calc=[],rowOptions={1:{height:28},3:{height:22},10:{height:22},18:{height:22}};
+    const add=(arr,row,col,value,style=0,kind='value')=>arr.push({row,col,value,style,kind});
+    const fillRow=(arr,row,values,style)=>values.forEach((v,i)=>add(arr,row,i+1,v,style));
+    add(main,1,1,'NTCONS SECTION — ĐẶC TRƯNG HÌNH HỌC TIẾT DIỆN',1);
+    fillRow(main,3,['LỰA CHỌN TIẾT DIỆN','','','','','',''],2);
+    add(main,4,1,'Nhóm tiết diện');add(main,4,2,initialGroup,4);add(main,4,7,'Sau khi đổi nhóm, chọn lại loại tiết diện.',9);
+    add(main,5,1,'Loại tiết diện');add(main,5,2,current.name,4);add(main,5,7,'Danh sách phụ thuộc nhóm đã chọn.',9);
+    add(main,6,1,'Mẫu kích thước');add(main,6,2,initialPreset,4);add(main,6,7,'Chọn mẫu để các kích thước tự cập nhật.',9);
+    add(main,7,1,'Đơn vị nhập');add(main,7,2,inU,4);
+    add(main,8,1,'Đơn vị kết quả');add(main,8,2,outU,4);
+    fillRow(main,10,['THÔNG SỐ ĐẦU VÀO','','','','','',''],2);
+    fillRow(main,11,['Thông số','Ký hiệu','Giá trị tự động','Giá trị tùy chỉnh','Giá trị dùng','Đơn vị','Ghi chú'],3);
+    for(let i=0;i<4;i++){
+      const row=12+i,metaCols=[9,12,15,18],symCols=[8,11,14,17],valCols=[23,24,25,26];
+      const match='MATCH($B$5,DATA!$D$2:$D$18,0)',keyMatch='MATCH($B$5&"|"&$B$6,DATA!$V$2:$V$80,0)',factor='IF($B$7="mm",1,IF($B$7="cm",10,1000))';
+      add(main,row,1,'=IFERROR(INDEX(DATA!$'+xlsxColR3(metaCols[i])+'$2:$'+xlsxColR3(metaCols[i])+'$18,'+match+'),"")',0,'formulaString');
+      add(main,row,2,'=IFERROR(INDEX(DATA!$'+xlsxColR3(symCols[i])+'$2:$'+xlsxColR3(symCols[i])+'$18,'+match+'),"")',11,'formulaString');
+      add(main,row,3,'=IF($B'+row+'="","",INDEX(DATA!$'+xlsxColR3(valCols[i])+'$2:$'+xlsxColR3(valCols[i])+'$80,'+keyMatch+')/'+factor+')',5,'formula');
+      add(main,row,4,null,6);add(main,row,5,'=IF($B'+row+'="","",IF(D'+row+'="",C'+row+',D'+row+'))',7,'formula');
+      add(main,row,6,'=IF($B'+row+'="","",$B$7)',11,'formulaString');
+      add(main,row,7,i===0?'Nhập tại cột D để ghi đè giá trị tự động.':'',9);
+    }
+    add(main,16,1,'Khối lượng riêng');add(main,16,2,'ρ',11);add(main,16,3,'=IF($B$4="Kết cấu thép",7850,2500)',5,'formula');add(main,16,4,null,6);add(main,16,5,'=IF(D16="",C16,D16)',7,'formula');add(main,16,6,'kg/m³',11);add(main,16,7,'Bê tông: 2.500; thép: 7.850 kg/m³. Có thể nhập đè tại cột D.',9);
+    fillRow(main,18,['KẾT QUẢ TÍNH TOÁN','','','','','',''],2);
+    fillRow(main,19,['Thông số','Ký hiệu','Giá trị','Đơn vị','Công thức','Ghi chú',''],3);
+    const results=[
+      ['Diện tích','A','B10',2,'A = ΣAi','Diện tích vật liệu; phần rỗng mang dấu âm.'],
+      ['Tọa độ trọng tâm theo x','x̄','B11',1,'x̄ = Σ(Ai·xi)/A','Tính từ mép trái hình bao.'],
+      ['Tọa độ trọng tâm theo y','ȳ','B12',1,'ȳ = Σ(Ai·yi)/A','Tính từ mép dưới hình bao.'],
+      ['Mômen tĩnh qua mép dưới','Mx,0','B25',3,'Mx,0 = A·ȳ','Mômen tĩnh qua trục x tại mép dưới.'],
+      ['Mômen tĩnh qua mép trái','My,0','B26',3,'My,0 = A·x̄','Mômen tĩnh qua trục y tại mép trái.'],
+      ['Mômen quán tính trục x','Ix','B13',4,'Ix = Σ[Ixi + Ai(yi−ȳ)²]','Trục x đi qua trọng tâm.'],
+      ['Mômen quán tính trục y','Iy','B14',4,'Iy = Σ[Iyi + Ai(xi−x̄)²]','Trục y đi qua trọng tâm.'],
+      ['Mômen quán tính ly tâm','Ixy','B15',4,'Ixy = Σ[Ai(xi−x̄)(yi−ȳ)]','Bằng 0 với tiết diện đối xứng theo x hoặc y.'],
+      ['Mômen quán tính cực','Jp','B27',4,'Jp = Ix + Iy','Không thay thế hằng số xoắn của thép thành mỏng.'],
+      ['Mômen chống uốn mép trên','Wx,trên','B28',3,'Wx,trên = Ix/(h−ȳ)','Dùng khoảng cách tới mép trên.'],
+      ['Mômen chống uốn mép dưới','Wx,dưới','B29',3,'Wx,dưới = Ix/ȳ','Dùng khoảng cách tới mép dưới.'],
+      ['Mômen chống uốn mép phải','Wy,phải','B30',3,'Wy,phải = Iy/(b−x̄)','Dùng khoảng cách tới mép phải.'],
+      ['Mômen chống uốn mép trái','Wy,trái','B31',3,'Wy,trái = Iy/x̄','Dùng khoảng cách tới mép trái.'],
+      ['Bán kính quán tính x','rx','B21',1,'rx = √(Ix/A)','Theo trục x qua trọng tâm.'],
+      ['Bán kính quán tính y','ry','B22',1,'ry = √(Iy/A)','Theo trục y qua trọng tâm.'],
+      ['Mômen quán tính chính lớn','I1','B18',4,'I1 = (Ix+Iy)/2 + R','R = √[((Ix−Iy)/2)²+Ixy²].'],
+      ['Mômen quán tính chính nhỏ','I2','B19',4,'I2 = (Ix+Iy)/2 − R','Mômen quán tính nhỏ nhất qua trọng tâm.'],
+      ['Bán kính quán tính chính lớn','r1','B23',1,'r1 = √(I1/A)','Ứng với trục chính I1.'],
+      ['Bán kính quán tính chính nhỏ','r2','B24',1,'r2 = √(I2/A)','Ứng với trục chính I2.'],
+      ['Góc trục chính','θ','B20',0,'θ = ½ atan2(−2Ixy, Ix−Iy)','Đo ngược chiều kim đồng hồ từ trục x.'],
+      ['Khối lượng trên mét','m','B32',-1,'m = A·ρ·10⁻⁶','A tính bằng mm²; kết quả kg/m.'],
+      ['Tĩnh tải trên mét','g','B33',-2,'g = m·9,80665/1000','Kết quả kN/m.']
+    ];
+    results.forEach((q,i)=>{const row=20+i;add(main,row,1,q[0]);add(main,row,2,q[1],11);let formula='=CALC!'+q[2];if(q[3]>0)formula+='/CALC!$B$4^'+q[3];add(main,row,3,formula,8,'formula');let unit;if(q[3]===1)unit='=$B$8';else if(q[3]>1)unit='=$B$8&"^'+q[3]+'"';else if(q[3]===0)unit='="°"';else if(q[3]===-1)unit='="kg/m"';else unit='="kN/m"';add(main,row,4,unit,11,'formulaString');add(main,row,5,q[4],10);add(main,row,6,q[5],9);add(main,row,7,'')});
+    const mainRows=xlsxRowsR3(main,rowOptions);
+    const mainValidations='<dataValidations count="5">'+
+      '<dataValidation type="list" allowBlank="0" showDropDown="0" showErrorMessage="1" errorTitle="Lựa chọn không hợp lệ" error="Chọn một giá trị trong danh sách." sqref="B4"><formula1>&quot;Bê tông,Cọc,Kết cấu thép&quot;</formula1></dataValidation>'+
+      '<dataValidation type="list" allowBlank="0" showDropDown="0" showErrorMessage="1" errorTitle="Lựa chọn không hợp lệ" error="Chọn loại tiết diện thuộc nhóm hiện tại." sqref="B5"><formula1>IF($B$4=&quot;Bê tông&quot;,Concrete,IF($B$4=&quot;Cọc&quot;,Pile,Steel))</formula1></dataValidation>'+
+      '<dataValidation type="list" allowBlank="0" showDropDown="0" showErrorMessage="1" errorTitle="Lựa chọn không hợp lệ" error="Chọn mẫu kích thước trong danh sách." sqref="B6"><formula1>INDIRECT(INDEX(PresetRangeNames,MATCH($B$5,ShapeNames,0)))</formula1></dataValidation>'+
+      '<dataValidation type="list" allowBlank="0" showDropDown="0" sqref="B7"><formula1>&quot;mm,cm,m&quot;</formula1></dataValidation>'+
+      '<dataValidation type="list" allowBlank="0" showDropDown="0" sqref="B8"><formula1>&quot;cm,mm,m&quot;</formula1></dataValidation></dataValidations>';
+    const mainSheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0" showGridLines="1"><pane ySplit="11" topLeftCell="A12" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="31" customWidth="1"/><col min="2" max="2" width="16" customWidth="1"/><col min="3" max="5" width="18" customWidth="1"/><col min="6" max="6" width="14" customWidth="1"/><col min="7" max="7" width="45" customWidth="1"/></cols><sheetData>'+mainRows+'</sheetData><mergeCells count="1"><mergeCell ref="A1:G1"/></mergeCells>'+mainValidations+'<pageMargins left="0.35" right="0.35" top="0.5" bottom="0.5" header="0.2" footer="0.2"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+
+    const groupDefs={concrete:shapeDefs.concrete,pile:shapeDefs.pile,steel:shapeDefs.steel};
+    Object.entries(groupDefs).forEach(([g,defs],gi)=>defs.forEach((d,i)=>add(data,i+2,gi+1,d.name)));
+    fillRow(data,1,['Bê tông','Cọc','Kết cấu thép','Loại tiết diện','Tên vùng preset','Mã','Nhóm','Ký hiệu 1','Nhãn 1','Mặc định 1','Ký hiệu 2','Nhãn 2','Mặc định 2','Ký hiệu 3','Nhãn 3','Mặc định 3','Ký hiệu 4','Nhãn 4','Mặc định 4','','','Khóa preset','Giá trị 1','Giá trị 2','Giá trị 3','Giá trị 4'],3);
+    const presetRecords=[];const definedNames=[
+      '<definedName name="Concrete">DATA!$A$2:$A$'+(shapeDefs.concrete.length+1)+'</definedName>',
+      '<definedName name="Pile">DATA!$B$2:$B$'+(shapeDefs.pile.length+1)+'</definedName>',
+      '<definedName name="Steel">DATA!$C$2:$C$'+(shapeDefs.steel.length+1)+'</definedName>',
+      '<definedName name="ShapeNames">DATA!$D$2:$D$18</definedName>',
+      '<definedName name="PresetRangeNames">DATA!$E$2:$E$18</definedName>'
+    ];
+    allDefs.forEach((d,i)=>{
+      const row=i+2,g=shapeDefs.concrete.includes(d)?'concrete':shapeDefs.pile.includes(d)?'pile':'steel',rangeName='P_'+d.id;
+      add(data,row,4,d.name);add(data,row,5,rangeName);add(data,row,6,d.id);add(data,row,7,groupLabel[g]);
+      for(let j=0;j<4;j++){const par=d.params[j],base=8+j*3;add(data,row,base,par?par[0]:'');add(data,row,base+1,par?par[1]:'');add(data,row,base+2,par?par[2]:'')}
+      const webChoice=d===current&&initialPreset==='Theo web hiện tại'?[['Theo web hiện tại',...d.params.map(x=>p[x[0]])]]:[],choices=[['Mặc định',...d.params.map(x=>x[2])],...(d.presets||[]),...webChoice],presetCol=27+i;
+      choices.forEach((pr,k)=>{add(data,k+2,presetCol,pr[0]);presetRecords.push([d.name+'|'+pr[0],pr[1]??'',pr[2]??'',pr[3]??'',pr[4]??''])});
+      definedNames.push('<definedName name="'+rangeName+'">DATA!$'+xlsxColR3(presetCol)+'$2:$'+xlsxColR3(presetCol)+'$'+(choices.length+1)+'</definedName>');
+    });
+    presetRecords.forEach((pr,i)=>pr.forEach((v,j)=>add(data,i+2,22+j,v)));
+    const dataSheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"/></sheetViews><sheetData>'+xlsxRowsR3(data)+'</sheetData></worksheet>';
+
+    const ifCases=map=>{let tail='NA()';Object.entries(map).reverse().forEach(([code,expr])=>tail='IF($B$2="'+code+'",'+expr+','+tail+')');return'='+tail};
+    add(calc,1,1,'Biến');add(calc,1,2,'Giá trị');
+    add(calc,2,1,'Mã tiết diện');add(calc,2,2,'=INDEX(DATA!$F$2:$F$18,MATCH(\'TÍNH TOÁN\'!$B$5,DATA!$D$2:$D$18,0))',0,'formulaString');
+    add(calc,3,1,'Hệ số đơn vị nhập');add(calc,3,2,'=IF(\'TÍNH TOÁN\'!$B$7="mm",1,IF(\'TÍNH TOÁN\'!$B$7="cm",10,1000))',0,'formula');
+    add(calc,4,1,'Hệ số đơn vị kết quả');add(calc,4,2,'=IF(\'TÍNH TOÁN\'!$B$8="mm",1,IF(\'TÍNH TOÁN\'!$B$8="cm",10,1000))',0,'formula');
+    add(calc,5,1,'Khối lượng riêng');add(calc,5,2,'=\'TÍNH TOÁN\'!$E$16',0,'formula');
+    for(let i=0;i<4;i++){add(calc,6+i,1,'Kích thước '+(i+1)+' (mm)');add(calc,6+i,2,'=IF(\'TÍNH TOÁN\'!$E$'+(12+i)+'="",0,\'TÍNH TOÁN\'!$E$'+(12+i)+'*$B$3)',0,'formula')}
+    const A={
+      rect:'B6*B7',circle:'PI()*B6^2/4',rectHollow:'B6*B7-(B6-2*B8)*(B7-2*B8)',tee:'B6*B9+B8*(B7-B9)',ell:'B8*B7+(B6-B8)*B9',
+      pileSquare:'B6^2',pileRect:'B6*B7',pileCircle:'PI()*B6^2/4',spun:'PI()*(B6^2-(B6-2*B7)^2)/4',pileSquareHollow:'B6^2-(B6-2*B7)^2',
+      iShape:'2*B7*B9+B8*(B6-2*B9)',channel:'B8*B6+2*(B7-B8)*B9',angle:'B8*B7+(B6-B8)*B8',rhs:'B6*B7-(B6-2*B8)*(B7-2*B8)',chs:'PI()*(B6^2-(B6-2*B7)^2)/4',steelTee:'B7*B9+B8*(B6-B9)',flat:'B6*B7'
+    };
+    const CX={
+      rect:'B6/2',circle:'B6/2',rectHollow:'B6/2',tee:'B6/2',ell:'(B8*B7*(B8/2)+(B6-B8)*B9*((B6+B8)/2))/B10',
+      pileSquare:'B6/2',pileRect:'B6/2',pileCircle:'B6/2',spun:'B6/2',pileSquareHollow:'B6/2',iShape:'B7/2',
+      channel:'(B8*B6*(B8/2)+2*(B7-B8)*B9*((B7+B8)/2))/B10',angle:'(B8*B7*(B8/2)+(B6-B8)*B8*((B6+B8)/2))/B10',
+      rhs:'B6/2',chs:'B6/2',steelTee:'B7/2',flat:'B6/2'
+    };
+    const CY={
+      rect:'B7/2',circle:'B6/2',rectHollow:'B7/2',tee:'(B6*B9*(B7-B9/2)+B8*(B7-B9)*((B7-B9)/2))/B10',ell:'(B8*B7*(B7/2)+(B6-B8)*B9*(B9/2))/B10',
+      pileSquare:'B6/2',pileRect:'B7/2',pileCircle:'B6/2',spun:'B6/2',pileSquareHollow:'B6/2',iShape:'B6/2',channel:'B6/2',
+      angle:'(B8*B7*(B7/2)+(B6-B8)*B8*(B8/2))/B10',rhs:'B7/2',chs:'B6/2',steelTee:'(B7*B9*(B6-B9/2)+B8*(B6-B9)*((B6-B9)/2))/B10',flat:'B7/2'
+    };
+    const IX={
+      rect:'B6*B7^3/12',circle:'PI()*B6^4/64',rectHollow:'(B6*B7^3-(B6-2*B8)*(B7-2*B8)^3)/12',
+      tee:'B6*B9^3/12+B6*B9*(B7-B9/2-B12)^2+B8*(B7-B9)^3/12+B8*(B7-B9)*((B7-B9)/2-B12)^2',
+      ell:'B8*B7^3/12+B8*B7*(B7/2-B12)^2+(B6-B8)*B9^3/12+(B6-B8)*B9*(B9/2-B12)^2',
+      pileSquare:'B6^4/12',pileRect:'B6*B7^3/12',pileCircle:'PI()*B6^4/64',spun:'PI()*(B6^4-(B6-2*B7)^4)/64',pileSquareHollow:'(B6^4-(B6-2*B7)^4)/12',
+      iShape:'(B7*B6^3-(B7-B8)*(B6-2*B9)^3)/12',channel:'B8*B6^3/12+2*((B7-B8)*B9^3/12+(B7-B8)*B9*(B6/2-B9/2)^2)',
+      angle:'B8*B7^3/12+B8*B7*(B7/2-B12)^2+(B6-B8)*B8^3/12+(B6-B8)*B8*(B8/2-B12)^2',
+      rhs:'(B6*B7^3-(B6-2*B8)*(B7-2*B8)^3)/12',chs:'PI()*(B6^4-(B6-2*B7)^4)/64',
+      steelTee:'B7*B9^3/12+B7*B9*(B6-B9/2-B12)^2+B8*(B6-B9)^3/12+B8*(B6-B9)*((B6-B9)/2-B12)^2',flat:'B6*B7^3/12'
+    };
+    const IY={
+      rect:'B7*B6^3/12',circle:'PI()*B6^4/64',rectHollow:'(B7*B6^3-(B7-2*B8)*(B6-2*B8)^3)/12',tee:'B9*B6^3/12+(B7-B9)*B8^3/12',
+      ell:'B7*B8^3/12+B8*B7*(B8/2-B11)^2+B9*(B6-B8)^3/12+(B6-B8)*B9*((B6+B8)/2-B11)^2',
+      pileSquare:'B6^4/12',pileRect:'B7*B6^3/12',pileCircle:'PI()*B6^4/64',spun:'PI()*(B6^4-(B6-2*B7)^4)/64',pileSquareHollow:'(B6^4-(B6-2*B7)^4)/12',
+      iShape:'2*B9*B7^3/12+(B6-2*B9)*B8^3/12',
+      channel:'B6*B8^3/12+B8*B6*(B8/2-B11)^2+2*(B9*(B7-B8)^3/12+(B7-B8)*B9*((B7+B8)/2-B11)^2)',
+      angle:'B7*B8^3/12+B8*B7*(B8/2-B11)^2+B8*(B6-B8)^3/12+(B6-B8)*B8*((B6+B8)/2-B11)^2',
+      rhs:'(B7*B6^3-(B7-2*B8)*(B6-2*B8)^3)/12',chs:'PI()*(B6^4-(B6-2*B7)^4)/64',steelTee:'B9*B7^3/12+(B6-B9)*B8^3/12',flat:'B7*B6^3/12'
+    };
+    const IXY={
+      rect:'0',circle:'0',rectHollow:'0',tee:'0',ell:'B8*B7*(B8/2-B11)*(B7/2-B12)+(B6-B8)*B9*((B6+B8)/2-B11)*(B9/2-B12)',
+      pileSquare:'0',pileRect:'0',pileCircle:'0',spun:'0',pileSquareHollow:'0',iShape:'0',channel:'0',
+      angle:'B8*B7*(B8/2-B11)*(B7/2-B12)+(B6-B8)*B8*((B6+B8)/2-B11)*(B8/2-B12)',rhs:'0',chs:'0',steelTee:'0',flat:'0'
+    };
+    const WIDTH={rect:'B6',circle:'B6',rectHollow:'B6',tee:'B6',ell:'B6',pileSquare:'B6',pileRect:'B6',pileCircle:'B6',spun:'B6',pileSquareHollow:'B6',iShape:'B7',channel:'B7',angle:'B6',rhs:'B6',chs:'B6',steelTee:'B7',flat:'B6'};
+    const HEIGHT={rect:'B7',circle:'B6',rectHollow:'B7',tee:'B7',ell:'B7',pileSquare:'B6',pileRect:'B7',pileCircle:'B6',spun:'B6',pileSquareHollow:'B6',iShape:'B6',channel:'B6',angle:'B7',rhs:'B7',chs:'B6',steelTee:'B6',flat:'B7'};
+    [['A',A],['x_bar',CX],['y_bar',CY],['Ix',IX],['Iy',IY],['Ixy',IXY],['Bề rộng ngoài',WIDTH],['Chiều cao ngoài',HEIGHT]].forEach((q,i)=>{add(calc,10+i,1,q[0]);add(calc,10+i,2,ifCases(q[1]),0,'formula')});
+    const formulas=[
+      [18,'I1','=(B13+B14)/2+SQRT(((B13-B14)/2)^2+B15^2)'],[19,'I2','=(B13+B14)/2-SQRT(((B13-B14)/2)^2+B15^2)'],
+      [20,'theta','=DEGREES(0.5*ATAN2(B13-B14,-2*B15))'],[21,'rx','=SQRT(B13/B10)'],[22,'ry','=SQRT(B14/B10)'],
+      [23,'r1','=SQRT(B18/B10)'],[24,'r2','=SQRT(B19/B10)'],[25,'Mx0','=B10*B12'],[26,'My0','=B10*B11'],[27,'Jp','=B13+B14'],
+      [28,'Wtop','=B13/(B17-B12)'],[29,'Wbottom','=B13/B12'],[30,'Wright','=B14/(B16-B11)'],[31,'Wleft','=B14/B11'],
+      [32,'Khối lượng','=B10*10^-6*B5'],[33,'Tĩnh tải','=B32*9.80665/1000']
+    ];formulas.forEach(q=>{add(calc,q[0],1,q[1]);add(calc,q[0],2,q[2],0,'formula')});
+    const calcSheet='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+xlsxRowsR3(calc)+'</sheetData></worksheet>';
+    const stylesR3='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.0000"/></numFmts><fonts count="6"><font><sz val="10"/><name val="Arial"/><color rgb="FF111820"/></font><font><b/><sz val="14"/><name val="Arial"/><color rgb="FFFFFFFF"/></font><font><b/><sz val="10"/><name val="Arial"/><color rgb="FFFFFFFF"/></font><font><sz val="10"/><name val="Arial"/><color rgb="FF0070C0"/></font><font><b/><sz val="10"/><name val="Arial"/><color rgb="FFC00000"/></font><font><i/><sz val="10"/><name val="Arial"/><color rgb="FF526170"/></font></fonts><fills count="7"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0B1F36"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE9EEF2"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CC"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDDEBF7"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE2F0D9"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border/><border><left style="thin"><color rgb="FF000000"/></left><right style="thin"><color rgb="FF000000"/></right><top style="thin"><color rgb="FF000000"/></top><bottom style="thin"><color rgb="FF000000"/></bottom></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="13"><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="2" fillId="2" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="3" fillId="4" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="164" fontId="3" fillId="5" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="164" fontId="3" fillId="4" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="164" fontId="0" fillId="6" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="164" fontId="4" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="5" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="5" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+    const workbook='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets><sheet name="TÍNH TOÁN" sheetId="1" r:id="rId1"/><sheet name="CALC" sheetId="2" state="hidden" r:id="rId2"/><sheet name="DATA" sheetId="3" state="hidden" r:id="rId3"/></sheets><definedNames>'+definedNames.join('')+'</definedNames><calcPr calcId="191029" calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/></workbook>';
+    const rels='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    const files=[
+      {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+      {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+      {name:'xl/workbook.xml',data:workbook},{name:'xl/_rels/workbook.xml.rels',data:rels},{name:'xl/styles.xml',data:stylesR3},
+      {name:'xl/worksheets/sheet1.xml',data:mainSheet},{name:'xl/worksheets/sheet2.xml',data:calcSheet},{name:'xl/worksheets/sheet3.xml',data:dataSheet}
+    ];
+    saveBlob(zipStore(files),'NTCONS_dac_trung_tiet_dien_R3.xlsx');toast('Đã xuất Excel động .xlsx');
+  }
+  function cadGeometry(id,p){
+    const poly=(pts,hole=false)=>({type:'poly',pts,hole}),circle=(cx,cy,r,hole=false)=>({type:'circle',cx,cy,r,hole}),box=(x,y,w,h,hole=false)=>poly([[x,y],[x+w,y],[x+w,y+h],[x,y+h]],hole);let e=[];
+    switch(id){
+      case'rect':case'pileRect':case'flat':e=[box(0,0,p.b,p.h)];break;
+      case'pileSquare':e=[box(0,0,p.b,p.b)];break;
+      case'circle':case'pileCircle':e=[circle(p.d/2,p.d/2,p.d/2)];break;
+      case'rectHollow':case'rhs':e=[box(0,0,p.b,p.h),box(p.t,p.t,p.b-2*p.t,p.h-2*p.t,true)];break;
+      case'pileSquareHollow':e=[box(0,0,p.b,p.b),box(p.t,p.t,p.b-2*p.t,p.b-2*p.t,true)];break;
+      case'spun':case'chs':e=[circle(p.d/2,p.d/2,p.d/2),circle(p.d/2,p.d/2,p.d/2-p.t,true)];break;
+      case'tee':{const x1=(p.b-p.bw)/2,x2=x1+p.bw;e=[poly([[x1,0],[x2,0],[x2,p.h-p.tf],[p.b,p.h-p.tf],[p.b,p.h],[0,p.h],[0,p.h-p.tf],[x1,p.h-p.tf]])];break}
+      case'steelTee':{const x1=(p.b-p.tw)/2,x2=x1+p.tw;e=[poly([[x1,0],[x2,0],[x2,p.h-p.tf],[p.b,p.h-p.tf],[p.b,p.h],[0,p.h],[0,p.h-p.tf],[x1,p.h-p.tf]])];break}
+      case'ell':e=[poly([[0,0],[p.b,0],[p.b,p.th],[p.tv,p.th],[p.tv,p.h],[0,p.h]])];break;
+      case'angle':e=[poly([[0,0],[p.b,0],[p.b,p.t],[p.t,p.t],[p.t,p.h],[0,p.h]])];break;
+      case'iShape':{const x1=(p.b-p.tw)/2,x2=x1+p.tw;e=[poly([[0,0],[p.b,0],[p.b,p.tf],[x2,p.tf],[x2,p.h-p.tf],[p.b,p.h-p.tf],[p.b,p.h],[0,p.h],[0,p.h-p.tf],[x1,p.h-p.tf],[x1,p.tf],[0,p.tf]])];break}
+      case'channel':e=[poly([[0,0],[p.b,0],[p.b,p.tf],[p.tw,p.tf],[p.tw,p.h-p.tf],[p.b,p.h-p.tf],[p.b,p.h],[0,p.h]])];break;
+    }return e;
+  }
+  function exportCad(){
+    if(!lastResult)return;const{r,p,g}=lastResult,f=Number($('#outputUnit').value),unit=$('#outputUnit').selectedOptions[0].text,ins={mm:4,cm:5,m:6}[unit]||0,lines=[],put=(a,b)=>{lines.push(String(a),String(b))},num=v=>(v/f).toFixed(6).replace(/\.?0+$/,'');
+    put(0,'SECTION');put(2,'HEADER');put(9,'$ACADVER');put(1,'AC1009');put(9,'$INSUNITS');put(70,ins);put(0,'ENDSEC');
+    put(0,'SECTION');put(2,'TABLES');put(0,'TABLE');put(2,'LAYER');put(70,4);
+    [['NTCONS_SECTION',7],['NTCONS_VOID',1],['NTCONS_AXIS',3],['NTCONS_TEXT',2]].forEach(x=>{put(0,'LAYER');put(2,x[0]);put(70,0);put(62,x[1]);put(6,'CONTINUOUS')});put(0,'ENDTAB');put(0,'ENDSEC');
+    put(0,'SECTION');put(2,'ENTITIES');
+    cadGeometry(current.id,p).forEach(e=>{const layer=e.hole?'NTCONS_VOID':'NTCONS_SECTION';if(e.type==='circle'){put(0,'CIRCLE');put(8,layer);put(10,num(e.cx));put(20,num(e.cy));put(30,0);put(40,num(e.r))}else{put(0,'POLYLINE');put(8,layer);put(66,1);put(70,1);put(10,0);put(20,0);put(30,0);e.pts.forEach(pt=>{put(0,'VERTEX');put(8,layer);put(10,num(pt[0]));put(20,num(pt[1]));put(30,0)});put(0,'SEQEND');put(8,layer)}});
+    const ext=Math.max(g.w,g.h)*.12,x1=-ext,x2=g.w+ext,y1=-ext,y2=g.h+ext;
+    [[x1,r.cy,x2,r.cy],[r.cx,y1,r.cx,y2]].forEach(q=>{put(0,'LINE');put(8,'NTCONS_AXIS');put(10,num(q[0]));put(20,num(q[1]));put(30,0);put(11,num(q[2]));put(21,num(q[3]));put(31,0)});
+    put(0,'POINT');put(8,'NTCONS_AXIS');put(10,num(r.cx));put(20,num(r.cy));put(30,0);
+    const text=(x,y,h,value)=>{put(0,'TEXT');put(8,'NTCONS_TEXT');put(10,num(x));put(20,num(y));put(30,0);put(40,num(h));put(1,value)};
+    text(r.cx+ext*.08,r.cy+ext*.08,ext*.16,'G');text(0,-ext*.7,ext*.14,'A = '+fmt(conv(r.A,2))+' '+unit+'2');text(0,-ext*.95,ext*.14,'Ix = '+fmt(conv(r.Ix,4))+' '+unit+'4   Iy = '+fmt(conv(r.Iy,4))+' '+unit+'4');
+    put(0,'ENDSEC');put(0,'EOF');saveBlob(new Blob([lines.join('\r\n')+'\r\n'],{type:'application/dxf'}),'NTCONS_tiet_dien_'+current.id+'_'+unit+'.dxf');toast('Đã xuất AutoCAD DXF');
+  }
+
+  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{category=btn.dataset.cat;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b===btn));renderShapeList()}));
+  $('#shapeSelect').addEventListener('change',renderInputs);
+  $('#inputUnit').addEventListener('change',()=>{const next=Number($('#inputUnit').value);document.querySelectorAll('#dimensionFields input').forEach(x=>x.value=(Number(x.value)*lastInputFactor/next));lastInputFactor=next;document.querySelectorAll('.input-unit').forEach(x=>{if(x.textContent!=='kg/m³')x.textContent=$('#inputUnit').selectedOptions[0].text});calculate()});
+  $('#outputUnit').addEventListener('change',calculate);$('#density').addEventListener('input',calculate);$('#calcBtn').addEventListener('click',calculate);$('#copyBtn').addEventListener('click',copyResults);$('#excelBtn').addEventListener('click',exportExcelR3);$('#cadBtn').addEventListener('click',exportCad);$('#csvBtn').addEventListener('click',downloadCsv);
+  renderShapeList();
+  </script>
+</body>
+</html>

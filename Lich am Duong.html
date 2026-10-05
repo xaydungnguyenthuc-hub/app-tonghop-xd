@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b3438">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Ứng dụng đổi Âm lịch và Dương lịch Việt Nam, UTC+7.">
+<title>Lịch Việt · Đổi Âm Dương lịch</title>
+<style>
+:root{
+  color-scheme:light;
+  --ink:#152528;
+  --muted:#66777a;
+  --deep:#0b3438;
+  --deep-2:#12525a;
+  --jade:#087f73;
+  --jade-soft:#e8f4f1;
+  --gold:#c89a48;
+  --paper:#f2f4f1;
+  --surface:#ffffff;
+  --field:#f5f7f5;
+  --line:#dce3df;
+  --danger:#a8403a;
+  --danger-soft:#fff0ee;
+  --shadow:0 20px 55px rgba(20,53,56,.10);
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--deep)}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 88% 4%,rgba(200,154,72,.14),transparent 25rem),
+    var(--paper);
+  color:var(--ink);
+  font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input,select{font:inherit}
+.appbar{
+  background:linear-gradient(120deg,var(--deep),#0e4146 70%,#15555a);
+  color:#fff;
+  padding:max(18px,env(safe-area-inset-top)) 22px 19px;
+  box-shadow:0 8px 30px rgba(11,52,56,.18);
+}
+.appbar-inner{
+  width:min(1080px,100%);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{
+  position:relative;
+  width:46px;
+  height:46px;
+  flex:0 0 46px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:15px;
+  background:linear-gradient(135deg,#fff 0 50%,var(--gold) 50% 100%);
+  box-shadow:inset 0 0 0 5px rgba(255,255,255,.09);
+}
+.brand-mark::after{
+  content:"";
+  position:absolute;
+  inset:15px;
+  border-radius:50%;
+  background:var(--deep);
+  box-shadow:0 0 0 4px rgba(255,255,255,.38);
+}
+.brand h1{margin:0;font-size:1.22rem;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;color:#cde0df;font-size:.78rem}
+.meta{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.chip{
+  padding:6px 10px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#e9f2f1;
+  font-size:.72rem;
+  font-weight:750;
+}
+.wrap{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:34px 0 max(48px,env(safe-area-inset-bottom))}
+.page-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:20px}
+.page-heading p{margin:0 0 5px;color:var(--jade);font-size:.72rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.page-heading h2{margin:0;color:var(--deep);font-size:clamp(1.7rem,4vw,2.45rem);line-height:1.08;letter-spacing:-.045em}
+.page-heading .hint{max-width:370px;margin:0;color:var(--muted);font-size:.86rem;letter-spacing:0;text-transform:none;font-weight:500;text-align:right}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.card{
+  overflow:hidden;
+  border:1px solid rgba(11,52,56,.10);
+  border-radius:24px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.card-head{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:19px 20px 17px;
+  border-bottom:1px solid var(--line);
+}
+.direction{
+  display:grid;
+  width:43px;
+  height:43px;
+  flex:0 0 43px;
+  place-items:center;
+  border-radius:13px;
+  background:var(--deep);
+  color:#fff;
+  font-size:.73rem;
+  font-weight:900;
+  letter-spacing:.05em;
+}
+.lunar .direction{background:var(--gold);color:#203032}
+.card-title{min-width:0;flex:1}
+.card-title span{display:block;margin-bottom:2px;color:var(--muted);font-size:.66rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.card h3{margin:0;color:var(--deep);font-size:1.12rem;letter-spacing:-.02em}
+.arrow{color:#93a4a4;font-size:1.35rem;font-weight:400}
+.inside{padding:20px}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.lunar .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.field label{display:block;margin:0 0 7px;color:#405457;font-size:.75rem;font-weight:780}
+.field input,.field select{
+  width:100%;
+  height:50px;
+  padding:0 13px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  outline:none;
+  background:var(--field);
+  color:var(--deep);
+  font-weight:720;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.field input:focus,.field select:focus{
+  border-color:var(--jade);
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(8,127,115,.11);
+}
+.calendar-open{
+  display:flex;
+  width:100%;
+  min-height:46px;
+  margin-top:16px;
+  padding:0 18px;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  border:1px solid #bcd4cf;
+  border-radius:14px;
+  background:#f7fbfa;
+  color:var(--deep);
+  cursor:pointer;
+  font-weight:820;
+  transition:transform .15s ease,background .15s ease,border-color .15s ease;
+}
+.calendar-open:hover{border-color:var(--jade);background:var(--jade-soft)}
+.calendar-open:active{transform:translateY(1px)}
+.calendar-open span{font-size:1.05rem;font-weight:500}
+.result{
+  position:relative;
+  min-height:112px;
+  margin-top:16px;
+  padding:17px 18px 16px 21px;
+  overflow:hidden;
+  border:1px solid #c9e0da;
+  border-radius:16px;
+  background:var(--jade-soft);
+}
+.result::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--jade)}
+.result-kicker{margin-bottom:6px;color:var(--jade);font-size:.66rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.result strong{display:block;color:var(--deep);font-size:clamp(1.35rem,4vw,1.75rem);line-height:1.16;letter-spacing:-.025em}
+.result span{display:block;margin-top:7px;color:#496365;font-size:.82rem}
+.result.error{border-color:#efc7c3;background:var(--danger-soft)}
+.result.error::before{background:var(--danger)}
+.result.error .result-kicker,.result.error strong{color:var(--danger)}
+.result.error span{color:#76524f}
+dialog{
+  width:min(430px,calc(100% - 24px));
+  max-width:none;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-radius:24px;
+  background:var(--surface);
+  color:var(--ink);
+  box-shadow:0 30px 90px rgba(5,31,33,.32);
+}
+dialog::backdrop{background:rgba(5,28,30,.58);backdrop-filter:blur(4px)}
+.calendar-modal{padding:20px}
+.calendar-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}
+.calendar-heading p{margin:0 0 2px;color:var(--jade);font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.calendar-heading h2{margin:0;color:var(--deep);font-size:1.25rem;letter-spacing:-.025em}
+.icon-button{
+  display:grid;
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  place-items:center;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  color:var(--deep);
+  cursor:pointer;
+  font-size:1.25rem;
+}
+.icon-button:hover{border-color:var(--jade);background:var(--jade-soft)}
+.calendar-nav{display:grid;grid-template-columns:40px 1fr 92px 40px;gap:8px;align-items:center;margin-bottom:15px}
+.calendar-nav select,.calendar-nav input{
+  width:100%;
+  height:40px;
+  min-width:0;
+  padding:0 9px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  outline:none;
+  background:var(--field);
+  color:var(--deep);
+  font-weight:760;
+}
+.calendar-nav select:focus,.calendar-nav input:focus{border-color:var(--jade);box-shadow:0 0 0 3px rgba(8,127,115,.10)}
+.weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.weekdays{margin-bottom:6px;color:var(--muted);font-size:.68rem;font-weight:850;text-align:center;text-transform:uppercase}
+.weekdays span{padding:5px 0}
+.day{
+  position:relative;
+  aspect-ratio:1;
+  min-width:0;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:11px;
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+  font-weight:720;
+}
+.day:hover{border-color:#bcd4cf;background:var(--jade-soft)}
+.day.today::after{content:"";position:absolute;left:50%;bottom:5px;width:4px;height:4px;transform:translateX(-50%);border-radius:50%;background:var(--gold)}
+.day.selected{background:var(--deep);color:#fff;box-shadow:0 6px 15px rgba(11,52,56,.18)}
+.day.selected::after{background:#fff}
+.day:disabled{cursor:not-allowed;color:#bdc6c4;background:transparent}
+.day.blank{visibility:hidden}
+.calendar-footer{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.calendar-footer button{
+  min-height:43px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  color:var(--deep);
+  cursor:pointer;
+  font-weight:800;
+}
+.calendar-footer .today-button{border-color:var(--deep);background:var(--deep);color:#fff}
+.calendar-footer button:hover{border-color:var(--jade)}
+body.modal-open{overflow:hidden}
+@media(max-width:760px){
+  .appbar{padding-left:15px;padding-right:15px}
+  .meta .chip:first-child{display:none}
+  .wrap{width:min(100% - 22px,1080px);padding-top:25px}
+  .page-heading{display:block;margin-bottom:16px}
+  .page-heading .hint{margin-top:8px;text-align:left}
+  .grid{grid-template-columns:1fr;gap:14px}
+  .card{border-radius:20px}
+  .card-head{padding:16px}
+  .inside{padding:16px}
+  dialog{margin-bottom:max(12px,env(safe-area-inset-bottom))}
+}
+@media(max-width:400px){
+  .brand p{display:none}
+  .fields{gap:8px}
+  .field input,.field select{padding:0 9px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="appbar-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div><h1>Lịch Việt</h1><p>Âm lịch ↔ Dương lịch Việt Nam</p></div>
+    </div>
+    <div class="meta" aria-label="Phạm vi ứng dụng"><span class="chip">UTC+7</span><span class="chip">1800–2199</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="page-heading">
+    <div><p>Chuyển đổi ngày</p><h2>Tra lịch nhanh chóng</h2></div>
+    <p class="hint">Nhập ngày cần đổi và xem kết quả ngay bên dưới.</p>
+  </div>
+  <section class="grid">
+    <article class="card solar">
+      <div class="card-head">
+        <div class="direction" aria-hidden="true">DL</div>
+        <div class="card-title"><span>Chuyển đổi</span><h3>Dương lịch sang Âm lịch</h3></div>
+        <div class="arrow" aria-hidden="true">→</div>
+      </div>
+      <div class="inside">
+        <div class="fields">
+          <div class="field"><label for="sd">Ngày</label><input id="sd" type="number" inputmode="numeric" min="1" max="31" step="1" value="30"></div>
+          <div class="field"><label for="sm">Tháng</label><input id="sm" type="number" inputmode="numeric" min="1" max="12" step="1" value="8"></div>
+          <div class="field"><label for="sy">Năm</label><input id="sy" type="number" inputmode="numeric" min="1800" max="2199" step="1" value="2026"></div>
+        </div>
+        <button id="calendarOpen" class="calendar-open" type="button"><span aria-hidden="true">▦</span> Chọn ngày trên bảng lịch</button>
+        <div id="sout" class="result" aria-live="polite"></div>
+      </div>
+    </article>
+    <article class="card lunar">
+      <div class="card-head">
+        <div class="direction" aria-hidden="true">ÂL</div>
+        <div class="card-title"><span>Chuyển đổi</span><h3>Âm lịch sang Dương lịch</h3></div>
+        <div class="arrow" aria-hidden="true">→</div>
+      </div>
+      <div class="inside">
+        <div class="fields">
+          <div class="field"><label for="ld">Ngày âm</label><input id="ld" type="number" inputmode="numeric" min="1" max="30" step="1" value="18"></div>
+          <div class="field"><label for="lm">Tháng âm</label><input id="lm" type="number" inputmode="numeric" min="1" max="12" step="1" value="7"></div>
+          <div class="field"><label for="ly">Năm âm</label><input id="ly" type="number" inputmode="numeric" min="1800" max="2199" step="1" value="2026"></div>
+          <div class="field"><label for="ll">Tháng nhuận</label><select id="ll"><option value="0">Không</option><option value="1">Có</option></select></div>
+        </div>
+        <div id="lout" class="result" aria-live="polite"></div>
+      </div>
+    </article>
+  </section>
+</main>
+<dialog id="calendarDialog" aria-labelledby="calendarDialogTitle">
+  <div class="calendar-modal">
+    <div class="calendar-heading">
+      <div><p>Chọn trực tiếp</p><h2 id="calendarDialogTitle">Ngày Dương lịch</h2></div>
+      <button id="calendarClose" class="icon-button" type="button" aria-label="Đóng bảng lịch">×</button>
+    </div>
+    <div class="calendar-nav">
+      <button id="calendarPrev" class="icon-button" type="button" aria-label="Tháng trước">‹</button>
+      <select id="calendarMonth" aria-label="Chọn tháng"></select>
+      <input id="calendarYear" type="number" inputmode="numeric" min="1800" max="2199" step="1" aria-label="Chọn năm">
+      <button id="calendarNext" class="icon-button" type="button" aria-label="Tháng sau">›</button>
+    </div>
+    <div class="weekdays" aria-hidden="true"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+    <div id="calendarDays" class="calendar-days" role="grid" aria-label="Các ngày trong tháng"></div>
+    <div class="calendar-footer">
+      <button id="calendarToday" class="today-button" type="button">Hôm nay</button>
+      <button id="calendarCancel" type="button">Đóng</button>
+    </div>
+  </div>
+</dialog>
+<script id="lunar-core">
+const INT=Math.floor, PI=Math.PI, TZ=7;
+const NEW_MOON_OVERRIDES=new Map([[-1224,2378876],[-1222,2378935],[-1202,2379526],[-1183,2380087],[-1170,2380471],[-1157,2380855],[-1137,2381445],[-1128,2381711],[-1113,2382154],[-1104,2382420],[-1072,2383365],[-1059,2383749],[-1017,2384989],[-978,2386141],[-961,2386643],[-948,2387027],[-925,2387706],[-913,2388060],[-883,2388946],[-762,2392519],[-720,2393759],[-707,2394143],[-701,2394321],[-689,2394675],[-674,2395118],[-664,2395413],[-631,2396388],[-622,2396653],[-588,2397658],[-583,2397805],[-566,2398307],[-533,2399282],[-524,2399547],[-509,2399990],[-472,2401083],[-468,2401201],[-453,2401644],[-423,2402530],[-411,2402884],[-379,2403830],[-315,2405719],[-239,2407964],[-237,2408023],[-224,2408407],[-222,2408466],[-158,2410356],[-146,2410710],[-143,2410799],[-106,2411891],[-98,2412128],[-85,2412512],[-60,2413250],[38,2416144],[73,2417177],[105,2418122],[136,2419038],[201,2420957],[415,2427277],[419,2427395],[434,2427838],[458,2428547],[486,2429374],[584,2432268],[626,2433508],[636,2433803],[663,2434600],[703,2435781],[707,2435900],[716,2436165],[759,2437435],[801,2438675],[805,2438794],[840,2439827],[1909,2471395],[2139,2478186],[2200,2479988],[2849,2499153],[3097,2506477],[3208,2509755],[3402,2515484],[3699,2524254]]);
+const LEAP_OVERRIDES=new Map([[2378462,5],[2379555,3],[2380293,10],[2381385,8],[2382479,4],[2421193,4],[2423023,7],[2428871,9]]);
+function jdFromDate(dd,mm,yy){const a=INT((14-mm)/12),y=yy+4800-a,m=mm+12*a-3;return dd+INT((153*m+2)/5)+365*y+INT(y/4)-INT(y/100)+INT(y/400)-32045;}
+function jdToDate(jd){const a=jd+32044,b=INT((4*a+3)/146097),c=a-INT(146097*b/4),d=INT((4*c+3)/1461),e=c-INT(1461*d/4),m=INT((5*e+2)/153);return [e-INT((153*m+2)/5)+1,m+3-12*INT(m/10),100*b+d-4800+INT(m/10)];}
+function getNewMoonDay(k,tz=TZ){if(NEW_MOON_OVERRIDES.has(k))return NEW_MOON_OVERRIDES.get(k);const T=k/1236.85,T2=T*T,T3=T2*T,dr=PI/180;let jd=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3+0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);const M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3,Mp=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3,F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;let C=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr)-0.4068*Math.sin(Mp*dr)+0.0161*Math.sin(2*Mp*dr)-0.0004*Math.sin(3*Mp*dr)+0.0104*Math.sin(2*F*dr)-0.0051*Math.sin((M+Mp)*dr)-0.0074*Math.sin((M-Mp)*dr)+0.0004*Math.sin((2*F+M)*dr)-0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mp)*dr)+0.001*Math.sin((2*F-Mp)*dr)+0.0005*Math.sin((2*Mp+M)*dr);const dt=T<-11?0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T2*T2:-0.000278+0.000265*T+0.000262*T2;return INT(jd+C-dt+0.5+tz/24);}
+function sunLongitude(jdn,tz=TZ){const T=(jdn-2451545.5-tz/24)/36525,T2=T*T,dr=PI/180,M=357.5291+35999.0503*T-0.0001559*T2-0.00000048*T*T2,L0=280.46645+36000.76983*T+0.0003032*T2,DL=(1.9146-0.004817*T-0.000014*T2)*Math.sin(dr*M)+(0.019993-0.000101*T)*Math.sin(2*dr*M)+0.00029*Math.sin(3*dr*M);let L=(L0+DL)*dr;L-=PI*2*INT(L/(PI*2));return INT(L/(PI/6));}
+function month11(yy,tz=TZ){const off=jdFromDate(31,12,yy)-2415021,k=INT(off/29.530588853);let nm=getNewMoonDay(k,tz);if(sunLongitude(nm,tz)>=9)nm=getNewMoonDay(k-1,tz);return nm;}
+function leapOffset(a11,tz=TZ){if(LEAP_OVERRIDES.has(a11))return LEAP_OVERRIDES.get(a11);const k=INT((a11-2415021.076998695)/29.530588853+0.5);let last=0,i=1,arc=sunLongitude(getNewMoonDay(k+i,tz),tz);do{last=arc;i++;arc=sunLongitude(getNewMoonDay(k+i,tz),tz);}while(arc!==last&&i<14);return i-1;}
+function solar2lunar(dd,mm,yy,tz=TZ){const dayNumber=jdFromDate(dd,mm,yy),k=INT((dayNumber-2415021.076998695)/29.530588853);let monthStart=getNewMoonDay(k+1,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k,tz);if(monthStart>dayNumber)monthStart=getNewMoonDay(k-1,tz);let a11=month11(yy,tz),b11=a11,lunarYear;if(a11>=monthStart){lunarYear=yy;a11=month11(yy-1,tz);}else{lunarYear=yy+1;b11=month11(yy+1,tz);}const lunarDay=dayNumber-monthStart+1,diff=INT((monthStart-a11)/29);let lunarLeap=0,lunarMonth=diff+11;if(b11-a11>365){const leapDiff=leapOffset(a11,tz);if(diff>=leapDiff){lunarMonth=diff+10;if(diff===leapDiff)lunarLeap=1;}}if(lunarMonth>12)lunarMonth-=12;if(lunarMonth>=11&&diff<4)lunarYear--;return [lunarDay,lunarMonth,lunarYear,lunarLeap];}
+function lunar2solar(ld,lm,ly,ll,tz=TZ){let a11,b11;if(lm<11){a11=month11(ly-1,tz);b11=month11(ly,tz);}else{a11=month11(ly,tz);b11=month11(ly+1,tz);}let off=lm-11;if(off<0)off+=12;if(b11-a11>365){const lo=leapOffset(a11,tz),leapMonth=(lo+10)%12;if(ll!==0&&lm!==leapMonth)return null;if(ll!==0||off>=lo)off++;}else if(ll!==0)return null;const k=INT(0.5+(a11-2415021.076998695)/29.530588853),start=getNewMoonDay(k+off,tz),next=getNewMoonDay(k+off+1,tz);if(ld<1||ld>next-start)return null;return jdToDate(start+ld-1);}
+</script>
+<script>
+const $=id=>document.getElementById(id), pad=n=>String(n).padStart(2,"0"), STEM=["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"],BRANCH=["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"],MIN=2378521,MAX=2524593;
+function fail(el,msg){el.classList.add("error");el.innerHTML='<div class="result-kicker">Dữ liệu chưa hợp lệ</div><strong>Không đổi được</strong><span>'+msg+'</span>'}
+function ok(el,title,sub,label){el.classList.remove("error");el.innerHTML='<div class="result-kicker">'+label+'</div><strong>'+title+'</strong><span>'+sub+'</span>'}
+function pending(el){el.classList.remove("error");el.innerHTML='<div class="result-kicker">Tự động cập nhật</div><strong>Nhập đủ ngày, tháng, năm</strong><span>Kết quả sẽ xuất hiện ngay khi dữ liệu hợp lệ.</span>'}
+function validSolar(d,m,y){if(!Number.isInteger(d)||!Number.isInteger(m)||!Number.isInteger(y))return false;const jd=jdFromDate(d,m,y),back=jdToDate(jd);return jd>=MIN&&jd<=MAX&&back[0]===d&&back[1]===m&&back[2]===y;}
+function runSolar(){const out=$('sout'),raw=[$('sd').value,$('sm').value,$('sy').value];if(raw.some(value=>value.trim()===''))return pending(out);const [d,m,y]=raw.map(Number);if(!validSolar(d,m,y))return fail(out,"Nhập ngày hợp lệ trong khoảng 25/01/1800–31/12/2199.");const [ld,lm,ly,ll]=solar2lunar(d,m,y),cc=STEM[(ly+6)%10]+" "+BRANCH[(ly+8)%12];ok(out,pad(ld)+"/"+pad(lm)+"/"+ly,(ll?'Tháng nhuận':'Tháng thường')+" · Năm "+cc,"Kết quả Âm lịch")}
+function runLunar(){const out=$('lout'),raw=[$('ld').value,$('lm').value,$('ly').value];if(raw.some(value=>value.trim()===''))return pending(out);const [d,m,y]=raw.map(Number),ll=+$('ll').value;if(!Number.isInteger(d)||!Number.isInteger(m)||!Number.isInteger(y)||y<1800||y>2199||m<1||m>12)return fail(out,"Kiểm tra lại ngày, tháng và năm âm.");const sol=lunar2solar(d,m,y,ll);if(!sol)return fail(out,"Ngày không tồn tại hoặc lựa chọn tháng nhuận chưa đúng.");const [sd,sm,sy]=sol,jd=jdFromDate(sd,sm,sy);if(jd<MIN||jd>MAX)return fail(out,"Kết quả nằm ngoài phạm vi 1800–2199.");const back=solar2lunar(sd,sm,sy);if(back[0]!==d||back[1]!==m||back[2]!==y||back[3]!==ll)return fail(out,"Ngày không tồn tại hoặc lựa chọn tháng nhuận chưa đúng.");ok(out,pad(sd)+"/"+pad(sm)+"/"+sy,"Ngày Dương lịch tương ứng","Kết quả Dương lịch")}
+
+let solarTimer,lunarTimer,viewMonth=7,viewYear=2026;
+const calendarDialog=$('calendarDialog'),calendarMonth=$('calendarMonth'),calendarYear=$('calendarYear'),calendarDays=$('calendarDays');
+
+for(let month=1;month<=12;month++){
+  const option=document.createElement('option');
+  option.value=String(month-1);
+  option.textContent='Tháng '+month;
+  calendarMonth.append(option);
+}
+
+function scheduleSolar(){clearTimeout(solarTimer);solarTimer=setTimeout(runSolar,120)}
+function scheduleLunar(){clearTimeout(lunarTimer);lunarTimer=setTimeout(runLunar,120)}
+['sd','sm','sy'].forEach(id=>$(id).addEventListener('input',scheduleSolar));
+['ld','lm','ly'].forEach(id=>$(id).addEventListener('input',scheduleLunar));
+$('ll').addEventListener('change',runLunar);
+
+function setCalendarView(month,year){
+  viewMonth=Math.max(0,Math.min(11,month));
+  viewYear=Math.max(1800,Math.min(2199,year));
+  calendarMonth.value=String(viewMonth);
+  calendarYear.value=String(viewYear);
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const selected=[+$('sd').value,+$('sm').value,+$('sy').value];
+  const today=new Date(),todayParts=[today.getDate(),today.getMonth()+1,today.getFullYear()];
+  const firstDay=(new Date(viewYear,viewMonth,1).getDay()+6)%7;
+  const totalDays=new Date(viewYear,viewMonth+1,0).getDate();
+  const fragment=document.createDocumentFragment();
+
+  for(let i=0;i<firstDay;i++){
+    const blank=document.createElement('span');
+    blank.className='day blank';
+    blank.setAttribute('aria-hidden','true');
+    fragment.append(blank);
+  }
+
+  for(let day=1;day<=totalDays;day++){
+    const button=document.createElement('button');
+    const month=viewMonth+1,jd=jdFromDate(day,month,viewYear);
+    button.type='button';
+    button.className='day';
+    button.textContent=String(day);
+    button.setAttribute('role','gridcell');
+    button.setAttribute('aria-label',`${day}/${month}/${viewYear}`);
+    button.disabled=jd<MIN||jd>MAX;
+    if(day===selected[0]&&month===selected[1]&&viewYear===selected[2])button.classList.add('selected');
+    if(day===todayParts[0]&&month===todayParts[1]&&viewYear===todayParts[2])button.classList.add('today');
+    button.addEventListener('click',()=>selectSolarDate(day,month,viewYear));
+    fragment.append(button);
+  }
+
+  calendarDays.replaceChildren(fragment);
+  $('calendarPrev').disabled=viewYear===1800&&viewMonth===0;
+  $('calendarNext').disabled=viewYear===2199&&viewMonth===11;
+}
+
+function selectSolarDate(day,month,year){
+  $('sd').value=String(day);
+  $('sm').value=String(month);
+  $('sy').value=String(year);
+  runSolar();
+  closeCalendar();
+}
+
+function openCalendar(){
+  const d=+$('sd').value,m=+$('sm').value,y=+$('sy').value;
+  if(validSolar(d,m,y)){viewMonth=m-1;viewYear=y}
+  else{
+    const today=new Date();
+    viewMonth=today.getMonth();
+    viewYear=Math.max(1800,Math.min(2199,today.getFullYear()));
+  }
+  calendarMonth.value=String(viewMonth);
+  calendarYear.value=String(viewYear);
+  renderCalendar();
+  document.body.classList.add('modal-open');
+  if(typeof calendarDialog.showModal==='function')calendarDialog.showModal();
+  else calendarDialog.setAttribute('open','');
+}
+
+function closeCalendar(){
+  document.body.classList.remove('modal-open');
+  if(typeof calendarDialog.close==='function'&&calendarDialog.open)calendarDialog.close();
+  else calendarDialog.removeAttribute('open');
+}
+
+$('calendarOpen').addEventListener('click',openCalendar);
+$('calendarClose').addEventListener('click',closeCalendar);
+$('calendarCancel').addEventListener('click',closeCalendar);
+calendarDialog.addEventListener('close',()=>document.body.classList.remove('modal-open'));
+calendarDialog.addEventListener('click',event=>{if(event.target===calendarDialog)closeCalendar()});
+calendarMonth.addEventListener('change',()=>setCalendarView(+calendarMonth.value,viewYear));
+calendarYear.addEventListener('change',()=>setCalendarView(viewMonth,+calendarYear.value||viewYear));
+$('calendarPrev').addEventListener('click',()=>{let month=viewMonth-1,year=viewYear;if(month<0){month=11;year--}setCalendarView(month,year)});
+$('calendarNext').addEventListener('click',()=>{let month=viewMonth+1,year=viewYear;if(month>11){month=0;year++}setCalendarView(month,year)});
+$('calendarToday').addEventListener('click',()=>{const today=new Date(),d=today.getDate(),m=today.getMonth()+1,y=today.getFullYear();if(validSolar(d,m,y))selectSolarDate(d,m,y)});
+
+runSolar();
+runLunar();
+</script></body></html>

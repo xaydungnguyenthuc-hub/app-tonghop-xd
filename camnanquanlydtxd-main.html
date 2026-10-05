@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cẩm nang pháp lý: Đầu tư Xây dựng Công trình</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#16213E;
+    --navy-2:#1F2E52;
+    --parchment:#F6F1E4;
+    --parchment-2:#EDE6D3;
+    --gold:#B9975B;
+    --seal:#8C3B4A;
+    --ink:#2A2A2A;
+    --topic-1:#3A4A7A;
+    --topic-2:#1F7A76;
+    --topic-3:#A56A2E;
+    --topic-4:#7A3B5E;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--parchment);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  h1,h2,h3{font-family:'Playfair Display',serif; margin:0;}
+
+  .mono{font-family:'JetBrains Mono',monospace; letter-spacing:0.02em;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:radial-gradient(ellipse at 20% -10%, #253564 0%, var(--navy) 55%, #0F1730 100%);
+    color:var(--parchment);
+    padding:64px 24px 84px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(185,151,91,0.06) 0px, rgba(185,151,91,0.06) 1px, transparent 1px, transparent 64px);
+    pointer-events:none;
+  }
+  .hero-inner{max-width:960px; margin:0 auto; position:relative; z-index:2;}
+  .eyebrow{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid rgba(185,151,91,0.5);
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:22px;
+    opacity:0;
+    animation:riseIn 0.7s ease forwards;
+  }
+  .hero h1{
+    font-size:clamp(28px,5vw,46px);
+    font-weight:900;
+    line-height:1.18;
+    color:#fff;
+    opacity:0;
+    animation:riseIn 0.7s ease 0.12s forwards;
+  }
+  .hero h1 .accent{color:var(--gold); font-style:italic;}
+  .hero p.sub{
+    margin-top:18px;
+    max-width:640px;
+    font-size:16px;
+    color:#C9D2EA;
+    opacity:0;
+    animation:riseIn 0.7s ease 0.24s forwards;
+  }
+  .hero-quote{
+    margin-top:34px;
+    padding:16px 20px;
+    border-left:3px solid var(--gold);
+    background:rgba(255,255,255,0.04);
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:15px;
+    color:#DCE2F2;
+    max-width:640px;
+    opacity:0;
+    animation:riseIn 0.7s ease 0.36s forwards;
+  }
+  @keyframes riseIn{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* seal badge */
+  .seal{
+    position:absolute;
+    top:38px; right:6%;
+    width:118px; height:118px;
+    border-radius:50%;
+    border:2px solid var(--seal);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    color:var(--seal);
+    background:rgba(140,59,74,0.08);
+    transform:rotate(-14deg);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    line-height:1.4;
+    animation:sealIn 0.9s cubic-bezier(.2,.9,.3,1.2) 0.5s both;
+  }
+  .seal::before{
+    content:"";
+    position:absolute; inset:6px;
+    border:1px dashed var(--seal);
+    border-radius:50%;
+    opacity:0.6;
+  }
+  @keyframes sealIn{
+    from{opacity:0; transform:rotate(-14deg) scale(0.6);}
+    to{opacity:1; transform:rotate(-14deg) scale(1);}
+  }
+  @media (max-width:640px){ .seal{display:none;} }
+
+  /* ---------- TABS ---------- */
+  .topics-section{
+    max-width:1080px;
+    margin:-48px auto 0;
+    padding:0 20px 12px;
+    position:relative;
+    z-index:3;
+  }
+  .tab-bar{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    background:#fff;
+    padding:10px;
+    border-radius:var(--radius);
+    box-shadow:0 18px 40px -18px rgba(22,33,62,0.35);
+  }
+  @media (max-width:760px){
+    .tab-bar{grid-template-columns:repeat(2,1fr);}
+  }
+  .tab-btn{
+    border:none;
+    background:transparent;
+    padding:14px 10px;
+    border-radius:10px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    color:#6b6b6b;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  .tab-btn .num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    opacity:0.7;
+  }
+  .tab-btn.active{ color:#fff; }
+  .tab-btn[data-topic="0"].active{ background:var(--topic-1); }
+  .tab-btn[data-topic="1"].active{ background:var(--topic-2); }
+  .tab-btn[data-topic="2"].active{ background:var(--topic-3); }
+  .tab-btn[data-topic="3"].active{ background:var(--topic-4); }
+  .tab-btn:not(.active):hover{ background:#F2EFE6; }
+
+  .panel{
+    background:#fff;
+    border-radius:var(--radius);
+    margin-top:16px;
+    padding:30px 28px 26px;
+    box-shadow:0 18px 40px -22px rgba(22,33,62,0.3);
+    display:none;
+    animation:fadeUp 0.35s ease both;
+  }
+  .panel.active{display:block;}
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .panel-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:6px;
+  }
+  .panel-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    padding:4px 10px;
+    border-radius:6px;
+    color:#fff;
+  }
+  .panel h2{ font-size:23px; font-weight:700; color:var(--navy); }
+  .panel-sub{color:#8a8a8a; font-size:13px; margin-top:2px;}
+
+  .law-strip{
+    margin:18px 0 20px;
+    padding:10px 14px;
+    border-radius:8px;
+    background:var(--parchment);
+    border:1px dashed var(--gold);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:#6a5320;
+  }
+
+  .doc-group{ margin-top:18px; }
+  .doc-group h3{
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--navy);
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+  .doc-group h3 .code{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    font-size:12px;
+    padding:2px 8px;
+    border-radius:5px;
+    background:var(--parchment-2);
+    color:#5c5136;
+  }
+  .doc-group ul{
+    margin:10px 0 0;
+    padding-left:0;
+    list-style:none;
+  }
+  .doc-group li{
+    position:relative;
+    padding-left:20px;
+    font-size:14px;
+    color:#3d3d3d;
+    margin-bottom:7px;
+  }
+  .doc-group li::before{
+    content:"›";
+    position:absolute; left:2px; top:-1px;
+    font-weight:700;
+  }
+  .panel[data-accent="0"] .doc-group li::before{ color:var(--topic-1); }
+  .panel[data-accent="1"] .doc-group li::before{ color:var(--topic-2); }
+  .panel[data-accent="2"] .doc-group li::before{ color:var(--topic-3); }
+  .panel[data-accent="3"] .doc-group li::before{ color:var(--topic-4); }
+
+  .case{
+    margin-top:20px;
+    padding:14px 16px;
+    border-radius:10px;
+    background:#FBF7EE;
+    border-left:4px solid var(--seal);
+  }
+  .case-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--seal);
+    font-weight:600;
+  }
+  .case p{ margin:6px 0 0; font-size:13.5px; color:#4a3f3f; }
+
+  /* ---------- DEEP DIVE (nghiệp vụ chuyên sâu) ---------- */
+  .deep-dive{
+    margin-top:22px;
+    border:1px solid #E7E1D0;
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .deep-dive summary{
+    list-style:none;
+    cursor:pointer;
+    padding:13px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:var(--parchment);
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--navy);
+  }
+  .deep-dive summary::-webkit-details-marker{ display:none; }
+  .deep-dive summary::after{
+    content:"Xem nghiệp vụ ›";
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    font-size:11px;
+    opacity:0.65;
+    transition:transform 0.2s ease;
+    white-space:nowrap;
+  }
+  .deep-dive[open] summary::after{ content:"Thu gọn ⌃"; }
+  .deep-dive-body{
+    padding:18px 18px 6px;
+    background:#FFFDF8;
+    border-top:1px solid #EFE9DA;
+  }
+  .insight{
+    margin-bottom:16px;
+    padding-left:14px;
+    border-left:3px solid var(--gold);
+  }
+  .panel[data-accent="0"] .insight{ border-left-color:var(--topic-1); }
+  .panel[data-accent="1"] .insight{ border-left-color:var(--topic-2); }
+  .panel[data-accent="2"] .insight{ border-left-color:var(--topic-3); }
+  .panel[data-accent="3"] .insight{ border-left-color:var(--topic-4); }
+  .insight h4{
+    margin:0 0 5px;
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .insight p{ margin:0; font-size:13.5px; color:#3d3d3d; }
+  .insight .ref{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#8a7a4f;
+    background:var(--parchment-2);
+    padding:1px 7px;
+    border-radius:5px;
+    margin-left:6px;
+  }
+  .insight .flag{
+    display:block;
+    margin-top:7px;
+    font-size:12.5px;
+    font-style:italic;
+    color:var(--seal);
+  }
+
+  /* ---------- DRILL-DOWN LINK ---------- */
+  .drill-link{
+    cursor:pointer;
+    color:var(--topic-1);
+    text-decoration:underline dotted;
+    text-underline-offset:3px;
+    font-weight:600;
+  }
+  .drill-link:hover{ color:var(--seal); }
+  .drill-arrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    opacity:0.75;
+    margin-left:4px;
+    text-decoration:none;
+  }
+  .type-block.flash{
+    animation:flashHighlight 1.4s ease;
+  }
+  @keyframes flashHighlight{
+    0%{ box-shadow:0 0 0 3px var(--gold); border-radius:10px; }
+    100%{ box-shadow:0 0 0 0 rgba(185,151,91,0); border-radius:10px; }
+  }
+
+  /* ---------- PHÁP LÝ DỰ ÁN THEO LOẠI HÌNH (type sub-tabs) ---------- */
+  .type-block{
+    margin-top:26px;
+    padding-top:20px;
+    border-top:2px solid var(--navy);
+  }
+  .type-block-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .type-block-head h3{
+    font-family:'Playfair Display',serif;
+    font-size:19px;
+    color:var(--navy);
+    margin:0;
+  }
+  .type-block-head span{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#8a8a8a;
+  }
+  .type-tabs{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:16px;
+  }
+  @media (max-width:600px){ .type-tabs{grid-template-columns:repeat(2,1fr);} }
+  .type-tab-btn{
+    border:1px solid #E7E1D0;
+    background:var(--parchment);
+    padding:10px 8px;
+    border-radius:8px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:#6b6b6b;
+    transition:background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .type-tab-btn.active{ background:var(--topic-1); color:#fff; border-color:var(--topic-1); }
+  .type-tab-btn:not(.active):hover{ background:#F2EFE6; }
+
+  .type-panel{ display:none; }
+  .type-panel.active{ display:block; animation:fadeUp 0.3s ease both; }
+  .type-panel .subnote{ font-size:12.5px; color:#8a8a8a; font-style:italic; margin-bottom:14px; }
+
+  .sec-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:18px 0 10px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .sec-label .n{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:20px; height:20px;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    flex-shrink:0;
+  }
+  .type-panel ul{ margin:0 0 4px; padding-left:20px; }
+  .type-panel ul li, .type-panel ol li{ font-size:13.5px; color:#3d3d3d; margin-bottom:7px; }
+  .type-panel ol{ margin:0 0 4px; padding-left:20px; }
+
+  .flow-wrap{
+    overflow-x:auto;
+    padding-bottom:8px;
+    margin-bottom:6px;
+  }
+  .flow-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    width:max-content;
+  }
+  .flow-step{
+    flex-shrink:0;
+    width:30px; height:30px;
+    border-radius:50%;
+    background:var(--parchment-2);
+    border:1.5px solid var(--topic-1);
+    color:var(--navy);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    transition:background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  }
+  .flow-step:hover{
+    background:var(--topic-1);
+    color:#fff;
+    transform:scale(1.12);
+  }
+  .type-panel ol li.step-flash{
+    animation:stepFlash 1.4s ease;
+    border-radius:6px;
+  }
+  @keyframes stepFlash{
+    0%{ background:#F3E3B8; box-shadow:0 0 0 2px var(--gold); }
+    100%{ background:transparent; box-shadow:0 0 0 0 rgba(185,151,91,0); }
+  }
+  .flow-arrow{ color:#c8bfa0; font-size:14px; flex-shrink:0; }
+  .flow-hint{ font-size:11.5px; color:#999; font-style:italic; margin-top:6px; }
+
+  .mini-tbl{ width:100%; border-collapse:collapse; margin-bottom:6px; font-size:12.5px; }
+  .mini-tbl th{
+    background:var(--navy);
+    color:#fff;
+    text-align:left;
+    padding:7px 9px;
+    font-weight:700;
+    font-size:11.5px;
+  }
+  .mini-tbl td{
+    padding:7px 9px;
+    border-bottom:1px solid #EEE7D6;
+    color:#3d3d3d;
+    vertical-align:top;
+  }
+  .mini-tbl tr:nth-child(even) td{ background:#FBF8F0; }
+  .mini-tbl.raci td, .mini-tbl.raci th{ text-align:center; }
+  .mini-tbl.raci td:first-child, .mini-tbl.raci th:first-child{ text-align:left; }
+  .raci-legend{ font-size:11px; color:#999; font-style:italic; margin-top:2px; }
+  .lazy-loading{
+    padding:24px 4px;
+    font-size:13px;
+    color:#999;
+    font-style:italic;
+  }
+
+  /* ---------- PRIVATE INVESTOR SECTION ---------- */
+  .private-section{
+    max-width:1080px;
+    margin:60px auto 0;
+    padding:0 20px;
+  }
+  .private-head{
+    background:linear-gradient(120deg, var(--navy) 0%, #2A3A66 100%);
+    color:#fff;
+    padding:32px 28px;
+    border-radius:14px 14px 0 0;
+  }
+  .eyebrow-dark{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .private-head h2{
+    font-family:'Playfair Display',serif;
+    font-size:26px;
+    margin:8px 0 6px;
+    color:#fff;
+  }
+  .private-head .sub-dark{
+    font-size:13px;
+    color:#C9D2EA;
+    margin:0;
+    max-width:640px;
+  }
+  .private-body{
+    background:#fff;
+    border-radius:0 0 14px 14px;
+    padding:24px 24px 28px;
+    box-shadow:0 18px 40px -22px rgba(22,33,62,0.3);
+  }
+
+  /* ---------- MINDMAP SECTION (Sơ đồ tư duy) ---------- */
+  .mindmap-section{
+    max-width:1080px;
+    margin:60px auto 0;
+    padding:0 20px;
+  }
+  .mindmap-head{
+    background:linear-gradient(120deg, var(--topic-3) 0%, #7a4d1f 100%);
+    color:#fff;
+    padding:32px 28px;
+    border-radius:14px 14px 0 0;
+  }
+  .mindmap-head h2{
+    font-family:'Playfair Display',serif;
+    font-size:26px;
+    margin:8px 0 6px;
+    color:#fff;
+  }
+  .mindmap-head .sub-dark{
+    font-size:13px;
+    color:#F5E6D3;
+    margin:0;
+    max-width:640px;
+  }
+  .mindmap-body{
+    background:#fff;
+    border-radius:0 0 14px 14px;
+    padding:28px 20px 26px;
+    box-shadow:0 18px 40px -22px rgba(22,33,62,0.3);
+  }
+  .mm-hub{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    margin:0 auto 6px;
+    max-width:280px;
+    padding:16px 20px;
+    border-radius:14px;
+    background:var(--navy);
+    color:#fff;
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:15px;
+    box-shadow:0 10px 24px -10px rgba(22,33,62,0.5);
+  }
+  .mm-stem{
+    width:2px;
+    height:22px;
+    background:#D8CFB8;
+    margin:0 auto;
+  }
+  .mm-branch-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    margin-top:10px;
+  }
+  @media (min-width:640px){
+    .mm-branch-grid{ grid-template-columns:repeat(4, 1fr); }
+  }
+  .mm-branch{
+    border:none;
+    border-radius:10px;
+    padding:12px 10px;
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    cursor:pointer;
+    text-align:center;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .mm-branch:hover{ transform:translateY(-2px); }
+  .mm-branch.active{ box-shadow:0 0 0 3px rgba(0,0,0,0.15) inset; }
+
+  .mm-detail{
+    display:none;
+    margin-top:16px;
+    padding:16px 18px;
+    border-radius:10px;
+    background:var(--parchment);
+    border-left:4px solid var(--gold);
+    animation:fadeUp 0.25s ease both;
+  }
+  .mm-detail.show{ display:block; }
+  .mm-detail h4{
+    margin:0 0 10px;
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    color:var(--navy);
+  }
+  .mm-leaf-row{
+    display:flex;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid #EEE7D6;
+  }
+  .mm-leaf-row:last-of-type{ border-bottom:none; }
+  .mm-leaf-code{
+    flex-shrink:0;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:700;
+    color:var(--navy);
+    background:#fff;
+    border:1px solid #E7E1D0;
+    padding:3px 7px;
+    border-radius:6px;
+    white-space:nowrap;
+    height:fit-content;
+  }
+  .mm-leaf-name{ font-size:12.5px; color:#3d3d3d; line-height:1.4; }
+  .mm-detail-link{
+    display:inline-block;
+    margin-top:12px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--seal);
+    cursor:pointer;
+    text-decoration:underline dotted;
+  }
+
+  /* ---------- LOOKUP SECTION (Tra cứu nhanh) ---------- */
+  .lookup-section{
+    max-width:1080px;
+    margin:60px auto 0;
+    padding:0 20px;
+  }
+  .lookup-head{
+    background:linear-gradient(120deg, var(--seal) 0%, #6E2F45 100%);
+    color:#fff;
+    padding:32px 28px;
+    border-radius:14px 14px 0 0;
+  }
+  .lookup-head h2{
+    font-family:'Playfair Display',serif;
+    font-size:26px;
+    margin:8px 0 6px;
+    color:#fff;
+  }
+  .lookup-head .sub-dark{
+    font-size:13px;
+    color:#F0DCE0;
+    margin:0;
+    max-width:640px;
+  }
+  .lookup-body{
+    background:#fff;
+    border-radius:0 0 14px 14px;
+    padding:24px 24px 28px;
+    box-shadow:0 18px 40px -22px rgba(22,33,62,0.3);
+  }
+  .lookup-tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .lookup-tab-btn{
+    border:1px solid #E7E1D0;
+    background:var(--parchment);
+    padding:9px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    color:#6b6b6b;
+  }
+  .lookup-tab-btn.active{ background:var(--seal); color:#fff; border-color:var(--seal); }
+  .lookup-search{
+    width:100%;
+    padding:11px 14px;
+    border:1.5px solid #E7E1D0;
+    border-radius:8px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    margin-bottom:18px;
+    box-sizing:border-box;
+  }
+  .lookup-search:focus{ outline:none; border-color:var(--seal); }
+  .lookup-panel{ display:none; }
+  .lookup-panel.active{ display:block; }
+  .lookup-empty{ font-size:13px; color:#999; font-style:italic; padding:16px 0; }
+
+  /* Timeline */
+  .tl-list{ position:relative; padding-left:22px; }
+  .tl-list::before{
+    content:"";
+    position:absolute; left:5px; top:6px; bottom:6px;
+    width:2px;
+    background:#E7E1D0;
+  }
+  .tl-item{ position:relative; padding-bottom:20px; }
+  .tl-item::before{
+    content:"";
+    position:absolute; left:-22px; top:3px;
+    width:11px; height:11px;
+    border-radius:50%;
+    background:var(--seal);
+    border:2px solid #fff;
+    box-shadow:0 0 0 1.5px var(--seal);
+  }
+  .tl-item.tl-warn::before{ background:var(--gold); box-shadow:0 0 0 1.5px var(--gold); }
+  .tl-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:700;
+    color:var(--seal);
+  }
+  .tl-title{ font-size:13.5px; font-weight:700; color:var(--navy); margin:3px 0 3px; }
+  .tl-desc{ font-size:12.5px; color:#555; margin:0 0 4px; }
+  .tl-tags{ display:flex; flex-wrap:wrap; gap:5px; }
+  .tl-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    padding:2px 7px;
+    border-radius:5px;
+    background:var(--parchment-2);
+    color:#6a5320;
+  }
+
+  /* Document index table */
+  .doc-idx-row{
+    border-bottom:1px solid #EEE7D6;
+    padding:12px 0;
+  }
+  .doc-idx-code{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:12.5px;
+    color:var(--navy);
+  }
+  .doc-idx-type{
+    display:inline-block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    padding:1px 6px;
+    border-radius:4px;
+    background:var(--parchment-2);
+    color:#6a5320;
+    margin-left:6px;
+  }
+  .doc-idx-name{ font-size:13px; color:#3d3d3d; margin:4px 0; }
+  .doc-idx-date{ font-size:11.5px; color:#8a8a8a; }
+  .doc-idx-modules{ margin-top:5px; display:flex; flex-wrap:wrap; gap:5px; }
+  .doc-idx-mod{
+    font-size:10.5px;
+    padding:2px 7px;
+    border-radius:999px;
+    background:#EFF3FA;
+    color:var(--topic-1);
+  }
+  .doc-idx-warn{
+    margin-top:6px;
+    font-size:11.5px;
+    color:var(--seal);
+    font-style:italic;
+  }
+
+  /* ---------- BOTTOM GRID ---------- */
+  .info-section{
+    max-width:1080px;
+    margin:52px auto 0;
+    padding:0 20px;
+  }
+  .info-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+  }
+  @media (max-width:900px){ .info-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .info-grid{grid-template-columns:1fr;} }
+  .info-card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px 18px;
+    border-top:3px solid var(--navy);
+  }
+  .info-card h3{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    margin-bottom:12px;
+  }
+  .info-card ul{ margin:0; padding-left:18px; }
+  .info-card li{ font-size:13.5px; color:#3d3d3d; margin-bottom:8px; }
+
+  /* ---------- FOOTER ---------- */
+  .footer-quote{
+    margin-top:60px;
+    background:var(--navy);
+    color:var(--gold);
+    text-align:center;
+    padding:34px 20px 40px;
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:clamp(14px,2.4vw,19px);
+  }
+  .footer-quote span{ display:block; opacity:0.85; }
+  .footer-meta{
+    text-align:center;
+    padding:16px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#8a8a8a;
+    background:var(--navy-2);
+  }
+  /* ---------- STICKY SITE NAV ---------- */
+  .site-nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(22,33,62,0.97);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(185,151,91,0.35);
+  }
+  .site-nav-inner{
+    display:flex;
+    gap:8px;
+    padding:10px 14px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .site-nav-inner::-webkit-scrollbar{ display:none; }
+  .nav-pill{
+    flex-shrink:0;
+    border:1px solid rgba(255,255,255,0.18);
+    background:transparent;
+    color:#C9D2EA;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:12.5px;
+    padding:7px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .nav-pill:hover{ border-color:var(--gold); color:#fff; }
+  .nav-pill.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--navy);
+  }
+  #hero-top, #mindmap-section, #topics-section, #private-section, #lookup-section{
+    scroll-margin-top:56px;
+  }
+  /* ---------- BACK TO TOP ---------- */
+  .back-to-top{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--navy);
+    color:#fff;
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 8px 22px -6px rgba(22,33,62,0.5);
+    z-index:90;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(10px);
+    transition:opacity 0.25s ease, transform 0.25s ease;
+  }
+  .back-to-top.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+  .back-to-top:active{ transform:scale(0.94); }
+
+  /* ---------- GLOBAL SEARCH ---------- */
+  .search-trigger{
+    flex-shrink:0;
+    width:34px; height:34px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.06);
+    color:#fff;
+    font-size:14px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    margin-left:auto;
+  }
+  .search-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,20,40,0.6);
+    backdrop-filter:blur(2px);
+    z-index:200;
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:12vh 16px 16px;
+  }
+  .search-overlay.open{ display:flex; }
+  .search-modal{
+    background:#fff;
+    width:100%;
+    max-width:640px;
+    border-radius:14px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.4);
+    max-height:72vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .search-modal-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    border-bottom:1px solid #EEE7D6;
+  }
+  .search-modal-head input{
+    flex:1;
+    border:none;
+    outline:none;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:6px 0;
+  }
+  .search-modal-close{
+    border:none; background:none; cursor:pointer;
+    font-size:20px; color:#999; line-height:1;
+  }
+  .search-modal-results{
+    overflow-y:auto;
+    padding:8px 6px 14px;
+  }
+  .search-result-item{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:11px 12px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    border-radius:8px;
+  }
+  .search-result-item:hover{ background:var(--parchment); }
+  .search-result-group{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--seal);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .search-result-title{ font-size:13.5px; font-weight:700; color:var(--navy); margin:2px 0 3px; }
+  .search-result-snippet{ font-size:12px; color:#777; line-height:1.4; }
+  .search-result-snippet mark{ background:#F3E3B8; color:inherit; padding:0 1px; }
+  .search-modal-empty{ padding:24px 14px; text-align:center; font-size:13px; color:#999; font-style:italic; }
+  .search-modal-hint{ padding:24px 14px; text-align:center; font-size:12.5px; color:#aaa; }
+
+  /* ---------- MODULE ACTIONS: copy + reviewed ---------- */
+  .module-actions{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .module-action-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid #E7E1D0;
+    background:var(--parchment);
+    color:#555;
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    padding:7px 12px;
+    border-radius:7px;
+    cursor:pointer;
+  }
+  .module-action-btn:hover{ background:#F2EFE6; }
+  .module-action-btn.is-reviewed{
+    background:#E7F3EC;
+    border-color:#B9D8C6;
+    color:#2E7D53;
+  }
+  .reviewed-dot{
+    display:none;
+    width:7px; height:7px;
+    border-radius:50%;
+    background:#2E9E5B;
+    margin-left:6px;
+  }
+  .type-tab-btn.is-reviewed .reviewed-dot{ display:inline-block; }
+</style>
+</head>
+<body>
+
+  <nav class="site-nav" id="site-nav">
+    <div class="site-nav-inner">
+      <button class="nav-pill active" data-nav="hero">Trang chủ</button>
+      <button class="nav-pill" data-nav="mindmap">Sơ đồ tư duy</button>
+      <button class="nav-pill" data-nav="cd-0">P1 · Dự án &amp; chi phí</button>
+      <button class="nav-pill" data-nav="cd-1">P2 · Chi phí &amp; HĐ</button>
+      <button class="nav-pill" data-nav="cd-2">P3 · Chất lượng</button>
+      <button class="nav-pill" data-nav="cd-3">P4 · Quyết toán</button>
+      <button class="nav-pill" data-nav="private">Vốn tư nhân</button>
+      <button class="nav-pill" data-nav="lookup">Tra cứu nhanh</button>
+      <button class="search-trigger" id="search-trigger" title="Tìm kiếm toàn bộ nội dung" aria-label="Tìm kiếm">⌕</button>
+    </div>
+  </nav>
+
+  <div class="search-overlay" id="search-overlay">
+    <div class="search-modal">
+      <div class="search-modal-head">
+        <input type="text" id="global-search-input" placeholder="Tìm số hiệu, tên văn bản, từ khóa trong toàn bộ cẩm nang...">
+        <button class="search-modal-close" id="search-modal-close" aria-label="Đóng">×</button>
+      </div>
+      <div class="search-modal-results" id="global-search-results">
+        <div class="search-modal-hint">Gõ ít nhất 2 ký tự để tìm trong toàn bộ căn cứ pháp lý, các bước, rủi ro của mọi phần.</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Lên đầu trang">↑</button>
+
+  <section class="hero" id="hero-top">
+    <div class="seal">CẨM NANG<br>PHÁP LÝ<br>XÂY DỰNG<br>2026</div>
+    <div class="hero-inner">
+      <span class="eyebrow">Cẩm nang tra cứu nội bộ</span>
+      <h1>Cẩm nang pháp lý <span class="accent">Đầu tư Xây dựng Công trình</span><br>theo quy định mới nhất</h1>
+      <p class="sub">Hệ thống hóa quy định theo Luật Xây dựng 135/2025/QH15 và các nghị định hướng dẫn năm 2026, chia theo từng phần nghiệp vụ để tra cứu nhanh khi xử lý công việc thực tế.</p>
+      <div class="hero-quote">
+        "Nắm vững quy định mới – Áp dụng đúng – An toàn pháp lý – Tối ưu chi phí – Đẩy nhanh tiến độ"
+      </div>
+    </div>
+  </section>
+
+  <section class="mindmap-section" id="mindmap-section">
+    <div class="mindmap-head">
+      <span class="eyebrow-dark">Tổng quan cấu trúc</span>
+      <h2>Sơ đồ tư duy — Pháp luật đầu tư xây dựng</h2>
+      <p class="sub-dark">7 nhóm luật gốc làm nền tảng đối chiếu chéo cho toàn bộ cẩm nang. Bấm vào từng nhánh để xem văn bản cụ thể.</p>
+    </div>
+    <div class="mindmap-body">
+      <div class="mm-hub">PHÁP LUẬT<br>ĐẦU TƯ XÂY DỰNG</div>
+      <div class="mm-stem"></div>
+      <div class="mm-branch-grid" id="mm-branch-grid"></div>
+      <div id="mm-detail-root"></div>
+    </div>
+  </section>
+
+  <section class="topics-section" id="topics-section">
+    <div class="tab-bar" role="tablist">
+      <button class="tab-btn active" data-topic="0"><span class="num">PHẦN 1</span>Quản lý dự án &amp; chi phí đầu tư</button>
+      <button class="tab-btn" data-topic="1"><span class="num">PHẦN 2</span>Quản lý chi phí &amp; hợp đồng</button>
+      <button class="tab-btn" data-topic="2"><span class="num">PHẦN 3</span>Quản lý chất lượng &amp; nghiệm thu</button>
+      <button class="tab-btn" data-topic="3"><span class="num">PHẦN 4</span>Hợp đồng – Thanh toán – Quyết toán</button>
+    </div>
+
+    <!-- PANEL 1 -->
+    <div class="panel active" data-accent="0" id="panel-0">
+      <div class="panel-head">
+        <span class="panel-tag" style="background:var(--topic-1)">01</span>
+        <div>
+          <h2>Quản lý dự án và quản lý chi phí đầu tư</h2>
+          <div class="panel-sub">Nền tảng pháp lý cho vai trò chủ đầu tư &amp; Ban QLDA</div>
+        </div>
+      </div>
+      <div class="law-strip">Luật Xây dựng 135/2025/QH15 — liên quan đến nội dung bài học</div>
+
+      <div class="doc-group">
+        <h3>Nghị định QLDA, QLHĐ <span class="code">217/2026</span></h3>
+        <ul>
+          <li><span class="drill-link" data-target="type-block-1">Nội dung quản lý dự án <span class="drill-arrow">→ xem chi tiết</span></span></li>
+          <li>Trình tự đầu tư xây dựng</li>
+          <li>Dự án lập báo cáo KTKT &lt; 40 tỷ</li>
+          <li>Phân quyền người QĐĐT, Chủ đầu tư</li>
+          <li>Ban QLDA</li>
+          <li>Năng lực hành nghề</li>
+        </ul>
+      </div>
+
+      <div class="doc-group">
+        <h3>Nghị định QLCP <span class="code">206/2026</span></h3>
+        <ul>
+          <li>TMĐT: thẩm định / thẩm tra TMĐT, nội dung, phương pháp xác định, phê duyệt, điều chỉnh</li>
+          <li>Suất vốn đầu tư, chỉ số giá, chi phí dự phòng</li>
+          <li>Định mức tỷ lệ xác định chi phí QLDA, chi phí tư vấn</li>
+        </ul>
+      </div>
+
+      <div class="doc-group"><h3>Thông tư, Quyết định (nếu có)</h3></div>
+
+      <div class="case">
+        <div class="case-label">Tình huống thực tế</div>
+        <p>Minh họa áp dụng thực tế cho cán bộ QLDA.</p>
+      </div>
+
+      <details class="deep-dive">
+        <summary>Đi sâu nghiệp vụ — Phần 1</summary>
+        <div class="deep-dive-body">
+          <div class="insight">
+            <h4>Bỏ thẩm định thiết kế sau thiết kế cơ sở<span class="ref">Điều 29, Luật 135</span></h4>
+            <p>Trách nhiệm kiểm soát chất lượng thiết kế các bước sau được giao thẳng cho chủ đầu tư — không còn "lá chắn" thẩm định của cơ quan chuyên môn nhà nước ở bước này.</p>
+            <span class="flag">Rủi ro pháp lý dồn nhiều hơn về phía chủ đầu tư / Ban QLDA.</span>
+          </div>
+          <div class="insight">
+            <h4>BIM bắt buộc từ giai đoạn lập FS/KTKT<span class="ref">Điều 8, NĐ 217/2026</span></h4>
+            <p>Công trình cấp II trở lên phải áp dụng BIM ngay từ báo cáo nghiên cứu khả thi hoặc báo cáo KTKT. Nếu cơ quan quản lý đủ điều kiện hạ tầng/nhân lực/công nghệ, mô hình BIM có thể thay thế hồ sơ giấy với giá trị pháp lý tương đương.</p>
+            <span class="flag">Khớp trực tiếp với hồ sơ EIR/BIM đang triển khai cho các dự án phân kỳ.</span>
+          </div>
+          <div class="insight">
+            <h4>Được đảo cơ cấu chi phí không cần điều chỉnh TMĐT<span class="ref">NĐ 206/2026</span></h4>
+            <p>Chủ đầu tư được điều chỉnh cơ cấu các khoản mục chi phí (kể cả dự phòng) miễn giữ đúng 3 điều kiện: không đổi mục tiêu, không đổi quy mô, không vượt tổng mức đầu tư và không đổi cơ cấu nguồn vốn.</p>
+            <span class="flag">Đưa vào checklist Audit QS: mọi khoản điều chỉnh cần soát đủ 3 lằn ranh này trước khi coi là hợp lệ.</span>
+          </div>
+        </div>
+      </details>
+
+      <div class="type-block" id="type-block-1">
+        <div class="type-block-head">
+          <h3>Pháp lý dự án theo loại hình</h3>
+          <span>Quy hoạch · Đất đai · Môi trường · PCCC · Đầu tư · KDBĐS</span>
+        </div>
+        <div class="type-tabs" id="type-tabs"></div>
+        <div id="type-panels"></div>
+      </div>
+    </div>
+
+    <!-- PANEL 2 -->
+    <div class="panel" data-accent="1" id="panel-1">
+      <div class="panel-head">
+        <span class="panel-tag" style="background:var(--topic-2)">02</span>
+        <div>
+          <h2>Quản lý chi phí và hợp đồng</h2>
+          <div class="panel-sub">Dự toán, đơn giá và mẫu hợp đồng xây dựng chuẩn 2026</div>
+        </div>
+      </div>
+      <div class="law-strip">Luật Xây dựng 135/2025/QH15 — liên quan đến nội dung bài học</div>
+
+      <div class="doc-group">
+        <h3>Nghị định QLCP <span class="code">206/2026</span></h3>
+        <ul>
+          <li>Dự toán, bảng tổng hợp dự toán, công thức tính</li>
+          <li>Định mức (định mức dự toán)</li>
+          <li>Đơn giá tổng hợp</li>
+          <li>Giá nhân công, giá ca máy</li>
+        </ul>
+      </div>
+
+      <div class="doc-group">
+        <h3>Nghị định QLHĐ <span class="code">210/2026</span> + Quyết định <span class="code">1040/QĐ-BXD</span></h3>
+        <p style="font-size:13px;color:#8a8a8a;margin:4px 0 0;">Công bố mẫu hợp đồng</p>
+        <ul>
+          <li>Hợp đồng xây dựng, phân loại</li>
+          <li>Biểu mẫu hợp đồng</li>
+        </ul>
+      </div>
+
+      <div class="doc-group"><h3>Các Thông tư, Quyết định</h3></div>
+
+      <div class="case">
+        <div class="case-label">Tình huống thực tế</div>
+        <p>Từ 1/7: bỏ nghiệm thu PCCC khi đã thẩm định thiết kế.</p>
+      </div>
+
+      <details class="deep-dive">
+        <summary>Đi sâu nghiệp vụ — Phần 2</summary>
+        <div class="deep-dive-body">
+          <div class="insight">
+            <h4>Tạm ứng — thu hồi — quyết toán hợp đồng<span class="ref">NĐ 210/2026</span></h4>
+            <p>Tạm ứng tối đa 30% giá trị hợp đồng; phải thu hồi hết khi giá trị thanh toán lũy kế (tạm ứng + khối lượng hoàn thành) đạt 80% giá hợp đồng. Quyết toán hợp đồng phải xong trong 60–120 ngày sau khi hoàn thành, tùy quy mô/tính chất hợp đồng.</p>
+            <span class="flag">Chốt mốc thời gian cụ thể ngay trong hợp đồng A–B, tránh để điều khoản "mở".</span>
+          </div>
+          <div class="insight">
+            <h4>Tạm dừng hợp đồng<span class="ref">Điều 85, Luật 135 · NĐ 210</span></h4>
+            <p>Bên tạm dừng phải thông báo bằng văn bản, nêu rõ lý do; thời gian thông báo tối đa 28 ngày, trừ trường hợp bất khả kháng.</p>
+          </div>
+          <div class="insight">
+            <h4>Cơ chế DAB xử lý tranh chấp<span class="ref">NĐ 210/2026</span></h4>
+            <p>Lần đầu có cơ chế ban xử lý tranh chấp (DAB) chính thức trong nghị định; thành viên phải khách quan, độc lập, không xung đột lợi ích với các bên.</p>
+          </div>
+          <div class="insight">
+            <h4>Định mức &amp; giá bám sát thị trường<span class="ref">NĐ 206/2026</span></h4>
+            <p>Định mức xây dựng gồm định mức kinh tế-kỹ thuật và định mức chi phí, dùng xác định giá xây dựng công trình — cập nhật sát biến động thị trường hơn NĐ 10/2021 cũ.</p>
+          </div>
+        </div>
+      </details>
+
+      <div class="type-block" id="type-block-2">
+        <div class="type-block-head">
+          <h3>Nghiệp vụ chuyên sâu theo module</h3>
+          <span>Dự toán · Hợp đồng · Thanh toán · Tranh chấp</span>
+        </div>
+        <div class="type-tabs" id="cd2-tabs"></div>
+        <div id="cd2-panels"></div>
+      </div>
+    </div>
+
+    <!-- PANEL 3 -->
+    <div class="panel" data-accent="2" id="panel-2">
+      <div class="panel-head">
+        <span class="panel-tag" style="background:var(--topic-3)">03</span>
+        <div>
+          <h2>Quản lý chất lượng và nghiệm thu công trình</h2>
+          <div class="panel-sub">Những đầu việc cán bộ QLDA thường bỏ sót</div>
+        </div>
+      </div>
+      <div class="law-strip">Luật Xây dựng 135/2025/QH15 — liên quan đến nội dung bài học</div>
+
+      <div class="doc-group">
+        <h3>Nghị định QLHĐ, QLDA <span class="code">207/2026</span></h3>
+        <ul>
+          <li>Quản lý chất lượng</li>
+          <li>Nghiệm thu vật liệu</li>
+          <li>Nghiệm thu công việc</li>
+          <li>Nghiệm thu từng phần công trình</li>
+          <li>Nghiệm thu PCCC</li>
+          <li>Kiểm tra công tác nghiệm thu</li>
+          <li>Hoàn công</li>
+        </ul>
+      </div>
+
+      <div class="doc-group"><h3>Thông tư, Quyết định (nếu có)</h3></div>
+
+      <div class="doc-group">
+        <h3>Nghị định <span class="code">217/2026 + 210/2026</span></h3>
+        <ul>
+          <li>Trình thẩm duyệt — những nội dung hay sót, hay quên của cán bộ QLDA, đặc biệt ở cấp xã, phường</li>
+          <li>Hệ quả: thiếu đầu việc, thiếu kinh phí trong TMĐT, làm kéo dài tiến độ, đội chi phí, lãng phí</li>
+        </ul>
+      </div>
+
+      <div class="case">
+        <div class="case-label">Tình huống thực tế</div>
+        <p>Các lỗi thường gặp khi trình thẩm duyệt.</p>
+      </div>
+
+      <details class="deep-dive">
+        <summary>Đi sâu nghiệp vụ — Phần 3</summary>
+        <div class="deep-dive-body">
+          <div class="insight">
+            <h4>Ngưỡng phân cấp nhà ở riêng lẻ theo tầng<span class="ref">NĐ 207/2026</span></h4>
+            <p>Dưới 3 tầng (diện tích &lt;250m², cao &lt;12m): chủ sở hữu tự tổ chức thiết kế. Dưới 7 tầng hoặc có 1 tầng hầm: bắt buộc tổ chức/cá nhân có chuyên môn. Từ 7 tầng trở lên hoặc từ 2 tầng hầm: bắt buộc chuyên môn thiết kế, hồ sơ phải tuân thủ nghiêm ngặt quy chuẩn PCCC.</p>
+            <span class="flag">Cán bộ QLDA cấp xã, phường hay nhầm ngưỡng này → cấp phép sai thẩm quyền.</span>
+          </div>
+          <div class="insight">
+            <h4>BIM trong quản lý thi công &amp; nghiệm thu<span class="ref">Điều 11, NĐ 207/2026</span></h4>
+            <p>Bổ sung quy định ứng dụng công nghệ thông tin/BIM để quản lý thi công, chất lượng và nghiệm thu — liên kết trực tiếp với yêu cầu BIM bắt buộc tại NĐ 217 từ khâu lập dự án.</p>
+          </div>
+          <div class="insight">
+            <h4>Gốc của "thiếu đầu việc, thiếu kinh phí"</h4>
+            <p>Nếu QLDA không tách rõ chi phí thẩm duyệt, chi phí BIM, chi phí kiểm tra công tác nghiệm thu ngay từ khâu lập TMĐT (Phần 1), đến giai đoạn nghiệm thu sẽ phát sinh thiếu vốn, phải xin bổ sung.</p>
+            <span class="flag">Hệ quả: kéo dài tiến độ, đội chi phí, lãng phí — đúng cảnh báo thực tế của cán bộ QLDA cấp xã, phường.</span>
+          </div>
+        </div>
+      </details>
+
+      <div class="type-block" id="type-block-3">
+        <div class="type-block-head">
+          <h3>Nghiệp vụ chuyên sâu theo module</h3>
+          <span>Chất lượng · Nghiệm thu · Kiểm tra nghiệm thu · Bảo hành-Bảo trì</span>
+        </div>
+        <div class="type-tabs" id="cd3-tabs"></div>
+        <div id="cd3-panels"></div>
+      </div>
+    </div>
+
+    <!-- PANEL 4 -->
+    <div class="panel" data-accent="3" id="panel-3">
+      <div class="panel-head">
+        <span class="panel-tag" style="background:var(--topic-4)">04</span>
+        <div>
+          <h2>Hợp đồng – Thanh toán – Quyết toán</h2>
+          <div class="panel-sub">Khép kín vòng đời hợp đồng A–B</div>
+        </div>
+      </div>
+      <div class="law-strip">Luật Xây dựng 135/2025/QH15 — liên quan đến nội dung bài học</div>
+
+      <div class="doc-group">
+        <h3>Nghị định <span class="code">210/2026</span></h3>
+        <ul>
+          <li>Hợp đồng và các vấn đề liên quan đến thanh toán, quyết toán hợp đồng A–B</li>
+        </ul>
+      </div>
+
+      <div class="doc-group">
+        <h3>Nghị định <span class="code">193/2026</span></h3>
+        <ul>
+          <li>Quyết toán vốn đầu tư</li>
+        </ul>
+      </div>
+
+      <div class="doc-group"><h3>Thông tư, Quyết định (nếu có)</h3></div>
+
+      <div class="case">
+        <div class="case-label">Tình huống thực tế</div>
+        <p>Các vướng mắc thường gặp khi quyết toán.</p>
+      </div>
+
+      <details class="deep-dive">
+        <summary>Đi sâu nghiệp vụ — Phần 4</summary>
+        <div class="deep-dive-body">
+          <div class="insight">
+            <h4>Vốn quyết toán = chi phí hợp pháp đã thực hiện<span class="ref">NĐ 193/2026</span></h4>
+            <p>Vốn đầu tư được quyết toán là toàn bộ chi phí hợp pháp đã thực hiện trong quá trình đầu tư để đưa dự án vào khai thác, sử dụng hoặc dừng thực hiện.</p>
+          </div>
+          <div class="insight">
+            <h4>Giới hạn đỏ khi quyết toán<span class="ref">NĐ 193/2026</span></h4>
+            <p>Tổng số vốn đề nghị quyết toán của toàn bộ dự án hoàn thành không được vượt quá tổng mức đầu tư đã phê duyệt hoặc phê duyệt điều chỉnh.</p>
+            <span class="flag">Nguyên tắc đầu tiên kiểm toán/Kho bạc sẽ soi — kiểm tra trước khi nộp hồ sơ.</span>
+          </div>
+          <div class="insight">
+            <h4>Quyết toán riêng hạng mục độc lập<span class="ref">NĐ 193/2026</span></h4>
+            <p>Với công trình/hạng mục có thể vận hành độc lập, có thể xin quyết toán riêng: giá trị gồm chi phí xây dựng, thiết bị, tư vấn và chi khác liên quan trực tiếp đến hạng mục đó.</p>
+            <span class="flag">Hữu ích cho dự án phân kỳ, nhiều gói thầu độc lập.</span>
+          </div>
+          <div class="insight">
+            <h4>Chuỗi số liệu liên tục hợp đồng → quyết toán</h4>
+            <p>Tạm ứng ≤30% → thu hồi hết ở mốc 80% giá hợp đồng → quyết toán hợp đồng trong 60–120 ngày → gộp vào quyết toán vốn dự án, không vượt TMĐT. Một luồng dữ liệu duy nhất, không rời rạc từng khâu.</p>
+          </div>
+        </div>
+      </details>
+
+      <div class="type-block" id="type-block-4">
+        <div class="type-block-head">
+          <h3>Nghiệp vụ chuyên sâu theo module</h3>
+          <span>Hợp đồng A-B · Quyết toán vốn đầu tư · Quy trình · Tranh chấp</span>
+        </div>
+        <div class="type-tabs" id="cd4-tabs"></div>
+        <div id="cd4-panels"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="private-section" id="private-section">
+    <div class="private-head">
+      <span class="eyebrow-dark">Nội dung mở rộng</span>
+      <h2>Đầu tư xây dựng với vốn tư nhân</h2>
+      <p class="sub-dark">Đất đai &amp; cơ chế tháo gỡ dự án tồn đọng — Nghị quyết 254/2025/QH15 · Nghị quyết 29/2026/QH16 · Nghị định 147/2026/NĐ-CP</p>
+    </div>
+    <div class="private-body">
+      <div class="type-tabs" id="priv-tabs" style="grid-template-columns:repeat(2,1fr);"></div>
+      <div id="priv-panels"></div>
+    </div>
+  </section>
+
+  <section class="lookup-section" id="lookup-section">
+    <div class="lookup-head">
+      <span class="eyebrow-dark">Công cụ tra cứu</span>
+      <h2>Lịch hiệu lực &amp; Danh mục văn bản</h2>
+      <p class="sub-dark">Tổng hợp toàn bộ mốc ngày hiệu lực và văn bản pháp luật đã trích dẫn xuyên suốt 19 module — tra theo số hiệu, từ khóa hoặc phần nội dung.</p>
+    </div>
+    <div class="lookup-body">
+      <div class="lookup-tabs">
+        <button class="lookup-tab-btn active" data-lookup="timeline">Lịch hiệu lực</button>
+        <button class="lookup-tab-btn" data-lookup="index">Danh mục văn bản</button>
+      </div>
+      <input type="text" class="lookup-search" id="lookup-search" placeholder="Tìm theo số hiệu, tên văn bản, từ khóa...">
+      <div class="lookup-panel active" id="lookup-timeline"></div>
+      <div class="lookup-panel" id="lookup-index"></div>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Cách sử dụng cẩm nang</h3>
+        <ul>
+          <li>Chọn đúng Phần (1–4) hoặc mục "Vốn tư nhân" theo nghiệp vụ đang xử lý</li>
+          <li>Bấm vào từng số trong sơ đồ quy trình để nhảy thẳng tới bước chi tiết</li>
+          <li>Đối chiếu "Lịch hiệu lực" trước khi áp dụng văn bản cho hồ sơ mới</li>
+          <li>Dùng ô tìm kiếm ở "Tra cứu nhanh" khi cần một số hiệu hoặc từ khóa cụ thể</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Phạm vi áp dụng</h3>
+        <ul>
+          <li>Cập nhật theo Luật Xây dựng 135/2025/QH15 và các nghị định hướng dẫn hiệu lực 1/7/2026</li>
+          <li>Một số văn bản đang trong quá trình sửa đổi — đã ghi chú rõ trong "Danh mục văn bản"</li>
+          <li>Nội dung mang tính tham khảo nghiệp vụ, không thay thế văn bản pháp luật gốc</li>
+          <li>Cần đối chiếu bản mới nhất trên Cổng thông tin điện tử Chính phủ trước khi áp dụng chính thức</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Lợi ích khi sử dụng</h3>
+        <ul>
+          <li>Hệ thống hóa quy định mới theo từng nghiệp vụ, dễ tra cứu khi cần</li>
+          <li>Hiểu đúng – áp dụng đúng – giảm rủi ro pháp lý</li>
+          <li>Nâng cao hiệu quả quản lý dự án, chi phí, chất lượng, hợp đồng, quyết toán</li>
+          <li>Rút ngắn thời gian tra cứu nhờ sơ đồ quy trình và bảng RACI có sẵn</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>Đối tượng phù hợp</h3>
+        <ul>
+          <li>Ban QLDA, chủ đầu tư</li>
+          <li>Tư vấn, nhà thầu, kỹ sư, QS</li>
+          <li>Cán bộ kỹ thuật – pháp chế</li>
+          <li>Công chức cấp xã, phường</li>
+          <li>Cá nhân và doanh nghiệp hoạt động trong lĩnh vực xây dựng</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-quote">
+    "Nắm vững quy định mới – Áp dụng đúng – An toàn pháp lý"
+    <span>Tối ưu chi phí · Đẩy nhanh tiến độ</span>
+  </div>
+  <div class="footer-meta">LUẬT XÂY DỰNG 135/2025/QH15 · NĐ 217, 210, 207, 206, 193 /2026</div>
+
+<script type="application/json" id="seminar-data">
+{"projectTypes":[{"id":"kcn","label":"Khu công nghiệp","note":"Đầu tư hạ tầng KCN + thu hút nhà đầu tư thứ cấp","legal":["NĐ 35/2022/NĐ-CP — quản lý KCN, KKT (đang được soạn thảo nghị định thay thế từ cuối 2025, cần theo dõi cập nhật).","Luật Đầu tư 2020 — chấp thuận chủ trương đầu tư đồng thời chấp thuận nhà đầu tư hạ tầng KCN.","Luật Đất đai 2024 — giao/cho thuê đất cho chủ đầu tư hạ tầng; chủ đầu tư cho thuê lại đất cho nhà đầu tư thứ cấp.","Luật Bảo vệ môi trường 2020 — ĐTM cấp KCN (tổng thể) + ĐTM/giấy phép môi trường riêng cho từng dự án thứ cấp.","Luật PCCC & CNCH 2024 — thẩm định thiết kế PCCC hạ tầng và từng nhà xưởng thứ cấp.","Luật Xây dựng 135/2025 + NĐ 217/2026 — quy hoạch phân khu/chi tiết KCN, thẩm định dự án đầu tư XD hạ tầng."],"steps":["Đưa KCN vào quy hoạch/phương án phát triển hệ thống KCN cấp tỉnh","Lập báo cáo nghiên cứu tiền khả thi / đề xuất dự án đầu tư hạ tầng","Chấp thuận chủ trương đầu tư đồng thời chấp thuận nhà đầu tư hạ tầng","Lập, thẩm định, phê duyệt quy hoạch phân khu/chi tiết xây dựng KCN","Giao đất/cho thuê đất, bồi thường – hỗ trợ – tái định cư","Lập, thẩm định, phê duyệt ĐTM cấp KCN","Lập, thẩm định, phê duyệt dự án đầu tư xây dựng hạ tầng (Luật XD 135 + NĐ 217)","Thẩm định thiết kế PCCC hạ tầng KCN","Cấp phép xây dựng (nếu có), thi công, nghiệm thu hạ tầng","Đưa hạ tầng vào khai thác, ký hợp đồng cho thuê lại đất với NĐT thứ cấp","NĐT thứ cấp làm thủ tục riêng: IRC (nếu FDI), phép XD, môi trường, PCCC"],"risks":[["Chuyển tiếp khi NĐ 35/2022 được thay thế","Hồ sơ đang xử lý có thể phải áp dụng quy định chuyển tiếp, ảnh hưởng tiến độ chấp thuận CTĐT.","Theo dõi sát tiến độ ban hành nghị định thay thế trước khi nộp hồ sơ mới."],["GPMB kéo dài, chưa đồng bộ hạ tầng","Chủ đầu tư được giao đất một phần nhưng GPMB phần còn lại chậm.","Lập kế hoạch GPMB theo phân khu, gắn giải ngân với diện tích đã bàn giao."],["ĐTM cấp KCN không cập nhật kịp ngành nghề thu hút","Ngành nghề thứ cấp thay đổi so với ĐTM gốc → bị từ chối cấp phép môi trường.","Rà soát danh mục ngành nghề trong ĐTM gốc trước khi ký hợp đồng thuê mới."],["Hạ tầng ngoài hàng rào chưa đồng bộ","NĐT thứ cấp hoạt động nhưng điện/nước/giao thông kết nối chưa hoàn thiện.","Đưa điều kiện hạ tầng kết nối vào cam kết tiến độ, giám sát định kỳ."],["NĐT thứ cấp vào trước khi PCCC hoàn chỉnh","Vi phạm điều kiện đưa công trình vào khai thác, rủi ro an toàn.","Chỉ ký hợp đồng thuê chính thức sau khi PCCC được nghiệm thu."]],"raciRoles":["UBND tỉnh/Thủ tướng","CĐT hạ tầng KCN","Ban QL KCN","Sở KHĐT/TNMT/XD","Tư vấn QS/Pháp lý"],"raci":[["Chấp thuận CTĐT + nhà đầu tư","A","C","R","C","I"],["Lập quy hoạch phân khu/chi tiết","I","R","A","C","C"],["Giao đất, cho thuê đất, GPMB","A","R","C","R","I"],["Lập & phê duyệt ĐTM cấp KCN","I","R","C","A","C"],["Thẩm định dự án đầu tư XD hạ tầng","I","R","C","A","C"],["Thẩm định thiết kế PCCC","I","R","I","A/R","C"],["Nghiệm thu, đưa hạ tầng vào khai thác","I","A","R","C","R"],["Ký hợp đồng thuê với NĐT thứ cấp","I","A/R","C","I","R"]]},{"id":"ccn","label":"Cụm công nghiệp","note":"Quy mô nhỏ hơn KCN, phân cấp mạnh cho cấp huyện/tỉnh","legal":["NĐ 32/2024/NĐ-CP (hiệu lực 1/5/2024) — thay NĐ 68/2017 và NĐ 66/2020.","Điểm đặc thù: nếu dự án hạ tầng CCN phù hợp Báo cáo đầu tư đã duyệt thì KHÔNG cần chấp thuận chủ trương đầu tư riêng theo Luật Đầu tư 2020.","Luật Đất đai 2024 — giao/cho thuê đất cho chủ đầu tư hạ tầng CCN.","Luật Bảo vệ môi trường 2020 — đánh giá sơ bộ môi trường ngay trong Báo cáo đầu tư; ĐTM/giấy phép chính thức khi triển khai.","Luật PCCC & CNCH 2024; Luật Xây dựng 135/2025 + NĐ 217/2026."],"steps":["Đưa CCN vào Danh mục CCN cấp tỉnh đã phê duyệt (Điều 8 NĐ 32/2024)","UBND cấp huyện thông báo tiếp nhận hồ sơ chủ đầu tư hạ tầng (5 ngày làm việc)","Lập hồ sơ đề nghị thành lập/mở rộng CCN (Báo cáo đầu tư)","UBND cấp huyện thẩm định, trình UBND cấp tỉnh ra Quyết định thành lập/mở rộng","Giao đất/cho thuê đất cho chủ đầu tư hạ tầng","Lập, thẩm định, phê duyệt ĐTM/giấy phép môi trường chính thức","Lập, thẩm định, phê duyệt dự án đầu tư xây dựng hạ tầng kỹ thuật CCN","Thẩm định thiết kế PCCC hạ tầng","Thi công, nghiệm thu, đưa hạ tầng vào khai thác; thu hút doanh nghiệp thứ cấp"],"risks":[["Nhầm ngưỡng 75ha khi xử lý CCN hình thành trước 2009","CCN >75ha hình thành trước QĐ 105/2009/QĐ-TTg có cơ chế chuyển tiếp riêng.","Rà soát lịch sử pháp lý CCN trước khi xác định thủ tục áp dụng."],["Chủ đầu tư hạ tầng chưa đủ năng lực tài chính","Doanh nghiệp/HTX đăng ký làm CĐT nhưng không đủ vốn triển khai đúng tiến độ.","Thẩm định kỹ năng lực tài chính (Điều 9 NĐ 32/2024) trước khi trình duyệt."],["Xử lý nước thải tập trung chưa đồng bộ","Hạ tầng môi trường chưa hoàn thiện khi DN thứ cấp đã hoạt động.","Ràng buộc điều kiện khai thác gắn với hệ thống xử lý nước thải tập trung."],["Chồng lấn quy hoạch CCN cũ và Danh mục mới","CCN đã tồn tại nhưng chưa cập nhật vào Danh mục cấp tỉnh mới.","Đối chiếu Danh mục CCN cấp tỉnh hiện hành trước khi lập hồ sơ mở rộng."]],"raciRoles":["UBND cấp tỉnh","UBND cấp huyện","CĐT hạ tầng CCN","Sở CT/TNMT/XD","Tư vấn QS/Pháp lý"],"raci":[["Đưa CCN vào Danh mục cấp tỉnh","A","R","C","R","I"],["Thông báo tiếp nhận hồ sơ CĐT","I","A/R","C","I","I"],["Thẩm định, ra Quyết định thành lập","A","R","C","R","C"],["Giao đất, cho thuê đất","A","C","R","R","I"],["Lập & phê duyệt ĐTM/GPMT","I","I","R","A","C"],["Thẩm định dự án XD hạ tầng, PCCC","I","I","R","A","C"],["Nghiệm thu, đưa vào khai thác","I","C","A/R","C","R"]]},{"id":"kdt","label":"Khu đô thị","note":"Gắn với Chương trình phát triển đô thị và điều kiện kinh doanh BĐS","legal":["NĐ 11/2013/NĐ-CP (hợp nhất tại VBHN 04/VBHN-BXD 11/02/2026) — đang lấy ý kiến dự thảo thay thế.","Luật Quy hoạch đô thị và nông thôn 47/2024/QH15 (sửa đổi bởi Luật 144/2025/QH15).","NQ 111/2025/UBTVQH15 + NĐ 35/2026/NĐ-CP (hiệu lực 22/1/2026) — phân loại đô thị, Chương trình phát triển đô thị cấp tỉnh 10 năm.","Luật Đất đai 2024; Luật Nhà ở 2023; Luật Kinh doanh BĐS 2023 — điều kiện huy động vốn, bán nhà hình thành trong tương lai.","Luật BVMT 2020; Luật PCCC & CNCH 2024; Luật XD 135/2025 + NĐ 217, 207/2026 (Điều 29 — điều kiện đưa công trình KĐT vào khai thác)."],"steps":["Xác định phù hợp Chương trình phát triển đô thị cấp tỉnh (NĐ 35/2026) và quy hoạch phân khu/chi tiết","Xác định khu vực phát triển đô thị và kế hoạch thực hiện (nếu thuộc diện)","Lựa chọn chủ đầu tư: đấu thầu lựa chọn NĐT hoặc đấu giá quyền sử dụng đất","Chấp thuận chủ trương đầu tư đồng thời chấp thuận nhà đầu tư","Giao đất/cho thuê đất, bồi thường – hỗ trợ – tái định cư","Lập, thẩm định, phê duyệt ĐTM/giấy phép môi trường","Lập, thẩm định, phê duyệt dự án đầu tư XD, thiết kế cơ sở (Luật XD 135 + NĐ 217)","Thẩm định thiết kế PCCC","Cấp phép xây dựng hạ tầng + công trình; thi công","Đáp ứng điều kiện đưa công trình vào khai thác (hạ tầng KT + XH, Điều 29 NĐ 207/2026)","Đáp ứng điều kiện huy động vốn/bán nhà hình thành trong tương lai (Luật KDBĐS 2023)","Nghiệm thu, bàn giao hạ tầng cho địa phương/Ban quản trị"],"risks":[["Quy hoạch/chương trình phát triển đô thị bị điều chỉnh giữa chừng","Đồ án KĐT có thể bị dừng/rà soát lại khi không còn phù hợp thực tiễn.","Cập nhật định kỳ với cơ quan quy hoạch, gắn tiến độ dự án với chu kỳ rà soát."],["Huy động vốn/bán nhà trước khi đủ điều kiện","Rủi ro hành chính, thậm chí hình sự nếu bán nhà trước khi đủ điều kiện pháp lý.","Kiểm soát chặt mốc pháp lý trước khi cho phép mở bán."],["Hạ tầng xã hội chậm hơn hạ tầng kỹ thuật","Vi phạm điều kiện đưa công trình vào khai thác (Điều 29 NĐ 207/2026).","Lập tiến độ hạ tầng xã hội song song ngay từ giai đoạn lập dự án."],["Chồng chéo quy hoạch phân khu cũ và NĐ 35/2026 mới","Một số nội dung quy hoạch cũ có thể bị bãi bỏ hoặc cần tích hợp lại.","Rà soát hiệu lực quy hoạch phân khu hiện hữu trước khi trình phê duyệt mới."],["Thay đổi thẩm quyền phê duyệt do sáp nhập hành chính","Mô hình chính quyền 2 cấp làm thay đổi đầu mối phê duyệt.","Xác nhận lại đầu mối thẩm quyền hiện hành trước khi nộp hồ sơ."]],"raciRoles":["UBND tỉnh/TP","CĐT dự án KĐT","Sở XD/TNMT/KHĐT","Sở XD (nhà ở, KDBĐS)","Tư vấn QS/Pháp lý"],"raci":[["Xác định phù hợp Chương trình PTĐT","A","C","R","I","C"],["Lựa chọn chủ đầu tư","A","R","R","I","C"],["Chấp thuận chủ trương đầu tư","A","C","R","I","I"],["Giao đất, cho thuê đất, GPMB","A","R","R","I","I"],["Thẩm định dự án XD, PCCC","I","R","A","C","C"],["Xác nhận điều kiện đưa vào khai thác","I","R","A","C","R"],["Xác nhận đủ điều kiện huy động vốn/bán nhà","I","R","C","A","R"],["Nghiệm thu bàn giao hạ tầng","A","R","R","I","R"]]},{"id":"ftz","label":"Khu thương mại tự do","note":"Cơ chế thí điểm riêng — đặc thù Đà Nẵng, đang trong quá trình hoàn thiện pháp lý","legal":["NQ 136/2024/QH15 (26/6/2024) — thí điểm cơ chế đặc thù Đà Nẵng; Điều 13 quy định thành lập FTZ gắn với Cảng Liên Chiểu.","NQ 259/2025/QH15 (11/12/2025) — sửa đổi, bổ sung NQ 136/2024/QH15.","QĐ 1142/QĐ-TTg (13/6/2025) — thành lập FTZ Đà Nẵng: 7 vị trí không liền kề, ~1.881ha.","Nghị quyết HĐND TP Đà Nẵng (đang xây dựng 2026, từ Tờ trình 136/TTr-UBND 13/4/2026) — trình tự điều chỉnh/mở rộng ranh giới.","Khoản 5 Điều 13 NQ 136 — ưu đãi đặc thù: thời hạn dự án như khu kinh tế; NĐT nước ngoài lập tổ chức kinh tế không cần có dự án đầu tư trước.","NĐ 103/2024/NĐ-CP — nhà đầu tư chiến lược được ứng trước chi phí GPMB, khấu trừ vào tiền thuê đất."],"steps":["Xây dựng/điều chỉnh Đề án thành lập hoặc mở rộng ranh giới FTZ","Thủ tướng ra Quyết định thành lập/điều chỉnh (như QĐ 1142/QĐ-TTg)","Lựa chọn nhà đầu tư chiến lược đầu tư hạ tầng từng khu chức năng (đấu thầu)","NĐT chiến lược ứng trước chi phí GPMB (khấu trừ theo NĐ 103/2024)","Giao đất/cho thuê đất theo cơ chế ưu đãi khu kinh tế","Rà soát điều kiện áp dụng cơ chế đặc thù cho NĐT nước ngoài","Lập, thẩm định, phê duyệt dự án đầu tư XD hạ tầng khu chức năng","Lập ĐTM/giấy phép môi trường; thẩm định thiết kế PCCC","Thi công, nghiệm thu, đưa hạ tầng khu chức năng vào khai thác","Thu hút nhà đầu tư thứ cấp thuê lại đất/hạ tầng"],"risks":[["Khung pháp lý còn đang hoàn thiện","NQ HĐND TP về trình tự mở rộng ranh giới vẫn đang xây dựng (giữa 2026), thủ tục có thể thay đổi.","Theo dõi sát tiến độ ban hành trước khi cam kết tiến độ với nhà đầu tư."],["7 vị trí không liền kề, khó đồng bộ hạ tầng kết nối","Đầu tư và vận hành phân tán làm tăng chi phí kết nối logistics.","Ưu tiên phân kỳ đầu tư theo vị trí tiềm năng sớm nhất, đồng bộ trục chính trước."],["Chi phí GPMB chiếm tỷ trọng rất lớn (~58% tổng vốn)","Rủi ro tiến độ, dòng tiền nếu GPMB chậm, ảnh hưởng khấu trừ tiền thuê đất.","Xây dựng phương án tài chính riêng cho GPMB, làm rõ cơ chế khấu trừ với cơ quan thuế."],["Ưu đãi đặc thù có thể xung đột luật chuyên ngành khi áp dụng","Một số quyền lợi cần văn bản hướng dẫn cụ thể để áp dụng nhất quán.","Xin ý kiến bằng văn bản của Ban QL/Sở KHĐT cho từng trường hợp cụ thể."],["Phụ thuộc tiến độ phê duyệt cấp Trung ương","Mở rộng/điều chỉnh ranh giới phụ thuộc Quốc hội, Thủ tướng.","Chuẩn bị phương án đầu tư theo ranh giới hiện hữu song song theo dõi tiến trình mở rộng."]],"raciRoles":["Quốc hội/Thủ tướng","UBND & HĐND Đà Nẵng","NĐT chiến lược","Sở KHĐT/TNMT/XD","Tư vấn QS/Pháp lý"],"raci":[["Thành lập/điều chỉnh ranh giới FTZ","A","R","I","C","I"],["Ban hành trình tự điều chỉnh ranh giới","C","A/R","I","R","I"],["Lựa chọn nhà đầu tư chiến lược","I","A","R","R","C"],["Ứng vốn GPMB, khấu trừ tiền thuê đất","I","A","R","R","C"],["Giao đất theo cơ chế khu kinh tế","I","A","R","R","I"],["Thẩm định dự án XD, môi trường, PCCC","I","A","R","R","C"],["Nghiệm thu, đưa khu chức năng vào khai thác","I","A","R","C","R"]]}],"privateTracks":[{"id":"datdai-thuongxuyen","label":"A. Đất đai — cơ chế thường xuyên","note":"Áp dụng khi nhà đầu tư tư nhân chủ động thỏa thuận nhận quyền sử dụng đất để thực hiện dự án — con đường phổ biến nhất ngoài đấu giá/đấu thầu.","legal":["Luật Đất đai 31/2024/QH15 (hiệu lực 1/8/2024) — nền tảng về giao đất, cho thuê đất, thỏa thuận nhận quyền sử dụng đất.","Nghị quyết 254/2025/QH15 (hiệu lực 1/1/2026) — giảm tiền sử dụng đất khi chuyển đổi đất nông nghiệp sang đất ở; bổ sung trường hợp Nhà nước thu hồi đất vì lợi ích kinh tế - xã hội.","Điểm mấu chốt NQ 254: nếu nhà đầu tư đã thỏa thuận nhận QSDĐ đạt trên 75% diện tích VÀ trên 75% số người sử dụng đất, hết thời hạn/gia hạn mà chưa xong phần còn lại, HĐND cấp tỉnh xem xét thông qua việc Nhà nước thu hồi phần diện tích còn lại.","Nghị định 49/2026/NĐ-CP — hướng dẫn thi hành NQ 254: quy trình rà soát, lập bản đồ địa chính; thẩm định phương án do chủ đầu tư đề xuất."],"steps":["Xác định khu đất phù hợp quy hoạch, kế hoạch sử dụng đất","Thỏa thuận nhận chuyển nhượng/thuê/góp vốn QSDĐ với người sử dụng đất hiện hữu","Theo dõi tỷ lệ thỏa thuận (diện tích & số người SDĐ) trước khi hết thời hạn/gia hạn","Nếu đạt trên 75%/75%: đề nghị HĐND cấp tỉnh xem xét thu hồi phần còn lại","Nhà nước thực hiện thu hồi, bồi thường phần diện tích còn lại","Xác định trường hợp miễn/giảm tiền sử dụng đất khi chuyển đổi đất nông nghiệp sang đất ở","Chủ đầu tư đề xuất phương án đo đạc lập bản đồ địa chính khu vực (nếu cần), trình thẩm định","Hoàn thiện hồ sơ pháp lý đất đai làm căn cứ triển khai dự án đầu tư xây dựng"],"risks":[["Không đạt ngưỡng 75%/75%","Chưa đạt cả hai tiêu chí khi hết thời hạn thỏa thuận → không được hỗ trợ thu hồi phần còn lại, dự án bị \"da beo\", kéo dài.","Theo dõi song song cả 2 chỉ số theo tuần/tháng, không chỉ tính theo diện tích."],["Nhầm lẫn 2 tiêu chí độc lập","Diện tích và số người SDĐ là hai điều kiện tách biệt, đều phải vượt 75%, không bù trừ cho nhau.","Lập bảng theo dõi riêng biệt cho từng tiêu chí, báo cáo định kỳ."],["Áp sai diện miễn/giảm tiền SDĐ","Không phải mọi chuyển đổi đất nông nghiệp sang đất ở đều được giảm tiền SDĐ theo NQ 254.","Xin văn bản xác nhận diện áp dụng của Sở TN&MT/cơ quan thuế trước khi ghi vào phương án tài chính."],["Hết thời gian gia hạn thỏa thuận","Thời gian gia hạn có giới hạn; không xin kịp sẽ mất quyền lợi theo cơ chế 75%/75%.","Đặt cảnh báo mốc thời gian gia hạn ngay từ khi bắt đầu thỏa thuận."],["Bản đồ địa chính khu vực chưa số hóa đầy đủ","Thiếu dữ liệu đo đạc khiến thẩm định phương án của chủ đầu tư bị chậm.","Chủ động phối hợp Văn phòng đăng ký đất đai rà soát dữ liệu trước khi nộp hồ sơ."]],"raciRoles":["CĐT tư nhân","Người SDĐ hiện hữu","HĐND cấp tỉnh","Sở TNMT/VPĐK đất đai","Tư vấn QS/Pháp lý"],"raci":[["Thỏa thuận nhận chuyển nhượng QSDĐ","R","R","I","I","C"],["Đề nghị thu hồi phần diện tích còn lại (75%/75%)","R","I","A","R","C"],["Thẩm định phương án đo đạc địa chính","R","I","I","A","C"],["Xác định diện miễn/giảm tiền sử dụng đất","R","I","I","A","R"],["Hoàn thiện hồ sơ pháp lý đất đai","A/R","I","I","C","R"]]},{"id":"datdai-dacthu","label":"B. Đất đai — cơ chế đặc thù tồn đọng","note":"Áp dụng khi dự án tư nhân đang \"đắp chiếu\" nhiều năm do vướng mắc pháp lý đất đai phát sinh trước 1/8/2024 (thời điểm Luật Đất đai 2024 có hiệu lực).","legal":["NQ 170/2024/QH15 (30/11/2024) — cơ chế đặc thù tháo gỡ vướng mắc dự án/đất đai trong kết luận thanh tra, kiểm tra, bản án — thí điểm tại TP.HCM, Đà Nẵng, Khánh Hòa.","NĐ 76/2025/NĐ-CP — hướng dẫn chi tiết NQ 170/2024, gồm điều chỉnh thời hạn sử dụng đất trên Giấy chứng nhận đã cấp tại Đà Nẵng.","NQ 265/2025/QH15 (11/12/2025) — mở rộng phạm vi áp dụng cơ chế đặc thù của NQ 170 cho các dự án/đất đai có tình huống pháp lý tương tự.","NQ 29/2026/QH16 (24/4/2026, hiệu lực 1/5/2026) — mở rộng áp dụng toàn quốc; áp dụng vi phạm trước 1/8/2024; xử lý vi phạm hiệu lực đến 1/5/2029, tháo gỡ dự án tồn đọng đến 1/5/2031.","NĐ 147/2026/NĐ-CP (hiệu lực 7/5/2026) — hướng dẫn NQ 29/2026: Điều 11 (GCN cấp sai), Điều 12 (giao/cho thuê đất dù vi phạm lựa chọn NĐT), Điều 13 (dự án trên đất Nhà nước thu hồi không đúng).","Điều kiện áp dụng: vi phạm trước 1/8/2024, không có yếu tố tham nhũng, đã xử lý xong trách nhiệm tổ chức/cá nhân; nếu đang tố tụng hình sự phải chờ bản án có hiệu lực/đình chỉ vụ án."],"steps":["Rà soát, xác định dự án có thuộc diện: vi phạm trước 1/8/2024 không có yếu tố tham nhũng, hoặc dự án tồn đọng kéo dài","Nếu đang tố tụng hình sự: chờ bản án có hiệu lực hoặc quyết định đình chỉ vụ án","Chuẩn bị hồ sơ chứng minh đã hoàn thành nghĩa vụ tài chính (xác nhận cơ quan thuế)","Nộp hồ sơ đề nghị áp dụng cơ chế đặc thù tới UBND cấp tỉnh","Cơ quan có thẩm quyền rà soát, phân loại vi phạm theo Điều 11/12/13 NĐ 147/2026","UBND cấp tỉnh quyết định phương án xử lý (giao/cho thuê đất phần còn lại, điều chỉnh GCN, hoặc cho tiếp tục triển khai)","Văn phòng đăng ký đất đai công khai thông tin GCN thuộc diện xử lý","Chủ đầu tư thực hiện nghĩa vụ tài chính bổ sung (nếu có)","Tiếp tục triển khai dự án theo quyết định đã ban hành","Chịu giám sát độc lập, kiểm toán định kỳ trong suốt quá trình xử lý"],"risks":[["Nhầm diện áp dụng","Cơ chế chỉ áp dụng cho vi phạm KHÔNG có yếu tố tham nhũng và đã xử lý xong trách nhiệm — nếu chưa xử lý xong sẽ chưa đủ điều kiện.","Đối chiếu kỹ kết luận thanh tra/kiểm tra/bản án trước khi nộp hồ sơ, xin ý kiến pháp lý độc lập."],["Nộp hồ sơ khi còn tố tụng hình sự","Hồ sơ bị từ chối hoặc phải chờ đến khi có bản án hiệu lực/đình chỉ vụ án.","Xác nhận tình trạng tố tụng với cơ quan điều tra/tòa án trước khi nộp hồ sơ."],["Bị coi là \"hợp thức hóa sai phạm\"","Thiếu hồ sơ minh bạch dễ bị cho rằng cơ chế bị lợi dụng.","Chủ động lưu trữ đầy đủ hồ sơ, phối hợp kiểm toán/giám sát độc lập ngay từ đầu."],["Bỏ lỡ mốc thời hạn hiệu lực","Xử lý vi phạm chỉ đến 1/5/2029; tháo gỡ dự án tồn đọng đến 1/5/2031 — quá hạn mất cơ hội.","Lập kế hoạch nộp hồ sơ sớm, không dồn vào giai đoạn cuối hiệu lực."],["Phát sinh nghĩa vụ tài chính bổ sung","Sau khi xử lý có thể phải nộp thêm tiền sử dụng đất/thuê đất.","Dự trù dòng tiền cho nghĩa vụ bổ sung ngay khi nộp hồ sơ."],["Nhầm văn bản áp dụng theo từng giai đoạn","Phạm vi mở rộng dần từ 3 địa phương (NQ 170) ra toàn quốc (NQ 29) — dễ áp nhầm.","Xác định chính xác thời điểm vi phạm và văn bản có hiệu lực tại thời điểm đó."]],"raciRoles":["CĐT/Nhà đầu tư","UBND cấp tỉnh","Thanh tra/Kiểm toán","VPĐK đất đai/Sở TNMT","Tư vấn QS/Pháp lý"],"raci":[["Rà soát, xác định diện áp dụng","R","A","C","C","R"],["Chờ kết quả tố tụng hình sự (nếu có)","I","I","A","I","C"],["Xác nhận hoàn thành nghĩa vụ tài chính","R","I","I","A","C"],["Quyết định phương án xử lý (Điều 11/12/13)","C","A/R","C","R","C"],["Công khai thông tin GCN thuộc diện xử lý","I","A","I","R","I"],["Giám sát, kiểm toán trong quá trình xử lý","I","A","R","C","I"],["Tiếp tục triển khai dự án sau xử lý","A/R","C","I","I","R"]]}],"cd2Modules":[{"id":"dutoan","label":"Dự toán & giá xây dựng","note":"Nghị định 206/2026/NĐ-CP (hiệu lực 1/7/2026) — thay NĐ 10/2021, tăng chủ động cho chủ đầu tư trong xác định định mức, đơn giá.","legal":["NĐ 206/2026/NĐ-CP — quy định chi tiết quản lý chi phí đầu tư xây dựng.","Chi phí thiết bị (Điều 5): gồm mua sắm và gia công/chế tạo — lập dự toán trên khối lượng, đơn giá tương ứng, hoặc theo hợp đồng/báo giá/giá thiết bị tương tự đã thực hiện.","Chủ đầu tư được áp dụng, vận dụng hoặc điều chỉnh định mức dự toán trên cơ sở hệ thống định mức nhà nước hoặc tự xác định theo công nghệ/biện pháp/điều kiện thi công thực tế của dự án.","Bổ sung cơ chế dùng dữ liệu công trình tương tự — kể cả dữ liệu nước ngoài khi dự án quy mô lớn/công nghệ mới chưa có định mức trong nước, phải phân tích quy đổi phù hợp mặt bằng giá Việt Nam.","Thẩm tra tổng mức đầu tư (nếu thuê tư vấn): kiểm tra tính pháp lý, sự phù hợp trước khi thẩm định chính thức.","Thông tư 36/2026/TT-BXD và 37/2026/TT-BXD — hướng dẫn phương pháp xác định chi phí và định mức chi tiết."],"steps":["Xác định sơ bộ tổng mức đầu tư ở giai đoạn báo cáo nghiên cứu tiền khả thi","Lập tổng mức đầu tư chi tiết kèm thiết kế cơ sở","Xác định chi phí thiết bị: mua sắm / gia công chế tạo theo khối lượng & đơn giá hoặc hợp đồng/báo giá","Áp dụng, vận dụng hoặc điều chỉnh định mức dự toán phù hợp công nghệ/biện pháp thi công thực tế","Lập dự toán xây dựng chi tiết trên cơ sở thiết kế kỹ thuật/bản vẽ thi công","Thuê tư vấn thẩm tra tổng mức đầu tư trước khi thẩm định chính thức (nếu cần)","Thẩm định, phê duyệt tổng mức đầu tư/dự toán theo thẩm quyền","Trong thi công: khảo sát, thu thập dữ liệu kiểm chứng định mức, báo cáo Bộ Xây dựng/UBND tỉnh"],"risks":[["Dùng dữ liệu nước ngoài không quy đổi đúng mặt bằng giá VN","Sai lệch tổng mức đầu tư ngay từ giai đoạn sơ bộ.","Yêu cầu tư vấn nêu rõ cơ sở quy đổi, đối chiếu mặt bằng giá tại thời điểm lập."],["Tự điều chỉnh định mức thiếu hồ sơ minh chứng","Không có hồ sơ khảo sát/thu thập dữ liệu kèm theo → bị loại khi thẩm tra/kiểm toán.","Lưu đầy đủ hồ sơ khảo sát, căn cứ kỹ thuật khi vận dụng/điều chỉnh định mức."],["Nhầm \"áp dụng\" và \"vận dụng/điều chỉnh\" định mức","Hai cơ chế có yêu cầu hồ sơ khác nhau, dễ áp sai quy trình.","Phân loại rõ ngay từ đầu định mức nào áp dụng nguyên trạng, định mức nào cần điều chỉnh có căn cứ."],["Thiết bị đặc chủng chưa có đơn giá tham chiếu","Dễ bị nhà cung cấp báo giá cao do thiếu cơ sở so sánh.","Thu thập tối thiểu 3 báo giá hoặc giá thiết bị tương tự đã thực hiện để đối chiếu."],["Không cập nhật Thông tư 36/37/2026 mới","Áp sai phương pháp xác định chi phí theo văn bản đã hết hiệu lực.","Rà soát hiệu lực thông tư hướng dẫn trước mỗi lần lập dự toán mới."]],"raciRoles":["Chủ đầu tư","Tư vấn lập dự toán/QS","Tư vấn thẩm tra","Cơ quan thẩm định","Bộ XD/UBND tỉnh"],"raci":[["Xác định sơ bộ tổng mức đầu tư","A","R","I","I","I"],["Áp dụng/điều chỉnh định mức dự toán","A","R","C","C","I"],["Thẩm tra tổng mức đầu tư (nếu thuê)","A","C","R","I","I"],["Thẩm định, phê duyệt TMĐT/dự toán","R","C","C","A","I"],["Khảo sát kiểm chứng định mức khi thi công","R","C","I","I","A"]]},{"id":"hopdong","label":"Hợp đồng & mẫu hợp đồng","note":"Nghị định 210/2026/NĐ-CP (3 chương, 34 điều, hiệu lực 1/7/2026) — lần đầu mở rộng phạm vi áp dụng sang cả khu vực tư nhân, không chỉ vốn nhà nước/PPP.","legal":["NĐ 210/2026/NĐ-CP — quy định chi tiết hợp đồng xây dựng, áp dụng cho chủ đầu tư, nhà thầu, tư vấn và tổ chức/cá nhân liên quan.","Quyết định 1040/QĐ-BXD — công bố mẫu hợp đồng xây dựng, biểu mẫu kèm theo, dùng làm khung tham chiếu.","Phân loại hợp đồng: theo nội dung công việc (tư vấn, thi công, cung cấp thiết bị, EPC, chìa khóa trao tay...) và theo hình thức giá (trọn gói, đơn giá cố định, đơn giá điều chỉnh, theo thời gian...).","Điểm mới quan trọng: hành lang pháp lý được mở rộng sang khu vực tư nhân — chuẩn hóa quy trình giao kết/vận hành hợp đồng cho toàn bộ nền kinh tế, không riêng dự án vốn nhà nước."],"steps":["Xác định loại hợp đồng phù hợp theo nội dung công việc & hình thức giá","Lựa chọn mẫu hợp đồng tương ứng theo Quyết định 1040/QĐ-BXD làm khung tham chiếu","Đàm phán, điều chỉnh điều khoản đặc thù dự án trên nền mẫu hợp đồng (giá, tiến độ, bảo đảm thực hiện)","Thỏa thuận điều khoản về Ban xử lý tranh chấp (DAB/DRB) ngay trong hợp đồng","Ký kết hợp đồng, đảm bảo đủ nội dung bắt buộc theo NĐ 210/2026","Quản lý thực hiện hợp đồng: theo dõi tiến độ, khối lượng, các mốc thanh toán","Xử lý phát sinh/điều chỉnh hợp đồng theo đúng trình tự đã thỏa thuận","Thanh lý hợp đồng khi các bên hoàn thành nghĩa vụ"],"risks":[["Dùng mẫu hợp đồng cũ (trước 1/7/2026)","Thiếu điều khoản DAB, sai thẩm quyền, không phù hợp NĐ 210/2026 mới.","Đối chiếu mẫu hợp đồng hiện dùng với Quyết định 1040/QĐ-BXD trước khi ký."],["Không thỏa thuận thời điểm thành lập DAB từ đầu","Khi có tranh chấp mới đi thành lập DAB, mất thời gian, thiếu tính khách quan.","Đưa điều khoản DAB (thời điểm, số lượng, tiêu chuẩn thành viên) vào ngay khi soạn hợp đồng."],["Nhầm loại hợp đồng (trọn gói vs đơn giá điều chỉnh)","Áp sai cơ chế điều chỉnh giá khi vật tư biến động.","Xác định rõ hình thức giá ngay từ đầu, ghi cụ thể điều kiện điều chỉnh giá nếu có."],["DN tư nhân chưa quen phạm vi áp dụng mới của NĐ 210","Bỏ sót nghĩa vụ mới khi NĐ 210 giờ áp dụng cả hợp đồng ngoài vốn nhà nước.","Rà soát lại các hợp đồng tư nhân đang soạn thảo để bổ sung điều khoản bắt buộc mới."],["Thiếu điều khoản xử lý khi không đồng ý quyết định DAB","Tranh chấp kéo dài ra tòa vì thiếu lối thoát rõ ràng.","Quy định rõ trình tự tiếp theo (thương lượng lại/trọng tài/tòa án) ngay trong hợp đồng."]],"raciRoles":["Chủ đầu tư/Bên giao thầu","Nhà thầu/Bên nhận thầu","Tư vấn pháp lý hợp đồng","Ban xử lý tranh chấp (DAB)","Cơ quan quản lý NN (vốn công)"],"raci":[["Xác định loại hợp đồng & chọn mẫu","A","C","R","I","I"],["Đàm phán điều khoản đặc thù","R","R","C","I","I"],["Thỏa thuận điều khoản DAB","A/R","R","C","I","I"],["Ký kết hợp đồng","A","A","C","I","I"],["Quản lý thực hiện, xử lý phát sinh","R","R","C","C","I"]]},{"id":"thanhtoan","label":"Tạm ứng – Thanh toán – Quyết toán","note":"Nghị định 210/2026/NĐ-CP — chuỗi mốc tạm ứng, thanh toán, quyết toán và quyền tạm dừng hợp đồng của nhà thầu.","legal":["Tạm ứng tối đa 30% giá trị hợp đồng; thu hồi hết khi thanh toán lũy kế (tạm ứng + khối lượng hoàn thành) đạt 80% giá hợp đồng.","Quyết toán hợp đồng phải hoàn thành trong 60–120 ngày sau khi hoàn thành công việc, tùy quy mô/tính chất hợp đồng.","Nhà thầu có quyền cân nhắc tạm dừng thực hiện hợp đồng khi chủ đầu tư chậm thanh toán quá 28 ngày kể từ thời hạn đã cam kết.","Bãi bỏ khống chế 56 ngày gửi khiếu nại thanh toán trước đây; bên nhận khiếu nại (dự án công/PPP) phải phản hồi chính thức trong vòng 7 ngày."],"steps":["Tạm ứng hợp đồng (tối đa 30% giá trị hợp đồng) theo tiến độ đã thỏa thuận","Nhà thầu thực hiện, lập hồ sơ khối lượng hoàn thành theo từng giai đoạn thanh toán","Chủ đầu tư xác nhận khối lượng, thanh toán theo mốc đã thỏa thuận, thu hồi dần tạm ứng","Theo dõi mốc 80% giá hợp đồng — đảm bảo tạm ứng được thu hồi hết đúng hạn","Nếu chủ đầu tư chậm thanh toán quá 28 ngày: nhà thầu cân nhắc quyền tạm dừng hợp đồng","Nếu có khiếu nại về thanh toán: gửi khiếu nại theo quy trình mới, theo dõi phản hồi trong 7 ngày (dự án công/PPP)","Sau khi hoàn thành công việc: lập hồ sơ quyết toán hợp đồng trong 60–120 ngày","Thanh lý hợp đồng sau khi quyết toán được chấp thuận"],"risks":[["Không theo dõi sát mốc 80%","Tạm ứng chưa thu hồi hết khi gần hoàn thành hợp đồng, phát sinh tranh cãi khi quyết toán.","Lập bảng theo dõi lũy kế thanh toán/tạm ứng theo từng đợt, cảnh báo khi gần ngưỡng 80%."],["Tính sai mốc 28 ngày chậm thanh toán","Nhà thầu tạm dừng sai thời điểm (quá sớm hoặc quá muộn) gây thiệt hại hoặc mất quyền lợi hợp lệ.","Ghi rõ thời hạn thanh toán cam kết cụ thể trong hợp đồng, theo dõi từng ngày kể từ hạn."],["Nhầm quy trình khiếu nại thanh toán mới","Đã bỏ khống chế 56 ngày nhưng chưa nắm quy trình phản hồi 7 ngày cho dự án công/PPP.","Cập nhật quy trình khiếu nại mới cho bộ phận pháp lý/tài chính dự án."],["Không chốt rõ mốc 60 hay 120 ngày quyết toán","Tranh chấp về thời hạn quyết toán do hợp đồng ghi chung chung.","Ghi cụ thể số ngày áp dụng ngay trong hợp đồng, không để điều khoản mở."],["Hồ sơ khối lượng thiếu xác nhận kịp thời","Chậm cả chuỗi thanh toán – quyết toán do nghẽn ở khâu xác nhận khối lượng.","Quy định thời hạn xác nhận khối lượng cụ thể giữa hai bên trong hợp đồng."]],"raciRoles":["Chủ đầu tư/Bên giao thầu","Nhà thầu","Tư vấn giám sát/QS","Kế toán/Tài chính dự án","Ban xử lý tranh chấp"],"raci":[["Tạm ứng hợp đồng","A","R","I","R","I"],["Xác nhận khối lượng, thanh toán theo mốc","A","R","R","R","I"],["Theo dõi mốc thu hồi tạm ứng 80%","A","C","C","R","I"],["Xử lý chậm thanh toán/tạm dừng hợp đồng","C","A/R","I","C","C"],["Quyết toán hợp đồng (60–120 ngày)","A","R","C","R","I"]]},{"id":"tranhchap","label":"Tranh chấp hợp đồng & DAB","note":"Nghị định 210/2026/NĐ-CP chuẩn hóa Ban xử lý tranh chấp (DAB/DRB) như cơ quan phân xử độc lập, vận hành xuyên suốt dự án — không chỉ hòa giải trung gian như trước.","legal":["DAB (Dispute Adjudication Board) — Ban xử lý tranh chấp thành lập để giải quyết tranh chấp phát sinh trong quá trình thực hiện hợp đồng xây dựng.","Các bên tự thỏa thuận: thời điểm thành lập (ngay sau ký kết / thường trực xuyên suốt / sau khi phát sinh tranh chấp), số lượng, tiêu chuẩn, trình độ, kinh nghiệm thành viên.","Thành viên DAB phải khách quan, độc lập, không xung đột lợi ích với các bên.","Quyết định/khuyến nghị phân xử có tính ràng buộc theo thỏa thuận; có quy trình xử lý tiếp theo khi một bên không đồng ý.","Chi phí DAB và chi phí liên quan: mỗi bên chịu một nửa, trừ khi có thỏa thuận khác.","Phạm vi áp dụng mở rộng sang cả khu vực tư nhân, không riêng dự án vốn nhà nước/PPP như trước."],"steps":["Khi đàm phán hợp đồng: thỏa thuận thời điểm thành lập DAB (khuyến nghị thành lập ngay sau ký kết hoặc DAB thường trực)","Thỏa thuận tiêu chuẩn, số lượng, trình độ, kinh nghiệm thành viên DAB phù hợp tính chất hợp đồng","Lựa chọn thành viên DAB đảm bảo khách quan, độc lập, không xung đột lợi ích","Khi phát sinh tranh chấp: một bên gửi yêu cầu DAB xem xét theo trình tự đã thỏa thuận","DAB xem xét, ra quyết định/khuyến nghị phân xử tranh chấp","Nếu một bên không đồng ý: thực hiện trình tự tiếp theo đã thỏa thuận (thương lượng lại/trọng tài/tòa án)","Phân chia chi phí DAB và chi phí liên quan (mặc định mỗi bên một nửa, trừ khi có thỏa thuận khác)","Ghi nhận quyết định DAB để tiếp tục thực hiện hợp đồng trong khi chờ xử lý tranh chấp, tránh đình trệ thi công"],"risks":[["Không thỏa thuận rõ tính ràng buộc quyết định DAB","Phát sinh thêm tranh chấp về việc có phải tuân theo quyết định DAB hay không.","Ghi rõ ngay trong hợp đồng: quyết định DAB có ràng buộc tạm thời hay ràng buộc cuối cùng."],["Chọn thành viên DAB có liên hệ trước với một bên","Mất tính độc lập, quyết định dễ bị bên còn lại phản đối.","Thẩm tra lý lịch, xung đột lợi ích của ứng viên DAB trước khi hai bên thống nhất chọn."],["Thiếu quy trình xử lý khi không đồng ý quyết định DAB","Tranh chấp kéo dài, không có lối thoát rõ ràng.","Quy định rõ bước tiếp theo (thương lượng lại/trọng tài/tòa án) và thời hạn thực hiện."],["Nhầm vai trò DAB là hòa giải trung gian như cũ","Áp dụng sai kỳ vọng vì NĐ 210 đã chuẩn hóa DAB thành cơ quan phân xử độc lập, vận hành xuyên suốt dự án.","Phổ biến lại vai trò mới của DAB cho đội ngũ pháp lý/QS nội bộ trước khi áp dụng hợp đồng mới."],["Chi phí DAB phát sinh ngoài dự tính","Tranh chấp phức tạp, kéo dài làm tăng chi phí vận hành DAB.","Dự trù ngân sách dự phòng cho chi phí DAB ngay trong kế hoạch tài chính dự án."]],"raciRoles":["Chủ đầu tư","Nhà thầu","Thành viên DAB","Tư vấn pháp lý","Trọng tài/Tòa án"],"raci":[["Thỏa thuận thời điểm, tiêu chuẩn thành lập DAB","A/R","A/R","I","C","I"],["Lựa chọn thành viên DAB","R","R","I","C","I"],["Gửi yêu cầu xem xét tranh chấp","R","R","A","C","I"],["DAB ra quyết định/khuyến nghị","I","I","A/R","C","I"],["Xử lý khi không đồng ý quyết định DAB","C","C","I","R","A"]]}],"cd3Modules":[{"id":"chatluong","label":"Quản lý chất lượng KS/TK/TC","note":"Nghị định 207/2026/NĐ-CP (ban hành 15/6/2026, hiệu lực 1/7/2026) — quản lý chất lượng, an toàn xuyên suốt từ khởi công đến bảo trì, thay NĐ 06/2021.","legal":["NĐ 207/2026/NĐ-CP — nguyên tắc: công trình phải được quản lý chất lượng, an toàn trong thi công, nghiệm thu, bàn giao, bảo hành, bảo trì theo Luật XD 135/2025 và pháp luật liên quan.","Điều 14 — trách nhiệm của bên giao thầu đối với vật tư, vật liệu, thiết bị, sản phẩm, cấu kiện xây dựng do mình cung cấp sử dụng vào công trình.","Khoản 4 Điều 51 Luật Xây dựng 135/2025/QH15 — trách nhiệm báo cáo gửi cơ quan chuyên môn về xây dựng (khác nhau theo cấp: xã hoặc cấp cao hơn).","Phân cấp nhà ở riêng lẻ theo tầng: dưới 3 tầng chủ sở hữu tự tổ chức thiết kế; từ 7 tầng trở lên bắt buộc tổ chức/cá nhân có chuyên môn thiết kế.","Điều 11 — ứng dụng BIM trong quản lý thi công, chất lượng, nghiệm thu (liên kết với yêu cầu BIM bắt buộc tại NĐ 217/2026 từ khâu lập dự án)."],"steps":["Xác lập hệ thống quản lý chất lượng của chủ đầu tư, nhà thầu ngay từ giai đoạn khảo sát/thiết kế","Kiểm soát chất lượng khảo sát xây dựng — nghiệm thu kết quả khảo sát trước khi đưa vào thiết kế","Kiểm soát chất lượng thiết kế — đối chiếu năng lực hành nghề, phân cấp nhà ở riêng lẻ theo tầng nếu áp dụng","Bên giao thầu thực hiện trách nhiệm với vật tư/vật liệu/thiết bị/cấu kiện do mình cung cấp (Điều 14)","Kiểm tra, xác nhận khối lượng đã nghiệm thu và khối lượng phát sinh theo hợp đồng","Tổ chức kiểm tra, đánh giá sự phù hợp giữa thực tế thi công với thiết kế đã thẩm định/giấy phép xây dựng","Ứng dụng BIM (nếu công trình cấp II trở lên) trong quản lý thi công, chất lượng, nghiệm thu","Gửi báo cáo theo trách nhiệm quy định tại khoản 4 Điều 51 Luật XD 135 đến cơ quan chuyên môn về xây dựng"],"risks":[["Nhầm ngưỡng phân cấp nhà ở riêng lẻ theo tầng","Áp sai yêu cầu năng lực thiết kế, cấp phép sai thẩm quyền.","Đối chiếu kỹ số tầng/diện tích/tầng hầm với bảng phân cấp trước khi xác định yêu cầu chuyên môn."],["Bên giao thầu không thực hiện đúng trách nhiệm Điều 14","Tranh chấp trách nhiệm khi có sự cố chất lượng với vật tư tự cung cấp.","Ghi rõ trong hợp đồng trách nhiệm kiểm định vật tư/thiết bị do bên giao thầu cung cấp."],["Không đối chiếu định kỳ thực tế thi công với thiết kế","Phát hiện sai lệch muộn, khó khắc phục, phát sinh chi phí sửa chữa.","Lập lịch đối chiếu định kỳ theo từng giai đoạn thi công, không chờ đến nghiệm thu."],["Thiếu báo cáo theo Điều 51 khoản 4 đúng cơ quan","Vi phạm thủ tục hành chính do gửi sai cấp (xã hay cấp cao hơn).","Xác nhận đúng cơ quan chuyên môn theo thẩm quyền quản lý công trình trước khi gửi báo cáo."],["Không tận dụng BIM dù thuộc diện bắt buộc","Khó kiểm soát xung đột giữa các bộ môn thiết kế, chậm phát hiện lỗi.","Rà soát cấp công trình ngay từ đầu để xác định có bắt buộc áp dụng BIM hay không."]],"raciRoles":["Chủ đầu tư","NT khảo sát/thiết kế","NT thi công","Tư vấn giám sát","Cơ quan chuyên môn XD"],"raci":[["Kiểm soát chất lượng khảo sát","A","R","I","C","I"],["Kiểm soát chất lượng thiết kế","A","R","I","C","C"],["Trách nhiệm vật tư do bên giao thầu cung cấp","R","I","C","C","I"],["Đối chiếu thực tế thi công với thiết kế","A","C","R","R","I"],["Báo cáo theo khoản 4 Điều 51","A/R","I","I","I","I"]]},{"id":"nghiemthu","label":"Nghiệm thu công trình","note":"Điều 24 NĐ 207/2026 — ba hình thức nghiệm thu hoàn thành: toàn bộ, có điều kiện, hoặc một phần.","legal":["NĐ 207/2026 Điều 24 — quy định nghiệm thu hoàn thành, nghiệm thu có điều kiện, nghiệm thu một phần.","Các cấp nghiệm thu theo tiến độ: nghiệm thu vật liệu/sản phẩm/cấu kiện đầu vào, nghiệm thu công việc, nghiệm thu từng phần công trình, nghiệm thu PCCC.","Từ 1/7/2026: nghiệm thu PCCC đã gộp một phần vào bước thẩm định thiết kế (xem tình huống thực tế Phần 2), không còn là bước nghiệm thu độc lập hoàn toàn như trước.","Trường hợp nghiệm thu có điều kiện: chủ đầu tư phải báo cáo kèm báo cáo của nhà thầu liên quan về kết quả thực hiện nội dung tại khoản 3 Điều 24, gửi cơ quan chuyên môn xây dựng để tiếp tục kiểm tra."],"steps":["Nghiệm thu vật liệu, sản phẩm, cấu kiện xây dựng đầu vào trước khi đưa vào sử dụng","Nghiệm thu công việc xây dựng theo từng công đoạn thi công","Nghiệm thu từng phần công trình khi một phần đủ điều kiện đưa vào khai thác độc lập","Nghiệm thu PCCC theo tiến độ (đã gộp một phần vào bước thẩm định thiết kế)","Kiểm tra, xác nhận khối lượng đã nghiệm thu và khối lượng phát sinh theo hợp đồng","Lựa chọn hình thức nghiệm thu hoàn thành phù hợp: toàn bộ / có điều kiện / một phần (Điều 24)","Nếu nghiệm thu có điều kiện: lập báo cáo kèm báo cáo nhà thầu về nội dung còn lại, gửi cơ quan chuyên môn xây dựng","Lập hồ sơ hoàn công, tổng hợp toàn bộ hồ sơ nghiệm thu qua các giai đoạn"],"risks":[["Bỏ sót nghiệm thu vật liệu đầu vào","Phát hiện lỗi chất lượng ở giai đoạn muộn, khó truy trách nhiệm nhà cung cấp.","Lập checklist nghiệm thu vật liệu bắt buộc trước khi đưa vào thi công."],["Nhầm hình thức nghiệm thu hoàn thành","Hồ sơ không đúng loại, bị trả lại khi cơ quan chuyên môn kiểm tra.","Xác định rõ hình thức áp dụng ngay khi lập kế hoạch nghiệm thu, không chờ đến cuối dự án."],["Không theo dõi tiếp nội dung còn lại sau nghiệm thu có điều kiện","Mất quyền được kiểm tra nghiệm thu hoàn thành sau này.","Lập bảng theo dõi riêng các nội dung còn thiếu theo khoản 3 Điều 24, gắn mốc thời gian."],["Hoàn công thiếu đồng bộ hồ sơ giữa các đợt nghiệm thu","Chậm quyết toán, khó bàn giao công trình.","Tổng hợp hồ sơ nghiệm thu ngay sau mỗi đợt, không dồn đến cuối dự án."],["Nhầm quy trình nghiệm thu PCCC cũ/mới","Áp sai bước do PCCC đã gộp một phần vào thẩm định thiết kế từ 1/7/2026.","Cập nhật lại quy trình PCCC nội bộ theo đúng NĐ 207/2026 hiện hành."]],"raciRoles":["Chủ đầu tư","Nhà thầu thi công","Tư vấn giám sát","Cơ quan chuyên môn XD","Cơ quan PCCC"],"raci":[["Nghiệm thu vật liệu, sản phẩm đầu vào","A","R","R","I","I"],["Nghiệm thu công việc/từng phần công trình","A","R","R","I","I"],["Lựa chọn hình thức nghiệm thu hoàn thành","A/R","C","C","C","I"],["Báo cáo bổ sung khi nghiệm thu có điều kiện","A/R","R","C","I","I"],["Lập hồ sơ hoàn công","A","R","C","I","I"]]},{"id":"kiemtra","label":"Kiểm tra công tác nghiệm thu","note":"Điều 25 NĐ 207/2026 — phân định thẩm quyền kiểm tra công tác nghiệm thu theo cấp công trình và địa bàn, thời hạn xử lý 12-16 ngày làm việc.","legal":["NĐ 207/2026 Điều 25 — phân thẩm quyền kiểm tra: Hội đồng kiểm tra nhà nước (công trình đặc biệt quan trọng); cơ quan chuyên môn XD thuộc bộ quản lý chuyên ngành (công trình Thủ tướng giao, cấp đặc biệt chuyên ngành, liên tỉnh); cơ quan chuyên môn XD thuộc UBND cấp tỉnh; cơ quan chuyên môn XD thuộc UBND Hà Nội/TP.HCM; cơ quan chuyên môn XD thuộc UBND cấp xã.","Khoản 4 Điều 57 Luật XD 135/2025 — căn cứ xác định thẩm quyền kiểm tra của cơ quan chuyên môn.","Thời hạn ra văn bản thông báo kết quả: 16 ngày làm việc (công trình cấp I, cấp đặc biệt), 12 ngày làm việc (công trình còn lại) kể từ khi nhận hồ sơ đề nghị.","Nội dung kiểm tra: sự tuân thủ quy định quản lý chất lượng, quản lý an toàn của chủ đầu tư và nhà thầu, từ khởi công đến nghiệm thu hoàn thành.","Mẫu thông báo kết quả kiểm tra theo Phụ lục VIII NĐ 207/2026.","Quy định chuyển tiếp: công trình khởi công trước 1/7/2026 vẫn theo NĐ 06/2021 (đã sửa đổi qua NĐ 35/2023, 175/2024, 14/2026, 67/2026) nếu đã được cơ quan cấp bộ kiểm tra trước đó."],"steps":["Xác định đúng cơ quan có thẩm quyền kiểm tra công tác nghiệm thu theo cấp công trình và địa bàn (Điều 25)","Chủ đầu tư lập hồ sơ đề nghị kiểm tra công tác nghiệm thu hoàn thành, gửi cơ quan có thẩm quyền","Cơ quan chuyên môn kiểm tra sự tuân thủ quy định quản lý chất lượng, an toàn từ khởi công đến nghiệm thu","Trong 12 hoặc 16 ngày làm việc, cơ quan ra văn bản thông báo kết quả kiểm tra (Phụ lục VIII)","Nếu công trình được chấp thuận nghiệm thu có điều kiện: chủ đầu tư báo cáo bổ sung kết quả thực hiện nội dung còn lại","Cơ quan chuyên môn xem xét, kiểm tra công tác nghiệm thu hoàn thành sau khi nhận báo cáo bổ sung","Với dự án chuyển tiếp (khởi công trước 1/7/2026): xác định đúng cơ quan tiếp tục kiểm tra theo quy định chuyển tiếp","Lưu trữ văn bản thông báo kết quả kiểm tra làm căn cứ đưa công trình vào khai thác, sử dụng"],"risks":[["Xác định sai cơ quan có thẩm quyền","Nhầm giữa Hội đồng kiểm tra NN / cấp bộ / cấp tỉnh / Hà Nội-TPHCM / cấp xã → hồ sơ bị trả lại.","Đối chiếu Điều 25 theo đúng cấp công trình và địa bàn trước khi nộp hồ sơ."],["Tính sai thời hạn 12 hay 16 ngày làm việc","Chủ động sai kế hoạch bàn giao do nhầm mốc thời gian theo cấp công trình.","Xác định cấp công trình chính xác ngay từ đầu để áp đúng thời hạn xử lý."],["Dự án chuyển tiếp áp nhầm nghị định","Sai thẩm quyền, sai quy trình do nhầm giữa NĐ 06/2021 cũ và NĐ 207/2026 mới.","Kiểm tra ngày khởi công và lịch sử kiểm tra nghiệm thu trước đó để áp đúng quy định chuyển tiếp."],["Thiếu báo cáo bổ sung sau nghiệm thu có điều kiện","Công trình không được kiểm tra nghiệm thu hoàn thành, không đưa vào khai thác được.","Lập lịch nhắc báo cáo bổ sung ngay khi nhận kết quả nghiệm thu có điều kiện."],["Hồ sơ đề nghị kiểm tra thiếu nội dung theo mẫu","Bị yêu cầu bổ sung, kéo dài thời hạn xử lý.","Rà soát hồ sơ theo đúng mẫu Phụ lục VIII trước khi nộp."]],"raciRoles":["Chủ đầu tư","Cơ quan chuyên môn XD","Nhà thầu thi công","Tư vấn giám sát","Hội đồng kiểm tra NN"],"raci":[["Xác định cơ quan có thẩm quyền kiểm tra","R","A","I","C","I"],["Lập, nộp hồ sơ đề nghị kiểm tra","A/R","I","C","R","I"],["Kiểm tra sự tuân thủ chất lượng, an toàn","C","A/R","C","C","I"],["Ra văn bản thông báo kết quả kiểm tra","I","A/R","I","I","I"],["Báo cáo bổ sung khi nghiệm thu có điều kiện","A/R","C","R","C","I"]]},{"id":"baohanh","label":"Bảo hành – Bảo trì – An toàn","note":"Chương III NĐ 207/2026 (Điều 32-40) — Bảo hành, Bảo trì, và Đánh giá an toàn công trình.","legal":["Điều 32-33 — yêu cầu bảo hành công trình và trách nhiệm các chủ thể: chủ đầu tư phải thỏa thuận trong hợp đồng với nhà thầu về thời hạn, hình thức, giá trị bảo hành, việc hoàn trả tiền bảo hành.","Với công trình vốn đầu tư công/vốn NSNN: hình thức bảo hành bằng tiền hoặc thư bảo lãnh ngân hàng.","Điều 34-39 — quy trình bảo trì, kế hoạch bảo trì, thực hiện bảo trì, quan trắc phục vụ bảo trì, quản lý chất lượng công việc bảo trì, chi phí bảo trì.","Nội dung bảo trì: kiểm tra, quan trắc, kiểm định chất lượng, đánh giá an toàn công trình, bảo dưỡng và sửa chữa, điều chỉnh/thay thế hạng mục/thiết bị — không bao gồm thay đổi công năng, quy mô công trình.","Điều 40 — đánh giá an toàn công trình: với công trình ảnh hưởng lớn đến an toàn/lợi ích cộng đồng, tối thiểu 12 tháng trước khi hết thời hạn sử dụng, chủ sở hữu/người quản lý phải báo cáo cơ quan nhà nước có thẩm quyền về phương án xử lý."],"steps":["Thỏa thuận điều khoản bảo hành trong hợp đồng xây dựng: thời hạn, hình thức, giá trị, việc hoàn trả tiền bảo hành","Với công trình vốn đầu tư công: xác định hình thức bảo hành bằng tiền hoặc bảo lãnh ngân hàng","Nhà thầu thực hiện trách nhiệm khắc phục, sửa chữa hư hỏng/khiếm khuyết trong thời hạn bảo hành","Chủ sở hữu/người quản lý xác nhận hoàn thành bảo hành khi hết thời hạn","Xây dựng kế hoạch bảo trì, phê duyệt quy trình bảo trì công trình xây dựng (Điều 34-35)","Tổ chức thực hiện bảo trì theo quy trình đã duyệt, bảo đảm nguồn kinh phí (Điều 36, 39)","Thực hiện quan trắc phục vụ bảo trì (Điều 37) và quản lý chất lượng công việc bảo trì (Điều 38)","Với công trình ảnh hưởng lớn đến an toàn cộng đồng: tối thiểu 12 tháng trước khi hết hạn sử dụng, báo cáo cơ quan nhà nước về phương án xử lý","Thực hiện phương án đã được chấp thuận: tiếp tục sử dụng sau kiểm định/gia cố/sửa chữa, hoặc phá dỡ nếu không còn an toàn"],"risks":[["Không thỏa thuận rõ hình thức/thời hạn bảo hành","Tranh chấp giữa chủ đầu tư và nhà thầu khi phát sinh hư hỏng.","Ghi cụ thể thời hạn, hình thức, giá trị bảo hành ngay trong hợp đồng, không để điều khoản mở."],["Bỏ quên mốc 12 tháng trước khi hết hạn sử dụng","Vi phạm nghĩa vụ báo cáo, rủi ro pháp lý và an toàn với công trình ảnh hưởng lớn đến cộng đồng.","Đặt cảnh báo mốc 12 tháng ngay từ khi xác định thời hạn sử dụng theo thiết kế."],["Không lập kế hoạch/quy trình bảo trì được duyệt","Không có căn cứ thực hiện bảo trì đúng chuẩn, dễ bị kiểm tra xử phạt.","Lập và trình duyệt quy trình bảo trì ngay sau khi công trình được nghiệm thu bàn giao."],["Thiếu kinh phí bảo trì dự trù từ đầu","Công trình xuống cấp nhanh, chi phí sửa chữa lớn về sau.","Đưa chi phí bảo trì vào kế hoạch tài chính vận hành ngay từ giai đoạn lập dự án."],["Nhầm phạm vi bảo trì","Thực hiện sai phạm vi cho phép (bảo trì không bao gồm thay đổi công năng/quy mô), phải xin phép bổ sung.","Đối chiếu phạm vi công việc dự kiến với định nghĩa bảo trì tại NĐ 207/2026 trước khi triển khai."]],"raciRoles":["Chủ sở hữu/người quản lý","Nhà thầu thi công","Đơn vị bảo trì","Cơ quan nhà nước có thẩm quyền","Tư vấn kiểm định"],"raci":[["Thỏa thuận điều khoản bảo hành trong hợp đồng","A","R","I","I","I"],["Thực hiện bảo hành khi có hư hỏng","C","A/R","I","I","I"],["Lập kế hoạch, quy trình bảo trì","A/R","I","R","I","C"],["Thực hiện bảo trì, quan trắc","A","I","R","I","R"],["Báo cáo, đánh giá an toàn trước khi hết hạn sử dụng","A/R","I","C","C","R"]]}],"cd4Modules":[{"id":"hopdongab","label":"Hợp đồng A-B & thanh toán toàn dự án","note":"Góc nhìn toàn dự án: nhiều hợp đồng A-B (NĐ 210/2026) khớp nối thế nào để tổng hợp thành quyết toán vốn đầu tư dự án (NĐ 193/2026).","legal":["NĐ 210/2026/NĐ-CP — khung pháp lý hợp đồng xây dựng cho từng gói thầu (chi tiết cơ chế tạm ứng/thanh toán/DAB đã trình bày ở Phần 2).","Một dự án thường có nhiều hợp đồng A-B song song: thi công, tư vấn, cung cấp thiết bị... — mỗi hợp đồng quyết toán riêng trước khi tổng hợp.","NĐ 193/2026/NĐ-CP (hiệu lực 1/7/2026) — vốn đầu tư được quyết toán là toàn bộ chi phí hợp pháp đã thực hiện, phải nằm trong giới hạn tổng mức đầu tư đã duyệt hoặc đã điều chỉnh, bổ sung.","Giá trị quyết toán hạng mục/công trình độc lập gồm chi phí xây dựng, thiết bị, tư vấn và chi phí liên quan trực tiếp; sau khi dự án hoàn thành, các giá trị này được tổng hợp vào báo cáo quyết toán chung."],"steps":["Rà soát danh sách toàn bộ hợp đồng A-B trong dự án (thi công, tư vấn, thiết bị...)","Đảm bảo từng hợp đồng đã hoàn thành quyết toán riêng theo NĐ 210/2026 trước khi tổng hợp","Đối chiếu giá trị quyết toán từng hợp đồng với dự toán/tổng mức đầu tư đã duyệt theo từng khoản mục","Tổng hợp giá trị quyết toán tất cả hợp đồng thành báo cáo quyết toán chung của toàn dự án","Xử lý các hạng mục độc lập có thể quyết toán riêng (công trình/hạng mục vận hành độc lập)","Xử lý trường hợp bồi thường/tái định cư chưa xong khi công trình đã hoàn thành: quyết toán phần đã thực hiện, phần phát sinh quyết toán bổ sung sau","Chuẩn bị hồ sơ quyết toán vốn đầu tư dự án hoàn chỉnh gửi cơ quan chủ trì thẩm tra","Theo dõi tiến độ thẩm tra, phê duyệt quyết toán toàn dự án"],"risks":[["Đưa hợp đồng chưa quyết toán xong vào báo cáo dự án","Sai số liệu, phải làm lại toàn bộ báo cáo quyết toán tổng hợp.","Lập checklist trạng thái quyết toán từng hợp đồng trước khi tổng hợp báo cáo dự án."],["Giá trị quyết toán vượt dự toán khoản mục","Bị loại khi thẩm tra nếu không có điều chỉnh hợp lệ kèm theo.","Đối chiếu từng khoản mục quyết toán với dự toán/TMĐT đã duyệt trước khi tổng hợp."],["Nhầm \"quyết toán hợp đồng\" với \"quyết toán vốn đầu tư dự án\"","Hai tầng khác nhau (gói thầu theo NĐ 210 vs toàn dự án theo NĐ 193), dễ lẫn hồ sơ.","Phân tách rõ 2 bộ hồ sơ ngay từ đầu, gắn nhãn theo đúng cấp độ quyết toán."],["Không tách riêng phần bồi thường/tái định cư dở dang","Toàn bộ hồ sơ quyết toán bị treo chờ phần vướng nhất.","Lập báo cáo quyết toán phần đã thực hiện, tách riêng phần GPMB/TĐC chưa xong theo cơ chế cho phép."],["Thiếu đồng bộ giữa các đợt quyết toán hợp đồng","Tổng hợp báo cáo dự án bị lệch số liệu giữa thi công/thiết bị/tư vấn.","Quy định mốc thời gian quyết toán đồng bộ cho các hợp đồng trong cùng dự án."]],"raciRoles":["Chủ đầu tư","Nhà thầu (từng hợp đồng)","Tư vấn QS/quyết toán","Cơ quan chủ trì thẩm tra","Kho bạc Nhà nước"],"raci":[["Rà soát danh sách hợp đồng A-B trong dự án","A/R","C","R","I","I"],["Quyết toán từng hợp đồng riêng lẻ","A","R","R","I","I"],["Tổng hợp báo cáo quyết toán toàn dự án","A/R","I","R","C","I"],["Xử lý phần bồi thường/tái định cư dở dang","A/R","I","C","C","I"],["Nộp hồ sơ, theo dõi thẩm tra phê duyệt","A/R","I","C","A","I"]]},{"id":"quyettoanvon","label":"Quyết toán vốn đầu tư dự án","note":"Nghị định 193/2026/NĐ-CP (ban hành 1/6/2026, hiệu lực 1/7/2026, 5 chương 31 điều) — thay thế toàn bộ quy định quyết toán tại NĐ 254/2025/NĐ-CP.","legal":["Phạm vi: dự án đầu tư, nhiệm vụ chuẩn bị đầu tư/chuẩn bị dự án, nhiệm vụ quy hoạch sử dụng vốn đầu tư công, chi thường xuyên NSNN, vốn NSNN khác — sau khi hoàn thành hoặc dừng/tạm ngừng/hủy bỏ.","Vốn đầu tư được quyết toán = toàn bộ chi phí hợp pháp đã thực hiện, phải nằm trong giới hạn tổng mức đầu tư đã duyệt hoặc đã điều chỉnh, bổ sung.","Kiểm toán báo cáo quyết toán bắt buộc: dự án quan trọng quốc gia, dự án nhóm A (trừ danh mục bí mật nhà nước), dự án dùng chi thường xuyên NSNN/vốn NSNN khác — phải kiểm toán trước khi trình thẩm tra, phê duyệt.","Được sử dụng kết quả Kiểm toán Nhà nước/Thanh tra đã có sẵn làm căn cứ thẩm tra, không phải thuê kiểm toán độc lập riêng nếu đủ nội dung.","Ban hành công thức nội suy, bảng tỷ lệ định mức chi phí thuê kiểm toán độc lập và chi phí thẩm tra/phê duyệt quyết toán theo quy mô dự án.","Quy định chuyển tiếp: dự án đã nộp hồ sơ quyết toán hoặc đã ký hợp đồng kiểm toán độc lập trước 1/7/2026 tiếp tục theo NĐ 254/2025/NĐ-CP."],"steps":["Xác định dự án có thuộc phạm vi bắt buộc kiểm toán báo cáo quyết toán hay không (dự án quan trọng QG, nhóm A, chi thường xuyên NSNN)","Kiểm tra dự án đã được Kiểm toán Nhà nước/Thanh tra kiểm toán trước đó chưa — nếu có, dùng làm căn cứ, không cần thuê kiểm toán độc lập","Nếu bắt buộc và chưa có kết quả kiểm toán trước đó: thuê đơn vị kiểm toán độc lập thực hiện kiểm toán báo cáo quyết toán","Xác định chi phí thuê kiểm toán độc lập và chi phí thẩm tra/phê duyệt theo công thức nội suy/bảng tỷ lệ định mức quy mô dự án","Xác định vốn đầu tư đề nghị quyết toán — đảm bảo nằm trong giới hạn TMĐT đã duyệt/điều chỉnh","Xử lý trường hợp bồi thường/tái định cư chưa hoàn tất: lập báo cáo quyết toán phần đã thực hiện, phần phát sinh bổ sung quyết toán sau","Xác định dự án của mình thuộc diện áp NĐ 193/2026 mới hay còn theo NĐ 254/2025 cũ (theo quy định chuyển tiếp)","Hoàn thiện hồ sơ, trình cơ quan chủ trì thẩm tra quyết toán theo đúng quy định"],"risks":[["Nhầm dự án có bắt buộc kiểm toán hay không","Tốn chi phí kiểm toán không cần thiết hoặc bỏ sót bước bắt buộc.","Đối chiếu đúng nhóm dự án (quan trọng QG/nhóm A/chi thường xuyên NSNN) với Điều 9 NĐ 193/2026."],["Không tận dụng kết quả KTNN/Thanh tra đã có","Tốn thêm chi phí, thời gian thuê kiểm toán độc lập trùng lặp.","Rà soát hồ sơ kiểm toán/thanh tra trước đó trước khi quyết định thuê kiểm toán độc lập mới."],["Tính sai chi phí kiểm toán/thẩm tra theo công thức nội suy","Dự trù ngân sách sai cho khâu quyết toán.","Áp đúng bảng tỷ lệ định mức theo quy mô giá trị dự án khi lập dự trù chi phí."],["Vốn đề nghị quyết toán vượt TMĐT đã duyệt","Hồ sơ bị trả lại nếu không có điều chỉnh TMĐT hợp lệ kèm theo.","Đối chiếu vốn đề nghị quyết toán với TMĐT đã duyệt/điều chỉnh trước khi trình."],["Áp nhầm nghị định theo thời điểm nộp hồ sơ","Sai quy trình ngay từ đầu do nhầm giữa NĐ 193/2026 mới và NĐ 254/2025 cũ.","Xác định ngày nộp hồ sơ/ký hợp đồng kiểm toán để áp đúng quy định chuyển tiếp."]],"raciRoles":["Chủ đầu tư","Đơn vị kiểm toán độc lập","Kiểm toán NN/Thanh tra","Cơ quan chủ trì thẩm tra","Người có thẩm quyền phê duyệt"],"raci":[["Xác định phạm vi bắt buộc kiểm toán","R","I","I","A","I"],["Sử dụng kết quả KTNN/Thanh tra sẵn có (nếu có)","R","I","R","A","I"],["Thuê kiểm toán độc lập (nếu cần)","A/R","R","I","C","I"],["Xác định vốn đề nghị quyết toán trong giới hạn TMĐT","A/R","C","I","R","I"],["Trình, phê duyệt quyết toán","R","I","I","A/R","A"]]},{"id":"quytrinh","label":"Quy trình, thời hạn quyết toán","note":"Điều 7-9 NĐ 193/2026 — hồ sơ, thời gian lập/thẩm tra/phê duyệt và cải cách nộp hồ sơ trực tuyến.","legal":["Điều 7 NĐ 193/2026 — quy định hồ sơ quyết toán vốn đầu tư dự án (danh mục tài liệu cần nộp).","Thời gian lập hồ sơ quyết toán: tính từ ngày dự án/công trình hoàn thành bàn giao đưa vào khai thác, sử dụng (hoặc ngày văn bản cho phép dừng dự án có hiệu lực) đến ngày chủ đầu tư nộp đầy đủ hồ sơ cho cơ quan chủ trì thẩm tra.","Thời gian thẩm tra quyết toán: tính từ ngày cơ quan chủ trì thẩm tra nhận đủ hồ sơ đến ngày trình người có thẩm quyền phê duyệt.","Khoản 1 Điều 9 — dự án quan trọng quốc gia, nhóm A (trừ bí mật nhà nước), dự án chi thường xuyên NSNN/vốn NSNN khác phải kiểm toán báo cáo quyết toán trước khi trình thẩm tra, phê duyệt.","Cải cách: đơn giản hóa biểu mẫu báo cáo quyết toán, bắt buộc áp dụng CNTT — nộp và theo dõi hồ sơ trực tuyến qua cổng dịch vụ công.","Người có thẩm quyền phê duyệt quyết toán chi phí bồi thường, hỗ trợ, tái định cư có thể giao đơn vị chuyên môn hoặc công chức chuyên môn thực hiện."],"steps":["Xác định ngày bắt đầu tính thời gian lập hồ sơ quyết toán (ngày bàn giao khai thác hoặc ngày văn bản cho phép dừng dự án có hiệu lực)","Chuẩn bị đầy đủ hồ sơ quyết toán theo danh mục quy định tại Điều 7 NĐ 193/2026","Nộp hồ sơ quyết toán trực tuyến qua cổng dịch vụ công theo cải cách mới","Nếu thuộc diện bắt buộc kiểm toán: hoàn thành kiểm toán báo cáo quyết toán trước khi nộp hồ sơ thẩm tra","Cơ quan chủ trì thẩm tra nhận đủ hồ sơ, bắt đầu tính thời gian thẩm tra quyết toán","Theo dõi tiến độ thẩm tra trực tuyến qua cổng dịch vụ công","Xử lý riêng phần chi phí bồi thường, hỗ trợ, tái định cư — có thể giao đơn vị/công chức chuyên môn thẩm tra, phê duyệt riêng","Nhận kết quả phê duyệt quyết toán từ người có thẩm quyền"],"risks":[["Tính sai ngày bắt đầu thời hạn","Nhầm ngày bàn giao thực tế với ngày nghiệm thu hoàn thành → tính sai thời hạn lập hồ sơ.","Xác định rõ mốc bàn giao đưa vào khai thác ghi trong biên bản nghiệm thu/bàn giao."],["Hồ sơ thiếu tài liệu theo Điều 7","Bị trả lại, phải nộp lại từ đầu, mất thời gian.","Rà soát checklist hồ sơ theo đúng Điều 7 trước khi nộp lần đầu."],["Chưa quen quy trình nộp trực tuyến mới","Chậm nộp hồ sơ so với các dự án đã áp dụng CNTT.","Tập huấn nội bộ về cổng dịch vụ công quyết toán trước khi triển khai dự án đầu tiên."],["Nộp thẩm tra khi chưa có báo cáo kiểm toán bắt buộc","Hồ sơ bị trả lại do thiếu điều kiện tiên quyết.","Xác nhận đã hoàn thành kiểm toán bắt buộc (nếu thuộc diện) trước khi nộp hồ sơ thẩm tra."],["Không tách riêng phần bồi thường/tái định cư","Toàn bộ hồ sơ bị chậm theo phần vướng nhất dù có thể xử lý riêng.","Đề nghị giao đơn vị/công chức chuyên môn thẩm tra, phê duyệt riêng phần này theo quy định."]],"raciRoles":["Chủ đầu tư","Đơn vị chuyên môn (bồi thường-TĐC)","Đơn vị kiểm toán","Cơ quan chủ trì thẩm tra","Người có thẩm quyền phê duyệt"],"raci":[["Xác định ngày bắt đầu tính thời hạn","A/R","I","I","C","I"],["Chuẩn bị hồ sơ theo Điều 7","A/R","C","C","I","I"],["Nộp hồ sơ trực tuyến","A/R","I","I","I","I"],["Thẩm tra quyết toán","C","C","C","A/R","I"],["Phê duyệt quyết toán (kể cả phần bồi thường-TĐC)","I","R","I","C","A"]]},{"id":"tranhchapqt","label":"Xử lý tranh chấp/khiếu nại quyết toán","note":"Kết hợp cơ chế DAB (NĐ 210/2026) cho tranh chấp hợp đồng gói thầu và pháp luật khiếu nại hành chính cho quyết toán vốn đầu tư toàn dự án.","legal":["Không có nghị định riêng cho tranh chấp quyết toán — áp dụng kết hợp NĐ 210/2026 (DAB cho tranh chấp hợp đồng cấp gói thầu), NĐ 193/2026 (khiếu nại/kiến nghị kết quả thẩm tra, phê duyệt quyết toán vốn đầu tư), pháp luật khiếu nại tố cáo và tố tụng dân sự/trọng tài thương mại nếu vượt cấp hành chính.","Phân tầng tranh chấp: (1) tranh chấp giữa chủ đầu tư và nhà thầu về giá trị quyết toán hợp đồng — xử lý qua DAB/trọng tài/tòa án theo NĐ 210; (2) khiếu nại của chủ đầu tư với cơ quan chủ trì thẩm tra về kết quả thẩm tra/phê duyệt quyết toán vốn đầu tư — theo pháp luật khiếu nại hành chính; (3) trường hợp có sai phạm/thất thoát liên quan đất đai lịch sử phát hiện qua kiểm toán/thanh tra — có thể xem xét cơ chế tháo gỡ đặc thù (NQ 29/2026/QH16)."],"steps":["Xác định đúng cấp độ tranh chấp/khiếu nại: hợp đồng (gói thầu) hay quyết toán vốn đầu tư toàn dự án","Với tranh chấp giá trị quyết toán hợp đồng: áp dụng cơ chế DAB đã thỏa thuận trong hợp đồng (theo NĐ 210/2026)","Với khiếu nại kết quả thẩm tra/phê duyệt quyết toán vốn đầu tư: gửi văn bản kiến nghị tới cơ quan chủ trì thẩm tra","Theo dõi thời hạn phản hồi của cơ quan chủ trì thẩm tra đối với kiến nghị","Nếu không đồng ý kết quả xử lý: thực hiện khiếu nại theo pháp luật khiếu nại hành chính lên cấp có thẩm quyền cao hơn","Nếu tranh chấp liên quan phát hiện qua kiểm toán/thanh tra có yếu tố đất đai lịch sử: xem xét áp dụng cơ chế đặc thù tháo gỡ (nếu đủ điều kiện)","Nếu vẫn không giải quyết được ở cấp hành chính: chuyển trọng tài thương mại hoặc khởi kiện tòa án theo thỏa thuận hợp đồng/pháp luật liên quan","Lưu trữ toàn bộ hồ sơ tranh chấp, quyết định các cấp làm căn cứ cho các bước xử lý tiếp theo"],"risks":[["Nhầm cấp độ tranh chấp","Gửi kiến nghị sai kênh (hợp đồng gói thầu vs quyết toán toàn dự án), mất thời gian.","Xác định rõ bản chất tranh chấp trước khi chọn kênh xử lý (DAB hay khiếu nại hành chính)."],["Không lưu trữ đầy đủ hồ sơ chứng minh giá trị quyết toán","Yếu thế khi tranh chấp/khiếu nại vì thiếu căn cứ.","Lưu trữ có hệ thống toàn bộ hồ sơ nghiệm thu, thanh toán, quyết toán theo từng giai đoạn."],["Bỏ qua cơ chế DAB đã thỏa thuận, đi thẳng ra tòa","Vi phạm trình tự đã cam kết trong hợp đồng, bất lợi khi tố tụng.","Tuân thủ đúng trình tự DAB trước khi chuyển trọng tài/tòa án theo hợp đồng đã ký."],["Nhầm cơ chế xử lý phù hợp","Chọn sai con đường (khiếu nại hành chính vs tố tụng dân sự vs cơ chế đặc thù đất đai), kéo dài thời gian.","Xin ý kiến tư vấn pháp lý xác định đúng cơ chế trước khi khởi động quy trình."],["Chậm phát hiện dấu hiệu sai phạm/thất thoát qua kiểm toán","Mất cơ hội áp dụng cơ chế tháo gỡ đặc thù nếu có liên quan đất đai lịch sử.","Rà soát kết quả kiểm toán/thanh tra ngay khi có, đối chiếu với điều kiện áp dụng NQ 29/2026 nếu liên quan đất đai."]],"raciRoles":["Chủ đầu tư","Nhà thầu","DAB/Trọng tài/Tòa án","Cơ quan chủ trì thẩm tra","Tư vấn pháp lý"],"raci":[["Xác định cấp độ tranh chấp/khiếu nại","A/R","C","I","I","R"],["Xử lý tranh chấp giá trị quyết toán hợp đồng qua DAB","R","R","A","I","C"],["Gửi kiến nghị về kết quả thẩm tra/phê duyệt","A/R","I","I","A","C"],["Khiếu nại hành chính lên cấp cao hơn (nếu cần)","A/R","I","I","C","R"],["Chuyển trọng tài/tòa án (nếu vượt cấp hành chính)","C","C","A","I","R"]]}],"timeline":[{"date":"2024-05-01","label":"1/5/2024","title":"NĐ 32/2024/NĐ-CP có hiệu lực","desc":"Quản lý, phát triển cụm công nghiệp — thay NĐ 68/2017 và 66/2020.","tags":["P1 · CCN"],"warn":false},{"date":"2024-06-26","label":"26/6/2024","title":"NQ 136/2024/QH15 ban hành","desc":"Cơ chế đặc thù Đà Nẵng — Điều 13 mở đường thành lập Khu thương mại tự do.","tags":["P1 · FTZ"],"warn":false},{"date":"2024-08-01","label":"1/8/2024","title":"Luật Đất đai 31/2024/QH15 có hiệu lực","desc":"Nền tảng giao đất, cho thuê đất, thỏa thuận nhận quyền sử dụng đất.","tags":["P1 · KCN/CCN/KĐT/FTZ","Vốn tư nhân"],"warn":false},{"date":"2024-11-30","label":"30/11/2024","title":"NQ 170/2024/QH15 ban hành","desc":"Thí điểm tháo gỡ vướng mắc đất đai tại TP.HCM, Đà Nẵng, Khánh Hòa.","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":false},{"date":"2025-06-13","label":"13/6/2025","title":"QĐ 1142/QĐ-TTg ban hành","desc":"Thành lập Khu thương mại tự do Đà Nẵng — 7 vị trí, ~1.881ha.","tags":["P1 · FTZ"],"warn":false},{"date":"2025-07-01","label":"1/7/2025","title":"Luật PCCC & CNCH 55/2024/QH15 có hiệu lực","desc":"Đổi \"thẩm duyệt\" thành \"thẩm định thiết kế PCCC\"; phân định rõ vai trò Công an và cơ quan xây dựng.","tags":["P2 · Hợp đồng","P3 · Chất lượng/Nghiệm thu"],"warn":false},{"date":"2025-12-11","label":"11/12/2025","title":"NQ 265/2025/QH15 & NQ 259/2025/QH15 ban hành","desc":"Kỳ họp thứ 10: mở rộng phạm vi cơ chế NQ170 (đất đai) và sửa đổi NQ136 (Đà Nẵng, FTZ).","tags":["Vốn tư nhân · Tháo gỡ tồn đọng","P1 · FTZ"],"warn":false},{"date":"2026-01-01","label":"1/1/2026","title":"NQ 254/2025/QH15 có hiệu lực","desc":"Cơ chế 75%/75% thu hồi đất; giảm tiền sử dụng đất khi chuyển đổi đất nông nghiệp sang đất ở.","tags":["Vốn tư nhân · Đất đai thường xuyên"],"warn":false},{"date":"2026-01-22","label":"22/1/2026","title":"NĐ 35/2026/NĐ-CP có hiệu lực","desc":"Phân loại đô thị, yêu cầu Chương trình phát triển đô thị cấp tỉnh 10 năm.","tags":["P1 · KĐT"],"warn":false},{"date":"2026-02-11","label":"11/2/2026","title":"VBHN 04/VBHN-BXD","desc":"Hợp nhất NĐ 11/2013 về quản lý đầu tư phát triển đô thị.","tags":["P1 · KĐT"],"warn":false},{"date":"2026-04-13","label":"13/4/2026","title":"Tờ trình 136/TTr-UBND (Đà Nẵng)","desc":"Đề xuất trình tự, thủ tục điều chỉnh ranh giới Khu thương mại tự do.","tags":["P1 · FTZ"],"warn":false},{"date":"2026-04-24","label":"24/4/2026","title":"NQ 29/2026/QH16 ban hành","desc":"Mở rộng cơ chế tháo gỡ dự án tồn đọng ra toàn quốc (không giới hạn 3 địa phương thí điểm).","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":false},{"date":"2026-05-01","label":"1/5/2026","title":"NQ 29/2026/QH16 có hiệu lực","desc":"Áp dụng cho vi phạm đất đai xảy ra trước 1/8/2024.","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":false},{"date":"2026-05-07","label":"7/5/2026","title":"NĐ 147/2026/NĐ-CP có hiệu lực","desc":"Hướng dẫn thi hành NQ 29/2026 — Điều 11/12/13 xử lý các loại vi phạm đất đai.","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":false},{"date":"2026-06-01","label":"1/6/2026","title":"NĐ 193/2026/NĐ-CP ban hành","desc":"Quyết toán vốn đầu tư dự án — thay thế toàn bộ NĐ 254/2025/NĐ-CP.","tags":["P4 · Quyết toán vốn"],"warn":false},{"date":"2026-06-15","label":"15/6/2026","title":"NĐ 207/2026/NĐ-CP ban hành","desc":"Quản lý chất lượng, thi công xây dựng và bảo trì công trình.","tags":["P1 · khung chung","P3 · tất cả module"],"warn":false},{"date":"2026-07-01","label":"1/7/2026","title":"\"Ngày đại hiệu lực\" — Luật XD 135 + 5 nghị định hướng dẫn","desc":"Luật Xây dựng 135/2025/QH15 cùng NĐ 217, 206, 210, 207, 193/2026 đồng loạt có hiệu lực.","tags":["Toàn bộ P1-4"],"warn":false},{"date":"2029-05-01","label":"1/5/2029","title":"Hết hiệu lực cơ chế xử lý vi phạm đất đai","desc":"Mốc cuối để áp dụng cơ chế xử lý vi phạm theo NQ 29/2026 — quá hạn mất cơ hội áp dụng.","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":true},{"date":"2031-05-01","label":"1/5/2031","title":"Hết hiệu lực cơ chế tháo gỡ dự án tồn đọng","desc":"Mốc cuối để áp dụng cơ chế tháo gỡ dự án tồn đọng kéo dài theo NQ 29/2026.","tags":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":true}],"documentIndex":[{"type":"Luật","code":"135/2025/QH15","name":"Luật Xây dựng","date":"Hiệu lực 1/7/2026","modules":["Toàn bộ 16 module Phần 1–4"],"warn":null},{"type":"Luật","code":"31/2024/QH15","name":"Luật Đất đai","date":"Hiệu lực 1/8/2024","modules":["P1 · KCN/CCN/KĐT/FTZ","Vốn tư nhân · cả 2 track"],"warn":null},{"type":"Luật","code":"21/2017/QH14","name":"Luật Quy hoạch","date":"—","modules":["P1 · khung pháp lý chung"],"warn":null},{"type":"Luật","code":"72/2020/QH14","name":"Luật Bảo vệ môi trường","date":"—","modules":["P1 · khung chung, KCN, CCN, KĐT, FTZ"],"warn":null},{"type":"Luật","code":"55/2024/QH15","name":"Luật PCCC và cứu nạn, cứu hộ","date":"Hiệu lực 1/7/2025","modules":["P1 · khung chung","P2 · Hợp đồng","P3 · Chất lượng, Nghiệm thu, Kiểm tra nghiệm thu"],"warn":null},{"type":"Luật","code":"61/2020/QH14","name":"Luật Đầu tư","date":"—","modules":["P1 · KCN, CCN, KĐT, FTZ"],"warn":null},{"type":"Luật","code":"29/2023/QH15","name":"Luật Kinh doanh bất động sản","date":"—","modules":["P1 · KĐT"],"warn":null},{"type":"Luật","code":"2023","name":"Luật Nhà ở","date":"—","modules":["P1 · KĐT"],"warn":null},{"type":"Nghị định","code":"217/2026/NĐ-CP","name":"Quản lý dự án đầu tư xây dựng","date":"Hiệu lực 1/7/2026","modules":["P1 · KCN, CCN, KĐT, FTZ","P3 · Chất lượng (BIM, Điều 11)"],"warn":null},{"type":"Nghị định","code":"206/2026/NĐ-CP","name":"Quản lý chi phí đầu tư xây dựng","date":"Hiệu lực 1/7/2026","modules":["P1 · khung chung","P2 · Dự toán, Hợp đồng"],"warn":null},{"type":"Nghị định","code":"210/2026/NĐ-CP","name":"Hợp đồng xây dựng","date":"Hiệu lực 1/7/2026 (3 chương, 34 điều)","modules":["P2 · Hợp đồng, Thanh toán, Tranh chấp","P4 · Hợp đồng A-B, Tranh chấp quyết toán"],"warn":null},{"type":"Nghị định","code":"207/2026/NĐ-CP","name":"Quản lý chất lượng, thi công xây dựng và bảo trì công trình","date":"Ban hành 15/6/2026, hiệu lực 1/7/2026","modules":["P1 · khung chung (phân cấp nhà ở riêng lẻ)","P3 · cả 4 module"],"warn":null},{"type":"Nghị định","code":"193/2026/NĐ-CP","name":"Quyết toán vốn đầu tư dự án","date":"Ban hành 1/6/2026, hiệu lực 1/7/2026 (5 chương, 31 điều)","modules":["P4 · Quyết toán vốn, Quy trình, Hợp đồng A-B"],"warn":null},{"type":"Quyết định","code":"1040/QĐ-BXD","name":"Công bố mẫu hợp đồng xây dựng","date":"—","modules":["P2 · Hợp đồng"],"warn":null},{"type":"Thông tư","code":"36/2026/TT-BXD, 37/2026/TT-BXD","name":"Hướng dẫn phương pháp xác định chi phí, định mức","date":"—","modules":["P2 · Dự toán"],"warn":null},{"type":"Nghị định","code":"35/2022/NĐ-CP","name":"Quản lý khu công nghiệp, khu kinh tế","date":"Đang soạn thảo nghị định thay thế (từ cuối 2025)","modules":["P1 · KCN"],"warn":"Theo dõi tiến độ thay thế trước khi áp dụng cho hồ sơ mới."},{"type":"Nghị định","code":"32/2024/NĐ-CP","name":"Quản lý, phát triển cụm công nghiệp","date":"Hiệu lực 1/5/2024","modules":["P1 · CCN"],"warn":null},{"type":"Nghị định","code":"11/2013/NĐ-CP","name":"Quản lý đầu tư phát triển đô thị (hợp nhất VBHN 04/VBHN-BXD 11/2/2026)","date":"Đang lấy ý kiến dự thảo thay thế","modules":["P1 · KĐT"],"warn":"Đang soạn thảo nghị định thay thế."},{"type":"Nghị quyết + Nghị định","code":"111/2025/UBTVQH15 + 35/2026/NĐ-CP","name":"Phân loại đô thị, Chương trình phát triển đô thị 10 năm","date":"Hiệu lực 22/1/2026","modules":["P1 · KĐT"],"warn":null},{"type":"Nghị quyết","code":"136/2024/QH15","name":"Cơ chế đặc thù Đà Nẵng (Điều 13 — FTZ)","date":"Ban hành 26/6/2024","modules":["P1 · FTZ"],"warn":null},{"type":"Nghị quyết","code":"259/2025/QH15","name":"Sửa đổi, bổ sung NQ 136/2024/QH15","date":"Ban hành 11/12/2025","modules":["P1 · FTZ"],"warn":null},{"type":"Quyết định","code":"1142/QĐ-TTg","name":"Thành lập Khu thương mại tự do Đà Nẵng","date":"Ban hành 13/6/2025","modules":["P1 · FTZ"],"warn":null},{"type":"Nghị định","code":"103/2024/NĐ-CP","name":"Tiền sử dụng đất, tiền thuê đất","date":"—","modules":["P1 · FTZ"],"warn":null},{"type":"Nghị quyết","code":"254/2025/QH15","name":"Sửa đổi thi hành Luật Đất đai — cơ chế 75%/75%, giảm tiền SDĐ","date":"Hiệu lực 1/1/2026","modules":["Vốn tư nhân · Đất đai thường xuyên"],"warn":"⚠ Khác với Nghị định 254/2025/NĐ-CP (quyết toán vốn đầu tư công cũ) — hai văn bản trùng số 254 nhưng nội dung hoàn toàn khác nhau."},{"type":"Nghị định","code":"49/2026/NĐ-CP","name":"Hướng dẫn thi hành NQ 254/2025/QH15","date":"—","modules":["Vốn tư nhân · Đất đai thường xuyên"],"warn":null},{"type":"Nghị quyết","code":"170/2024/QH15","name":"Thí điểm tháo gỡ vướng mắc đất đai (TP.HCM, Đà Nẵng, Khánh Hòa)","date":"Ban hành 30/11/2024","modules":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":null},{"type":"Nghị định","code":"76/2025/NĐ-CP","name":"Hướng dẫn thi hành NQ 170/2024/QH15","date":"—","modules":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":null},{"type":"Nghị quyết","code":"265/2025/QH15","name":"Mở rộng phạm vi áp dụng cơ chế NQ 170/2024/QH15","date":"Ban hành 11/12/2025","modules":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":null},{"type":"Nghị quyết","code":"29/2026/QH16","name":"Mở rộng toàn quốc cơ chế tháo gỡ dự án tồn đọng","date":"Ban hành 24/4/2026, hiệu lực 1/5/2026","modules":["Vốn tư nhân · Tháo gỡ tồn đọng","P4 · Tranh chấp quyết toán (liên hệ)"],"warn":"Xử lý vi phạm chỉ đến 1/5/2029; tháo gỡ dự án tồn đọng chỉ đến 1/5/2031."},{"type":"Nghị định","code":"147/2026/NĐ-CP","name":"Hướng dẫn thi hành NQ 29/2026/QH16 (Điều 11/12/13)","date":"Hiệu lực 7/5/2026","modules":["Vốn tư nhân · Tháo gỡ tồn đọng"],"warn":null},{"type":"Nghị định","code":"254/2025/NĐ-CP","name":"Quản lý, thanh toán, quyết toán dự án vốn đầu tư công (văn bản quyết toán cũ)","date":"Áp dụng chuyển tiếp cho hồ sơ nộp trước 1/7/2026","modules":["P4 · Quyết toán vốn (quy định chuyển tiếp)"],"warn":"⚠ Khác với Nghị quyết 254/2025/QH15 (đất đai) — hai văn bản trùng số 254 nhưng nội dung hoàn toàn khác nhau."}],"mindmap":[{"id":"quyhoach","label":"Quy hoạch","color":"topic-1","keyword":"quy hoạch","leaves":[{"code":"21/2017/QH14","name":"Luật Quy hoạch"},{"code":"47/2024/QH15","name":"Luật Quy hoạch đô thị và nông thôn (sửa đổi bởi Luật 144/2025/QH15)"}]},{"id":"datdai","label":"Đất đai","color":"topic-2","keyword":"đất đai","leaves":[{"code":"31/2024/QH15","name":"Luật Đất đai — hiệu lực 1/8/2024"},{"code":"254/2025/QH15","name":"Cơ chế 75%/75% thu hồi đất, giảm tiền sử dụng đất"},{"code":"170/2024 → 265/2025 → 29/2026/QH16","name":"Chuỗi tháo gỡ vướng mắc đất đai, dự án tồn đọng"},{"code":"NĐ 147/2026 · 49/2026 · 76/2025 · 103/2024","name":"Các nghị định hướng dẫn thi hành"}]},{"id":"moitruong","label":"Môi trường","color":"green","keyword":"môi trường","leaves":[{"code":"72/2020/QH14","name":"Luật Bảo vệ môi trường — ĐTM, giấy phép môi trường"}]},{"id":"pccc","label":"PCCC","color":"seal","keyword":"PCCC","leaves":[{"code":"55/2024/QH15","name":"Luật PCCC và cứu nạn, cứu hộ — hiệu lực 1/7/2025"}]},{"id":"dautu","label":"Đầu tư","color":"gold","keyword":"đầu tư","leaves":[{"code":"61/2020/QH14","name":"Luật Đầu tư"},{"code":"136/2024/QH15 + 259/2025/QH15","name":"Cơ chế đặc thù Đà Nẵng — Khu thương mại tự do"},{"code":"1142/QĐ-TTg","name":"Thành lập Khu thương mại tự do Đà Nẵng"}]},{"id":"kdbds","label":"Kinh doanh BĐS","color":"topic-4","keyword":"kinh doanh bất động sản","leaves":[{"code":"29/2023/QH15","name":"Luật Kinh doanh bất động sản"},{"code":"Luật Nhà ở 2023","name":"Điều kiện huy động vốn, bán nhà hình thành trong tương lai"}]},{"id":"xaydung","label":"Xây dựng","color":"topic-3","keyword":"xây dựng","leaves":[{"code":"135/2025/QH15","name":"Luật Xây dựng — hiệu lực 1/7/2026"},{"code":"217 · 206 · 210 · 207 · 193 /2026","name":"5 nghị định hướng dẫn thi hành đồng bộ"},{"code":"35/2022 · 32/2024 · 11/2013+35/2026","name":"Nghị định riêng cho KCN · CCN · Khu đô thị"}]}]}
+</script>
+
+<script>
+  // ---------- Thanh điều hướng cố định (sticky nav) ----------
+  const navPills = document.querySelectorAll('.nav-pill');
+  const navTargets = {
+    'hero': document.getElementById('hero-top'),
+    'mindmap': document.getElementById('mindmap-section'),
+    'cd-0': document.getElementById('topics-section'),
+    'cd-1': document.getElementById('topics-section'),
+    'cd-2': document.getElementById('topics-section'),
+    'cd-3': document.getElementById('topics-section'),
+    'private': document.getElementById('private-section'),
+    'lookup': document.getElementById('lookup-section'),
+  };
+  navPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const key = pill.getAttribute('data-nav');
+      const target = navTargets[key];
+      if (!target) return;
+
+      // Nếu là mục phần nội dung, kích hoạt đúng tab trước khi cuộn tới
+      if (key.startsWith('cd-')) {
+        const topicIdx = key.replace('cd-', '');
+        const tabBtn = document.querySelector('.tab-btn[data-topic="' + topicIdx + '"]');
+        if (tabBtn) tabBtn.click();
+      }
+
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      navPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+    });
+  });
+
+  // Scroll-spy: tự động highlight mục đang xem
+  const spySections = [
+    { id: 'hero-top', nav: 'hero' },
+    { id: 'mindmap-section', nav: 'mindmap' },
+    { id: 'topics-section', nav: null }, // xử lý riêng vì gồm 4 phần nội dung
+    { id: 'private-section', nav: 'private' },
+    { id: 'lookup-section', nav: 'lookup' },
+  ];
+  const spyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      if (entry.target.id === 'topics-section') {
+        const activeTopic = document.querySelector('.tab-btn.active');
+        if (activeTopic) {
+          const idx = activeTopic.getAttribute('data-topic');
+          navPills.forEach(p => p.classList.toggle('active', p.getAttribute('data-nav') === 'cd-' + idx));
+        }
+        return;
+      }
+      const match = spySections.find(s => s.id === entry.target.id);
+      if (match && match.nav) {
+        navPills.forEach(p => p.classList.toggle('active', p.getAttribute('data-nav') === match.nav));
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  spySections.forEach(s => {
+    const el = document.getElementById(s.id);
+    if (el) spyObserver.observe(el);
+  });
+
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.panel');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.getAttribute('data-topic');
+      buttons.forEach(b=>b.classList.remove('active'));
+      panels.forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-'+idx).classList.add('active');
+    });
+  });
+
+  // ---------- Pháp lý dự án theo loại hình ----------
+  const SEMINAR_DATA = JSON.parse(document.getElementById('seminar-data').textContent);
+  const projectTypes = SEMINAR_DATA.projectTypes;
+
+  function buildPanelHTML(t) {
+    let html = `<div class="module-actions">
+      <button class="module-action-btn" onclick="copyModuleText('${t.id}', this)">⧉ Sao chép nội dung</button>
+      <button class="module-action-btn" id="reviewed-btn-${t.id}" onclick="toggleReviewed('${t.id}', this)">☐ Đánh dấu đã rà soát</button>
+    </div>`;
+    html += `<div class="subnote">${t.note}</div>`;
+
+    html += `<div class="sec-label"><span class="n">1</span>Căn cứ pháp lý</div><ul>`;
+    t.legal.forEach(l => html += `<li>${l}</li>`);
+    html += `</ul>`;
+
+    html += `<div class="sec-label"><span class="n">2</span>Sơ đồ quy trình</div>`;
+    html += `<div class="flow-wrap"><div class="flow-row">`;
+    t.steps.forEach((s, si) => {
+      html += `<div class="flow-step" data-step-target="step-${t.id}-${si + 1}" title="Xem chi tiết bước ${si + 1}">${si + 1}</div>`;
+      if (si < t.steps.length - 1) html += `<span class="flow-arrow">→</span>`;
+    });
+    html += `</div></div><div class="flow-hint">Bấm vào từng số để nhảy tới đúng bước chi tiết tương ứng ở mục 3 bên dưới.</div>`;
+
+    html += `<div class="sec-label"><span class="n">3</span>Các bước thực hiện chi tiết</div><ol>`;
+    t.steps.forEach((s, si) => html += `<li id="step-${t.id}-${si + 1}">${s}</li>`);
+    html += `</ol>`;
+
+    html += `<div class="sec-label"><span class="n">4</span>Các rủi ro</div>`;
+    html += `<table class="mini-tbl"><tr><th style="width:22%">Rủi ro</th><th style="width:40%">Diễn giải</th><th style="width:38%">Khuyến nghị kiểm soát</th></tr>`;
+    t.risks.forEach(r => html += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`);
+    html += `</table>`;
+
+    html += `<div class="sec-label"><span class="n">5</span>Ma trận RACI</div>`;
+    html += `<table class="mini-tbl raci"><tr><th>Hoạt động</th>${t.raciRoles.map(r => `<th>${r}</th>`).join('')}</tr>`;
+    t.raci.forEach(row => html += `<tr><td>${row[0]}</td>${row.slice(1).map(v => `<td>${v}</td>`).join('')}</tr>`);
+    html += `</table><div class="raci-legend">R = Responsible · A = Accountable · C = Consulted · I = Informed</div>`;
+
+    return html;
+  }
+
+  function ensurePanelRendered(panel, t) {
+    if (panel.dataset.rendered === 'true') return;
+    panel.innerHTML = `<div class="lazy-loading">Đang tải nội dung…</div>`;
+    // requestAnimationFrame để UI kịp hiện trạng thái loading trước khi build HTML nặng
+    requestAnimationFrame(() => {
+      panel.innerHTML = buildPanelHTML(t);
+      panel.dataset.rendered = 'true';
+      applyReviewedUI(t.id, !!reviewedState[t.id]);
+    });
+  }
+
+  function renderBlockGroup(dataArr, tabsRoot, panelsRoot, groupKey) {
+    if (!tabsRoot || !panelsRoot) return;
+
+    dataArr.forEach((t, i) => {
+      moduleRegistry[t.id] = t;
+      if (groupKey) moduleGroupOf[t.id] = groupKey;
+
+      const btn = document.createElement('button');
+      btn.className = 'type-tab-btn' + (i === 0 ? ' active' : '');
+      btn.setAttribute('data-type', t.id);
+      btn.innerHTML = `${t.label}<span class="reviewed-dot"></span>`;
+      btn.addEventListener('click', () => {
+        tabsRoot.querySelectorAll('.type-tab-btn').forEach(b => b.classList.remove('active'));
+        panelsRoot.querySelectorAll('.type-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const panel = panelsRoot.querySelector('#' + t.panelId);
+        panel.classList.add('active');
+        ensurePanelRendered(panel, t);
+      });
+      tabsRoot.appendChild(btn);
+      moduleTabBtn[t.id] = btn;
+      refreshReviewedBadge(t.id);
+
+      const panel = document.createElement('div');
+      panel.className = 'type-panel' + (i === 0 ? ' active' : '');
+      panel.id = t.panelId;
+      panel.dataset.rendered = 'false';
+      panelsRoot.appendChild(panel);
+
+      // Module đầu tiên (đang active mặc định) render ngay; các module còn lại chờ bấm mới dựng
+      if (i === 0) ensurePanelRendered(panel, t);
+    });
+
+    // Bấm vào số trong sơ đồ quy trình → nhảy tới dòng bước chi tiết tương ứng
+    panelsRoot.addEventListener('click', (e) => {
+      const step = e.target.closest('.flow-step');
+      if (!step) return;
+      const targetId = step.getAttribute('data-step-target');
+      const targetLi = document.getElementById(targetId);
+      if (!targetLi) return;
+      targetLi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      targetLi.classList.remove('step-flash');
+      void targetLi.offsetWidth;
+      targetLi.classList.add('step-flash');
+    });
+  }
+
+  // ---------- Registry toàn cục cho tính năng mở rộng ----------
+  const moduleRegistry = {};   // id -> dữ liệu module
+  const moduleGroupOf = {};    // id -> groupKey
+  const moduleTabBtn = {};     // id -> phần tử nút tab
+  const reviewedState = {};    // id -> đã rà soát hay chưa (cache trong phiên)
+
+  const GROUP_META = {
+    projectTypes:  { topNavKey: 'cd-0', label: 'Phần 1' },
+    cd2Modules:    { topNavKey: 'cd-1', label: 'Phần 2' },
+    cd3Modules:    { topNavKey: 'cd-2', label: 'Phần 3' },
+    cd4Modules:    { topNavKey: 'cd-3', label: 'Phần 4' },
+    privateTracks: { topNavKey: 'private', label: 'Vốn tư nhân' },
+  };
+
+  // ---------- Đánh dấu đã rà soát (lưu qua window.storage) ----------
+  function applyReviewedUI(id, isReviewed) {
+    const tabBtn = moduleTabBtn[id];
+    if (tabBtn) tabBtn.classList.toggle('is-reviewed', isReviewed);
+    const actionBtn = document.getElementById('reviewed-btn-' + id);
+    if (actionBtn) {
+      actionBtn.textContent = isReviewed ? '☑ Đã rà soát' : '☐ Đánh dấu đã rà soát';
+      actionBtn.classList.toggle('is-reviewed', isReviewed);
+    }
+  }
+
+  function refreshReviewedBadge(id) {
+    if (!window.storage) return;
+    window.storage.get('reviewed:' + id).then(res => {
+      const isReviewed = !!(res && res.value === 'true');
+      reviewedState[id] = isReviewed;
+      applyReviewedUI(id, isReviewed);
+    }).catch(() => { /* chưa có dữ liệu lưu trước đó, bỏ qua */ });
+  }
+
+  async function toggleReviewed(id) {
+    const next = !reviewedState[id];
+    reviewedState[id] = next;
+    applyReviewedUI(id, next);
+    if (window.storage) {
+      try { await window.storage.set('reviewed:' + id, next ? 'true' : 'false', false); }
+      catch (e) { /* lưu thất bại, trạng thái vẫn hiển thị tạm trong phiên này */ }
+    }
+  }
+
+  // ---------- Sao chép nội dung module ----------
+  function fallbackCopy(text, cb) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* trình duyệt không hỗ trợ, bỏ qua */ }
+    document.body.removeChild(ta);
+    if (cb) cb();
+  }
+
+  function copyModuleText(id, btnEl) {
+    const t = moduleRegistry[id];
+    if (!t) return;
+    let text = `${t.label}\n${t.note}\n\n`;
+    text += `CĂN CỨ PHÁP LÝ\n` + t.legal.map((l, i) => `${i + 1}. ${l}`).join('\n') + '\n\n';
+    text += `CÁC BƯỚC THỰC HIỆN\n` + t.steps.map((s, i) => `${i + 1}. ${s}`).join('\n') + '\n\n';
+    text += `CÁC RỦI RO\n` + t.risks.map(r => `- ${r[0]}: ${r[1]} → ${r[2]}`).join('\n') + '\n\n';
+    text += `MA TRẬN RACI (vai trò: ${t.raciRoles.join(', ')})\n` + t.raci.map(row =>
+      `${row[0]}: ` + row.slice(1).map((v, i) => `${t.raciRoles[i]}=${v}`).join(', ')
+    ).join('\n');
+
+    const done = () => {
+      if (!btnEl) return;
+      const original = '⧉ Sao chép nội dung';
+      btnEl.textContent = '✓ Đã sao chép';
+      setTimeout(() => { btnEl.textContent = original; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+
+  // ---------- Tìm kiếm toàn cục (⌕ trên thanh nav) ----------
+  function buildSearchIndex() {
+    const idx = [];
+    Object.keys(GROUP_META).forEach(groupKey => {
+      (SEMINAR_DATA[groupKey] || []).forEach(t => {
+        const text = [t.label, t.note, ...(t.legal || []), ...(t.steps || []), ...(t.risks || []).flat()].join(' ');
+        idx.push({ id: t.id, groupKey, groupLabel: GROUP_META[groupKey].label, label: t.label, text });
+      });
+    });
+    return idx;
+  }
+  const searchIndex = buildSearchIndex();
+
+  function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  function renderGlobalSearchResults(query) {
+    const root = document.getElementById('global-search-results');
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) {
+      root.innerHTML = `<div class="search-modal-hint">Gõ ít nhất 2 ký tự để tìm trong toàn bộ căn cứ pháp lý, các bước, rủi ro của mọi phần.</div>`;
+      return;
+    }
+    const matches = searchIndex.filter(item => item.text.toLowerCase().includes(q)).slice(0, 20);
+    if (matches.length === 0) {
+      root.innerHTML = `<div class="search-modal-empty">Không tìm thấy kết quả cho "${query}".</div>`;
+      return;
+    }
+    root.innerHTML = matches.map(m => {
+      const lowerText = m.text.toLowerCase();
+      const pos = lowerText.indexOf(q);
+      let snippet;
+      if (pos >= 0) {
+        const start = Math.max(0, pos - 40);
+        snippet = (start > 0 ? '…' : '') + m.text.slice(start, pos + q.length + 60) + '…';
+      } else {
+        snippet = m.text.slice(0, 100) + '…';
+      }
+      const re = new RegExp('(' + escapeRegExp(q) + ')', 'ig');
+      snippet = snippet.replace(re, '<mark>$1</mark>');
+      return `<button class="search-result-item" data-jump-group="${m.groupKey}" data-jump-id="${m.id}">
+        <div class="search-result-group">${m.groupLabel}</div>
+        <div class="search-result-title">${m.label}</div>
+        <div class="search-result-snippet">${snippet}</div>
+      </button>`;
+    }).join('');
+  }
+
+  function jumpToModule(groupKey, id) {
+    closeSearch();
+    const meta = GROUP_META[groupKey];
+    if (!meta) return;
+    const navPill = document.querySelector('.nav-pill[data-nav="' + meta.topNavKey + '"]');
+    if (navPill) navPill.click();
+    setTimeout(() => {
+      const tabBtn = moduleTabBtn[id];
+      if (tabBtn) tabBtn.click();
+      setTimeout(() => {
+        if (tabBtn) tabBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 250);
+    }, 350);
+  }
+
+  const searchTrigger = document.getElementById('search-trigger');
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchInputEl = document.getElementById('global-search-input');
+  const searchCloseBtn = document.getElementById('search-modal-close');
+
+  function openSearch() {
+    searchOverlay.classList.add('open');
+    setTimeout(() => searchInputEl.focus(), 50);
+  }
+  function closeSearch() {
+    searchOverlay.classList.remove('open');
+  }
+  searchTrigger.addEventListener('click', openSearch);
+  searchCloseBtn.addEventListener('click', closeSearch);
+  searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
+  searchInputEl.addEventListener('input', () => renderGlobalSearchResults(searchInputEl.value));
+  document.getElementById('global-search-results').addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (!item) return;
+    jumpToModule(item.getAttribute('data-jump-group'), item.getAttribute('data-jump-id'));
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearch(); });
+
+  // ---------- Nút lên đầu trang ----------
+  const backToTopBtn = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    backToTopBtn.classList.toggle('show', window.scrollY > 500);
+  });
+  backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  projectTypes.forEach(t => t.panelId = 'type-panel-' + t.id);
+  renderBlockGroup(projectTypes, document.getElementById('type-tabs'), document.getElementById('type-panels'), 'projectTypes');
+
+  // ---------- Nội dung mở rộng: Nhà đầu tư vốn tư nhân ----------
+  const privateTracks = SEMINAR_DATA.privateTracks;
+  privateTracks.forEach(t => t.panelId = 'priv-panel-' + t.id);
+  renderBlockGroup(privateTracks, document.getElementById('priv-tabs'), document.getElementById('priv-panels'), 'privateTracks');
+
+  // ---------- Phần 2 — module: Dự toán · Hợp đồng · Thanh toán · Tranh chấp ----------
+  const cd2Modules = SEMINAR_DATA.cd2Modules;
+  cd2Modules.forEach(t => t.panelId = 'cd2-panel-' + t.id);
+  renderBlockGroup(cd2Modules, document.getElementById('cd2-tabs'), document.getElementById('cd2-panels'), 'cd2Modules');
+
+  // ---------- Phần 3 — module: Chất lượng · Nghiệm thu · Kiểm tra nghiệm thu · Bảo hành-Bảo trì ----------
+  const cd3Modules = SEMINAR_DATA.cd3Modules;
+  cd3Modules.forEach(t => t.panelId = 'cd3-panel-' + t.id);
+  renderBlockGroup(cd3Modules, document.getElementById('cd3-tabs'), document.getElementById('cd3-panels'), 'cd3Modules');
+
+  // ---------- Phần 4 — module: Hợp đồng A-B · Quyết toán vốn đầu tư · Quy trình · Tranh chấp ----------
+  const cd4Modules = SEMINAR_DATA.cd4Modules;
+  cd4Modules.forEach(t => t.panelId = 'cd4-panel-' + t.id);
+  renderBlockGroup(cd4Modules, document.getElementById('cd4-tabs'), document.getElementById('cd4-panels'), 'cd4Modules');
+
+  // ---------- Tra cứu nhanh: Lịch hiệu lực & Danh mục văn bản ----------
+  const timeline = SEMINAR_DATA.timeline;
+  const documentIndex = SEMINAR_DATA.documentIndex;
+
+  function renderTimeline(filterText) {
+    const root = document.getElementById('lookup-timeline');
+    const q = (filterText || '').toLowerCase();
+    const items = timeline.filter(it =>
+      !q || (it.title + ' ' + it.desc + ' ' + it.tags.join(' ') + ' ' + it.label).toLowerCase().includes(q)
+    );
+    if (items.length === 0) {
+      root.innerHTML = `<div class="lookup-empty">Không tìm thấy mốc thời gian phù hợp.</div>`;
+      return;
+    }
+    let html = `<div class="tl-list">`;
+    items.forEach(it => {
+      html += `<div class="tl-item${it.warn ? ' tl-warn' : ''}">
+        <div class="tl-date">${it.label}</div>
+        <div class="tl-title">${it.title}</div>
+        <div class="tl-desc">${it.desc}</div>
+        <div class="tl-tags">${it.tags.map(t => `<span class="tl-tag">${t}</span>`).join('')}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    root.innerHTML = html;
+  }
+
+  function renderDocIndex(filterText) {
+    const root = document.getElementById('lookup-index');
+    const q = (filterText || '').toLowerCase();
+    const items = documentIndex.filter(d =>
+      !q || (d.type + ' ' + d.code + ' ' + d.name + ' ' + d.date + ' ' + d.modules.join(' ')).toLowerCase().includes(q)
+    );
+    if (items.length === 0) {
+      root.innerHTML = `<div class="lookup-empty">Không tìm thấy văn bản phù hợp.</div>`;
+      return;
+    }
+    let html = '';
+    items.forEach(d => {
+      html += `<div class="doc-idx-row">
+        <span class="doc-idx-code">${d.code}</span><span class="doc-idx-type">${d.type}</span>
+        <div class="doc-idx-name">${d.name}</div>
+        <div class="doc-idx-date">${d.date}</div>
+        <div class="doc-idx-modules">${d.modules.map(m => `<span class="doc-idx-mod">${m}</span>`).join('')}</div>
+        ${d.warn ? `<div class="doc-idx-warn">${d.warn}</div>` : ''}
+      </div>`;
+    });
+    root.innerHTML = html;
+  }
+
+  renderTimeline('');
+  renderDocIndex('');
+
+  const lookupSearch = document.getElementById('lookup-search');
+  lookupSearch.addEventListener('input', () => {
+    renderTimeline(lookupSearch.value);
+    renderDocIndex(lookupSearch.value);
+  });
+
+  document.querySelectorAll('.lookup-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lookup-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.lookup-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('lookup-' + btn.getAttribute('data-lookup')).classList.add('active');
+    });
+  });
+
+  // Nhảy sang tab "Danh mục văn bản" của Tra cứu nhanh kèm từ khóa lọc sẵn (dùng chung cho mindmap)
+  function jumpToDocIndex(keyword) {
+    const navPill = document.querySelector('.nav-pill[data-nav="lookup"]');
+    const indexTabBtn = document.querySelector('.lookup-tab-btn[data-lookup="index"]');
+    if (indexTabBtn) indexTabBtn.click();
+    lookupSearch.value = keyword;
+    renderTimeline(keyword);
+    renderDocIndex(keyword);
+    if (navPill) navPill.click();
+  }
+
+  // ---------- Sơ đồ tư duy: Pháp luật đầu tư xây dựng ----------
+  const MM_COLORS = {
+    'topic-1': 'var(--topic-1)', 'topic-2': 'var(--topic-2)',
+    'topic-3': 'var(--topic-3)', 'topic-4': 'var(--topic-4)',
+    'seal': 'var(--seal)', 'gold': 'var(--gold)', 'green': '#2E7D53',
+  };
+
+  function renderMindmap() {
+    const gridRoot = document.getElementById('mm-branch-grid');
+    const detailRoot = document.getElementById('mm-detail-root');
+    if (!gridRoot || !detailRoot) return;
+
+    SEMINAR_DATA.mindmap.forEach(branch => {
+      const btn = document.createElement('button');
+      btn.className = 'mm-branch';
+      btn.style.background = MM_COLORS[branch.color] || 'var(--navy)';
+      btn.textContent = branch.label;
+      btn.setAttribute('data-branch', branch.id);
+      gridRoot.appendChild(btn);
+
+      const detail = document.createElement('div');
+      detail.className = 'mm-detail';
+      detail.id = 'mm-detail-' + branch.id;
+      detail.innerHTML = `<h4>${branch.label}</h4>` +
+        branch.leaves.map(l => `<div class="mm-leaf-row"><span class="mm-leaf-code">${l.code}</span><span class="mm-leaf-name">${l.name}</span></div>`).join('') +
+        `<div class="mm-detail-link" data-keyword="${branch.keyword}">🔍 Xem trong Danh mục văn bản →</div>`;
+      detailRoot.appendChild(detail);
+
+      btn.addEventListener('click', () => {
+        const isOpen = detail.classList.contains('show');
+        document.querySelectorAll('.mm-branch').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.mm-detail').forEach(d => d.classList.remove('show'));
+        if (!isOpen) {
+          btn.classList.add('active');
+          detail.classList.add('show');
+        }
+      });
+    });
+
+    detailRoot.addEventListener('click', (e) => {
+      const link = e.target.closest('.mm-detail-link');
+      if (!link) return;
+      jumpToDocIndex(link.getAttribute('data-keyword'));
+    });
+  }
+  renderMindmap();
+
+
+  // ---------- Drill-down: click nội dung → tự chuyển tới khối chi tiết ----------
+  document.querySelectorAll('.drill-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const targetId = link.getAttribute('data-target');
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      // Đảm bảo panel chứa khối đang active (trường hợp gọi từ tab khác)
+      const parentPanel = target.closest('.panel');
+      if (parentPanel && !parentPanel.classList.contains('active')) {
+        const topicIdx = parentPanel.id.replace('panel-', '');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelector('.tab-btn[data-topic="' + topicIdx + '"]').classList.add('active');
+        parentPanel.classList.add('active');
+      }
+
+      // Mở khối <details> "Đi sâu nghiệp vụ" nếu đang đóng
+      const details = parentPanel ? parentPanel.querySelector('details.deep-dive') : null;
+      if (details) details.open = true;
+
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.classList.remove('flash');
+      void target.offsetWidth; // reset animation
+      target.classList.add('flash');
+    });
+  });
+</script>
+
+</body>
+</html>

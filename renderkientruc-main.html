@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Render Nội Thất & Ngoại Thất - Lê Hữu Trí NTcons</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            glow: '#38bdf8'
+                        },
+                        ai: {
+                            purple: '#8b5cf6',
+                            magenta: '#d946ef',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(2, 132, 199, 0.35);
+        }
+        .glow-purple {
+            box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.35);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .gradient-border {
+            position: relative;
+            background-clip: padding-box;
+            border: 1px solid transparent;
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(to right, #0284c7, #8b5cf6, #d946ef);
+        }
+        /* Before-After Image Comparison Slider */
+        .ba-container {
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+        .ba-after {
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            overflow: hidden;
+        }
+        .ba-handle {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 4px;
+            background: #38bdf8;
+            cursor: ew-resize;
+            z-index: 30;
+            box-shadow: 0 0 12px #38bdf8;
+        }
+        .ba-handle-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #0284c7;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(2, 132, 199, 0.8);
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-brand-500 selection:text-white">
+
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-ai-purple to-ai-magenta flex items-center justify-center text-white font-black text-xl shadow-lg glow-effect">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
+                                NT<span class="text-brand-500">CONS</span>
+                            </span>
+                            <span class="bg-gradient-to-r from-brand-500 to-ai-purple text-[10px] font-bold px-2 py-0.5 rounded-full text-white uppercase tracking-wider shadow-sm">
+                                AI RENDER PRO 2026
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-medium hidden sm:block">
+                            Hệ sinh thái Lê Hữu Trí • Công cụ Render Kiến Trúc, Nội Thất & Ngoại Thất AI
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Main Nav Tabs -->
+                <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                    <button onclick="switchTab('studio')" id="nav-studio" class="nav-btn active flex items-center space-x-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition bg-brand-600 text-white shadow">
+                        <i class="fa-solid fa-cube"></i>
+                        <span>Studio Render AI</span>
+                    </button>
+                    <button onclick="switchTab('presets')" id="nav-presets" class="nav-btn flex items-center space-x-2 px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-grip"></i>
+                        <span>Thư Viện Mẫu (Presets)</span>
+                    </button>
+                    <button onclick="switchTab('boq')" id="nav-boq" class="nav-btn flex items-center space-x-2 px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Dự Toán Vật Liệu (BoQ AI)</span>
+                    </button>
+                    <button onclick="switchTab('history')" id="nav-history" class="nav-btn flex items-center space-x-2 px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Lịch Sử Render</span>
+                    </button>
+                    <button onclick="switchTab('projects')" id="nav-projects" class="nav-btn flex items-center space-x-2 px-4 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Dự Án Khách Hàng</span>
+                    </button>
+                </nav>
+
+                <!-- Actions & Server Status -->
+                <div class="flex items-center space-x-3">
+                    <div id="server-status-badge" class="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-950/60 border border-amber-800/50 text-amber-400 text-xs">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span class="font-mono text-[11px] font-semibold">Chế Độ Mô Phỏng (Client)</span>
+                    </div>
+
+                    <button onclick="toggleKeyModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-key text-amber-400"></i>
+                        <span class="hidden sm:inline">Cấu Hình API / Fast Mode</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Nav Tabs: bản desktop ẩn hoàn toàn nav trên di động (md:hidden ở trên),
+                 nên thêm thanh điều hướng cuộn ngang riêng để không bị kẹt ở 1 tab duy nhất -->
+            <div class="md:hidden overflow-x-auto pb-2 pt-1 -mx-1 px-1">
+                <nav class="flex items-center gap-1 w-max">
+                    <button onclick="switchTab('studio')" id="nav-mobile-studio" class="nav-btn-mobile whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-brand-600 text-white shadow">
+                        <i class="fa-solid fa-cube"></i><span>Studio</span>
+                    </button>
+                    <button onclick="switchTab('presets')" id="nav-mobile-presets" class="nav-btn-mobile whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-grip"></i><span>Presets</span>
+                    </button>
+                    <button onclick="switchTab('boq')" id="nav-mobile-boq" class="nav-btn-mobile whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-file-invoice-dollar"></i><span>BoQ</span>
+                    </button>
+                    <button onclick="switchTab('history')" id="nav-mobile-history" class="nav-btn-mobile whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-clock-rotate-left"></i><span>Lịch Sử</span>
+                    </button>
+                    <button onclick="switchTab('projects')" id="nav-mobile-projects" class="nav-btn-mobile whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-folder-open"></i><span>Dự Án</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-[1700px] w-full mx-auto px-2 sm:px-4 lg:px-6 py-4 flex flex-col">
+
+        <!-- VIEW 1: STUDIO RENDER WORKSPACE -->
+        <section id="view-studio" class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 h-full">
+            
+            <!-- LEFT CONTROL PANEL (4 Cols) -->
+            <div class="lg:col-span-4 flex flex-col space-y-4 custom-scrollbar overflow-y-auto max-h-[calc(100vh-100px)] pr-1">
+                
+                <!-- Card 1: Input Source Selection -->
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-brand-600/30 text-brand-400 flex items-center justify-center text-xs">1</span>
+                            Tải Ảnh Đầu Vào / Phác Thảo
+                        </h3>
+                        <span class="text-[11px] text-slate-400">JPG, PNG • Max 20MB</span>
+                    </div>
+
+                    <!-- Drag & Drop Zone -->
+                    <div id="drop-zone" onclick="triggerFileInput()" class="border-2 border-dashed border-slate-700 hover:border-brand-500 rounded-xl p-4 text-center cursor-pointer transition bg-slate-900/50 hover:bg-slate-900 group relative">
+                        <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                        
+                        <div class="py-2 flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full bg-slate-800 group-hover:bg-brand-600/20 text-slate-400 group-hover:text-brand-400 flex items-center justify-center text-xl mb-2 transition">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-300">Nhấp để tải ảnh phòng hoặc kéo thả vào đây</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Hỗ trợ ảnh chụp hiện trạng, bản vẽ 2D CAD, phác thảo tay 3D</p>
+                        </div>
+                    </div>
+
+                    <!-- Preset Sample Image Selector -->
+                    <div class="mt-3">
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">Hoặc chọn ảnh mẫu hiện trạng có sẵn:</label>
+                        <div class="grid grid-cols-4 gap-2" id="sample-preset-grid">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: AI Render Mode & Style Settings -->
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-ai-purple/30 text-ai-purple flex items-center justify-center text-xs">2</span>
+                            Chế Độ & Phong Cách AI
+                        </h3>
+                        <span class="text-[11px] bg-ai-purple/20 text-ai-purple border border-ai-purple/30 px-2 py-0.5 rounded-md font-mono">ControlNet SDXL</span>
+                    </div>
+
+                    <!-- Category Switcher: Interior vs Exterior -->
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-900 rounded-xl border border-slate-800">
+                        <button onclick="setCategory('interior')" id="cat-interior" class="cat-btn active py-2 rounded-lg text-xs font-bold transition bg-brand-600 text-white shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-couch"></i>
+                            <span>Nội Thất (Interior)</span>
+                        </button>
+                        <button onclick="setCategory('exterior')" id="cat-exterior" class="cat-btn py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-building"></i>
+                            <span>Ngoại Thất (Exterior)</span>
+                        </button>
+                    </div>
+
+                    <!-- Room / Space Subtype -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Loại Không Gian:</label>
+                        <select id="space-type-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-brand-500">
+                            <!-- Injected by JS based on Category -->
+                        </select>
+                    </div>
+
+                    <!-- Architectural & Interior Styles Grid -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Phong Cách Thiết Kế:</label>
+                        <div class="grid grid-cols-3 gap-2" id="styles-grid">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Material & Lighting Options -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Ánh Sáng & Khung Cảnh:</label>
+                            <select id="lighting-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                                <option value="daylight">Ánh Sáng Ban Ngày (Sunlight)</option>
+                                <option value="warm_led">Đèn LED Ấm Áp (Cozy Ambient)</option>
+                                <option value="golden_hour">Hoàng Hôn (Golden Hour)</option>
+                                <option value="dramatic_night">Ban Đêm Sang Trọng (Night Spotlights)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Chất Liệu Chủ Đạo:</label>
+                            <select id="material-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                                <option value="wood_marble">Gỗ Tự Nhiên & Đá Marble</option>
+                                <option value="concrete_glass">Bê Tông Mài & Kính Lớn</option>
+                                <option value="luxury_gold">Khung Kim Loại Mạ Vàng & Da</option>
+                                <option value="nordic_fabric">Vải Nỉ Bắc Âu & Gỗ Sáng Màu</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Detailed AI Prompts & Parameters -->
+                <div class="glass-panel p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-md bg-ai-magenta/30 text-ai-magenta flex items-center justify-center text-xs">3</span>
+                            Prompt Chi Tiết & Tham Số AI
+                        </h3>
+                        <button onclick="randomizePrompt()" class="text-[11px] text-brand-400 hover:text-brand-300 font-medium">
+                            <i class="fa-solid fa-dice mr-1"></i> Tự Động Gợi Ý
+                        </button>
+                    </div>
+
+                    <!-- Prompt Input Area -->
+                    <div>
+                        <textarea id="prompt-input" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-ai-magenta transition custom-scrollbar" placeholder="Nhập câu lệnh chi tiết (vd: Sofa bọc da xám cao cấp, đèn thả nghệ thuật, sàn gỗ sồi, tường ốp nan gỗ, cây xanh trang trí, ánh sáng tự nhiên qua cửa kính kịch trần...)"></textarea>
+                    </div>
+
+                    <!-- Quick Keyword Tags -->
+                    <div class="flex flex-wrap gap-1" id="quick-tags-container">
+                        <!-- Injected via JS -->
+                    </div>
+
+                    <!-- Sliders: ControlNet Strength & Creativity -->
+                    <div class="space-y-2 pt-2 border-t border-slate-800/80">
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-slate-400">Giữ Cấu Trúc Khung Phòng (Fidelity):</span>
+                                <span id="val-fidelity" class="font-bold text-brand-400">80%</span>
+                            </div>
+                            <input type="range" id="slider-fidelity" min="30" max="100" value="80" oninput="document.getElementById('val-fidelity').innerText = this.value + '%'" class="w-full accent-brand-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-[11px] mb-1">
+                                <span class="text-slate-400">Mức Độ Sáng Tạo AI (Creativity):</span>
+                                <span id="val-creativity" class="font-bold text-ai-purple">65%</span>
+                            </div>
+                            <input type="range" id="slider-creativity" min="20" max="95" value="65" oninput="document.getElementById('val-creativity').innerText = this.value + '%'" class="w-full accent-ai-purple bg-slate-800 h-1.5 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Render Action Button -->
+                <button onclick="startAIRender()" id="btn-render" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-ai-purple to-ai-magenta hover:opacity-95 text-white font-extrabold text-sm uppercase tracking-wider shadow-xl glow-effect transition transform active:scale-95 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-lg animate-spin-slow"></i>
+                    <span>🚀 Bắt Đầu Render AI (Ultra HD)</span>
+                </button>
+
+            </div>
+
+            <!-- RIGHT WORKSPACE CANVAS PANEL (8 Cols) -->
+            <div class="lg:col-span-8 flex flex-col space-y-4">
+                
+                <!-- Main Preview Header & Toolbar -->
+                <div class="glass-panel p-3 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-display text-brand-500"></i> Khung Nhìn Visualizer
+                        </span>
+                        <div class="h-4 w-px bg-slate-800"></div>
+                        <span id="canvas-status-badge" class="text-[11px] bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full font-medium">
+                            Đang chờ tải ảnh
+                        </span>
+                    </div>
+
+                    <!-- Display Mode Controls -->
+                    <div class="flex items-center space-x-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+                        <button onclick="setPreviewMode('compare')" id="btn-mode-compare" class="px-3 py-1 rounded-lg text-slate-300 font-semibold bg-slate-800 transition">
+                            <i class="fa-solid fa-sliders mr-1"></i> So Sánh (Before/After)
+                        </button>
+                        <button onclick="setPreviewMode('rendered')" id="btn-mode-rendered" class="px-3 py-1 rounded-lg text-slate-400 font-medium hover:text-white transition">
+                            <i class="fa-solid fa-image mr-1"></i> Ảnh Render Đơn
+                        </button>
+                        <button onclick="setPreviewMode('mask')" id="btn-mode-mask" class="px-3 py-1 rounded-lg text-slate-400 font-medium hover:text-white transition">
+                            <i class="fa-solid fa-paintbrush mr-1"></i> Vẽ Vùng Chỉnh Sửa (Inpaint)
+                        </button>
+                    </div>
+
+                    <!-- Quick Tools -->
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openSaveProjectPrompt()" title="Lưu công việc hiện tại thành dự án khách hàng" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs transition border border-slate-700">
+                            <i class="fa-solid fa-folder-plus"></i>
+                        </button>
+                        <button onclick="shareRenderedResult()" title="Chia sẻ ảnh kết quả" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs transition border border-slate-700">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
+                        <button onclick="downloadRenderedResult()" title="Tải ảnh độ phân giải cao" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs transition border border-slate-700">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button onclick="toggleFullscreen()" title="Xem toàn màn hình" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs transition border border-slate-700">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Canvas Container -->
+                <div class="flex-1 glass-panel rounded-2xl border border-slate-800 p-2 relative min-h-[500px] flex items-center justify-center overflow-hidden" id="canvas-wrapper">
+
+                    <!-- Watermark: chỉ hiện khi đang ở Chế Độ Mô Phỏng (chưa kết nối AI thật) -->
+                    <div id="demo-watermark" class="hidden absolute inset-0 z-30 pointer-events-none flex items-center justify-center overflow-hidden">
+                        <span class="text-slate-100/10 text-6xl sm:text-8xl font-black tracking-widest -rotate-[25deg] select-none whitespace-nowrap">DEMO • MÔ PHỎNG</span>
+                    </div>
+                    <div id="demo-watermark-badge" class="hidden absolute top-3 left-3 z-30 bg-amber-950/80 border border-amber-700/60 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-lg pointer-events-none">
+                        <i class="fa-solid fa-flask"></i> Ảnh mô phỏng — chưa phải AI thật
+                    </div>
+                    
+                    <!-- Loading Overlay during AI Render -->
+                    <div id="render-loading-overlay" class="hidden absolute inset-0 z-40 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+                        <div class="w-20 h-20 relative mb-4">
+                            <div class="absolute inset-0 rounded-full border-4 border-brand-500/20 border-t-brand-500 animate-spin"></div>
+                            <div class="absolute inset-2 rounded-full border-4 border-ai-purple/20 border-r-ai-purple animate-spin" style="animation-duration: 1.5s;"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-brand-400 text-xl font-bold">
+                                <i class="fa-solid fa-brain animate-pulse"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-1" id="loading-step-title">Đang Phân Tích Cấu Trúc Không Gian...</h4>
+                        <p class="text-xs text-slate-400 max-w-md mb-4" id="loading-step-subtitle">Thuật toán ControlNet SDXL đang mô phỏng vật liệu, chiếu sáng raytracing và làm nét chi tiết...</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full max-w-md bg-slate-800 rounded-full h-2.5 overflow-hidden mb-2 border border-slate-700">
+                            <div id="ai-progress-bar" class="bg-gradient-to-r from-brand-500 via-ai-purple to-ai-magenta h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <span id="ai-progress-text" class="text-xs font-mono font-bold text-brand-400">0%</span>
+                    </div>
+
+                    <!-- 1. BEFORE / AFTER COMPARISON SLIDER VIEW -->
+                    <div id="view-compare-container" class="w-full h-full min-h-[480px] relative ba-container rounded-xl overflow-hidden shadow-2xl flex items-center justify-center bg-slate-900">
+                        <!-- Before Image (Source) -->
+                        <img id="img-source" src="" alt="Source Raw Image" class="w-full h-full object-contain">
+                        
+                        <!-- After Image Overlay (Rendered) -->
+                        <div id="ba-after-layer" class="ba-after w-full h-full" style="width: 50%;">
+                            <img id="img-rendered" src="" alt="AI Rendered Result" class="w-full h-full object-contain">
+                        </div>
+
+                        <!-- Divider Handle -->
+                        <div id="ba-handle" class="ba-handle" style="left: 50%;">
+                            <div class="ba-handle-button">
+                                <i class="fa-solid fa-arrows-left-right text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Label Badges -->
+                        <div class="absolute bottom-4 left-4 z-20 bg-slate-950/80 backdrop-blur-sm px-3 py-1 rounded-lg border border-slate-700 text-xs font-bold text-slate-300">
+                            📷 HÌNH ẢNH GỐC / PHÁC THẢO
+                        </div>
+                        <div class="absolute bottom-4 right-4 z-20 bg-brand-950/80 backdrop-blur-sm px-3 py-1 rounded-lg border border-brand-500/50 text-xs font-bold text-brand-300">
+                            ✨ KẾT QUẢ AI RENDER (3D)
+                        </div>
+                    </div>
+
+                    <!-- 2. INPAINT MASK DRAW CANVAS (Hidden by default) -->
+                    <div id="view-mask-container" class="hidden absolute inset-0 z-30 bg-slate-950 p-2 flex flex-col items-center justify-center">
+                        <div class="mb-2 flex items-center space-x-4 bg-slate-900 px-4 py-2 rounded-xl border border-slate-800 text-xs">
+                            <span class="text-slate-300 font-semibold"><i class="fa-solid fa-paintbrush text-ai-magenta mr-1"></i> Cọ Vẽ Vùng Cần Thay Thế (Inpaint):</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-slate-400">Kích thước cọ:</span>
+                                <input type="range" id="brush-size" min="10" max="80" value="30" class="w-24 accent-ai-magenta">
+                            </div>
+                            <button onclick="clearMaskCanvas()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded">
+                                Xóa Vùng Chọn
+                            </button>
+                        </div>
+                        <div class="relative max-w-full max-h-[420px] overflow-hidden rounded-xl border border-slate-800">
+                            <canvas id="mask-canvas" class="cursor-crosshair"></canvas>
+                            <canvas id="mask-data-canvas" class="hidden"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Information & Quick Action Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="glass-panel p-3 rounded-xl border border-slate-800 flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-brand-600/20 text-brand-400 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-expand"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Độ Phân Giải AI</div>
+                            <div class="text-[11px] text-slate-400" id="info-res">Ultra HD (2048 x 1536 px)</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-3 rounded-xl border border-slate-800 flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-lg bg-ai-purple/20 text-ai-purple flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-palette"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Phong Cách Đang Chọn</div>
+                            <div class="text-[11px] text-slate-400" id="info-style">Hiện Đại (Modern Luxury)</div>
+                        </div>
+                    </div>
+
+                    <button onclick="openBoQEstimate()" class="glass-panel p-3 rounded-xl border border-slate-800 hover:border-brand-500/50 flex items-center justify-between transition group text-left">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-200 group-hover:text-brand-400 transition">Bóc Tách Vật Liệu (BoQ)</div>
+                                <div class="text-[11px] text-slate-400">Xem dự toán chi phí tự động</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:translate-x-1 transition"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- VIEW 2: PRESETS GALLERY -->
+        <section id="view-presets" class="hidden space-y-4">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-grip text-brand-500"></i> Thư Viện Mẫu Phối Cảnh & Prompt Chuẩn Lê Hữu Trí
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Chọn mẫu không gian sẵn có để tự động sao chép thông số và prompt vào Studio Render</p>
+                    </div>
+                    <!-- Filter Tags -->
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <button onclick="filterGallery('all', event)" class="gal-filter active px-3 py-1.5 rounded-lg bg-brand-600 text-white font-bold">Tất Cả</button>
+                        <button onclick="filterGallery('phongkhach', event)" class="gal-filter px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">Phòng Khách</button>
+                        <button onclick="filterGallery('phongngu', event)" class="gal-filter px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">Phòng Ngủ</button>
+                        <button onclick="filterGallery('bep', event)" class="gal-filter px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">Bếp & Phòng Ăn</button>
+                        <button onclick="filterGallery('ngoainthat', event)" class="gal-filter px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">Ngoại Thất Biệt Thự</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="preset-gallery-grid">
+                    <!-- Gallery cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: BOQ MATERIAL ESTIMATOR -->
+        <section id="view-boq" class="hidden space-y-4">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice-dollar text-emerald-400"></i> Bảng Dự Toán Vật Liệu & Bóc Tách Chi Phí (BoQ AI)
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Tự động nhận diện đồ nội thất & vật liệu trong bức ảnh AI Render để tính toán kinh phí thi công sơ bộ</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="addBoQRow()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Thêm Hạng Mục
+                        </button>
+                        <button onclick="resetBoQData()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl shadow transition flex items-center gap-2 border border-slate-700">
+                            <i class="fa-solid fa-rotate-left"></i> Khôi Phục Mặc Định
+                        </button>
+                        <button onclick="exportBoQCSV()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl shadow transition flex items-center gap-2 border border-slate-700">
+                            <i class="fa-solid fa-file-csv"></i> Xuất CSV
+                        </button>
+                        <button onclick="exportBoQReport()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-excel"></i> Xuất Báo Cáo Dự Toán
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BoQ Summary Banner -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Tổng Dự Toán Thi Công Ước Tính</div>
+                        <div class="text-2xl font-extrabold text-emerald-400 mt-1" id="boq-grand-total">185,000,000 VNĐ</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Diện Tích Lập Dự Toán</div>
+                        <div class="text-2xl font-extrabold text-brand-400 mt-1" id="boq-area">35 m²</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">Số Lượng Hạng Mục Đồ Đạc AI Nhận Diện</div>
+                        <div class="text-2xl font-extrabold text-ai-purple mt-1" id="boq-items-count">8 Hạng mục</div>
+                    </div>
+                </div>
+
+                <!-- BoQ Table -->
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-900 text-slate-300 font-bold uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-3.5">STT</th>
+                                <th class="p-3.5">Hạng Mục Nội Thất / Vật Liệu</th>
+                                <th class="p-3.5">Quy Cách & Chất Liệu Mô Phỏng</th>
+                                <th class="p-3.5 text-center">ĐVT</th>
+                                <th class="p-3.5 text-center">Số Lượng</th>
+                                <th class="p-3.5 text-right">Đơn Giá (VNĐ)</th>
+                                <th class="p-3.5 text-right">Thành Tiền (VNĐ)</th>
+                                <th class="p-3.5 text-center">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-slate-300" id="boq-table-body">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: RENDER HISTORY -->
+        <section id="view-history" class="hidden space-y-4">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-ai-purple"></i> Lịch Sử Render Trong Phiên
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Các kết quả rendering đã thực hiện gần đây</p>
+                    </div>
+                    <button onclick="clearHistory()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">
+                        Xóa Lịch Sử
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="history-grid">
+                    <!-- History cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 5: CUSTOMER PROJECTS -->
+        <section id="view-projects" class="hidden space-y-4">
+            <div class="glass-panel p-6 rounded-2xl border border-slate-800">
+                <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-folder-open text-brand-400"></i> Dự Án Theo Khách Hàng
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Lưu lại toàn bộ phiên làm việc (ảnh, prompt, dự toán BoQ) theo từng khách hàng/công trình để mở lại sau</p>
+                    </div>
+                    <button onclick="openSaveProjectPrompt()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu Công Việc Hiện Tại Thành Dự Án
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="projects-grid">
+                    <!-- Project cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: API Settings / Key Config -->
+    <div id="key-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel max-w-md w-full p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-400"></i> Cấu Hình Server / Key API
+                </h3>
+                <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-400">
+                Mặc định ứng dụng chạy ở chế độ <strong>Mô Phỏng Render Trực Quan (Client AI Engine)</strong> mượt mà không cần API.
+                Bật công tắc bên dưới và điền URL Server để kết nối AI thật (Server chạy Stable Diffusion / API tương thích AUTOMATIC1111).
+            </p>
+
+            <label class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer">
+                <span class="text-xs font-semibold text-slate-200">Bật Kết Nối AI Thật</span>
+                <input type="checkbox" id="use-real-ai-toggle" class="w-5 h-5 accent-brand-500">
+            </label>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">URL Server AI (VD: https://ai.ntcons.com):</label>
+                <input type="text" id="api-endpoint-input" placeholder="https://your-sdxl-server.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">NTcons AI Key / Stable Diffusion Token (nếu Server yêu cầu):</label>
+                <input type="password" id="api-key-input" placeholder="ntc_live_99a8x72..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Tốc Độ Xử Lý GPU:</label>
+                <select id="gpu-speed" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                    <option value="fast">Fast Mode - GPU RTX 4090 (2 - 5 giây)</option>
+                    <option value="hq">Ultra Render Mode - Dual A100 (8 - 12 giây)</option>
+                </select>
+            </div>
+
+            <p class="text-[10px] text-amber-400/80 bg-amber-950/30 border border-amber-800/40 rounded-lg p-2 leading-relaxed">
+                <i class="fa-solid fa-triangle-exclamation"></i> Server AI của bạn phải bật <strong>CORS</strong> cho phép trình duyệt gọi trực tiếp, nếu không trình duyệt sẽ chặn request.
+                Key được lưu trong trình duyệt (localStorage) của bạn — không dùng chung máy tính công cộng.
+            </p>
+
+            <button onclick="saveKeySettings()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl transition shadow">
+                Lưu Cấu Hình
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800/80 py-4 mt-auto">
+        <div class="max-w-[1700px] mx-auto px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div>
+                <span class="font-bold text-slate-400">NTCONS AI RENDER STUDIO</span> © 2026 Lê Hữu Trí Technology
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://hoangtuan.net" target="_blank" class="hover:text-brand-400 transition">Website Lê Hữu Trí</a>
+                <span>•</span>
+                <span>Bản quyền tích hợp AI Render Nội Thất / Ngoại Thất</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // High Quality Sample Presets & Assets
+        const PRESET_SAMPLES = [
+            {
+                id: 'sample_1',
+                title: 'Phòng Khách Hiện Trạng 01',
+                cat: 'interior',
+                space: 'phongkhach',
+                src: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=800&auto=format&fit=crop',
+                rendered: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop',
+                style: 'Modern Luxury',
+                prompt: 'Phòng khách sang trọng hiện đại, sofa da màu xám nhạt, tường ốp đá Marble kết hợp nan gỗ, đèn chùm nghệ thuật, thảm dệt trải sàn, cửa kính lớn đón ánh sáng tự nhiên.'
+            },
+            {
+                id: 'sample_2',
+                title: 'Phòng Ngủ Căn Hộ 02',
+                cat: 'interior',
+                space: 'phongngu',
+                src: 'https://images.unsplash.com/photo-1540518614846-7ede433c5173?q=80&w=800&auto=format&fit=crop',
+                rendered: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1200&auto=format&fit=crop',
+                style: 'Japandi Minimalist',
+                prompt: 'Phòng ngủ phong cách Japandi tối giản, giường gỗ tuyết tùng bọc vải nỉ cao cấp, ánh sáng đèn led âm trần ấm áp, cây cảnh bonsai nhỏ bàn đầu giường.'
+            },
+            {
+                id: 'sample_3',
+                title: 'Bếp & Phòng Ăn 03',
+                cat: 'interior',
+                space: 'bep',
+                src: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop',
+                rendered: 'https://images.unsplash.com/photo-1769326541248-5e09a8ace25b?q=80&w=1200&auto=format&fit=crop',
+                style: 'Indochine Classic',
+                prompt: 'Tủ bếp chữ L màu xanh navy kết hợp mặt đá trắng vân mây, bàn ăn gỗ tự nhiên 6 ghế bọc da, tủ rượu kính có đèn led trang trí.'
+            },
+            {
+                id: 'sample_4',
+                title: 'Biệt Thự Ngoại Thất 04',
+                cat: 'exterior',
+                space: 'ngoainthat',
+                src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800&auto=format&fit=crop',
+                rendered: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop',
+                style: 'Modern Villa Architecture',
+                prompt: 'Kiến trúc biệt thự 3 tầng hiện đại, mảng tường kính lớn, ban công xanh phủ cây, ốp gỗ nhựa outdoor Conwood, hồ bơi tràn bờ lung linh đèn đêm.'
+            }
+        ];
+
+        const SPACE_TYPES = {
+            interior: [
+                { val: 'phongkhach', label: 'Phòng Khách (Living Room)' },
+                { val: 'phongngu', label: 'Phòng Ngủ Master (Master Bedroom)' },
+                { val: 'bep', label: 'Bếp & Phòng Ăn (Kitchen & Dining)' },
+                { val: 'phonglamviec', label: 'Phòng Làm Việc / Bàn Học' },
+                { val: 'phongtam', label: 'Phòng Tắm / WC Cao Cấp' },
+                { val: 'bancong', label: 'Ban Công / Lô Gia' }
+            ],
+            exterior: [
+                { val: 'ngoainthat', label: 'Biệt Thự Hiện Đại (Modern Villa)' },
+                { val: 'nhapho', label: 'Nhà Phố Kính 3-5 Tầng' },
+                { val: 'nhavuon', label: 'Nhà Vườn Sân Vườn Resort' },
+                { val: 'cap2', label: 'Căn Hộ / Tòa Nhà Văn Phòng' }
+            ]
+        };
+
+        const STYLES = [
+            { id: 'modern', name: 'Hiện Đại', icon: 'fa-cube' },
+            { id: 'neoclassic', name: 'Tân Cổ Điển', icon: 'fa-chess-king' },
+            { id: 'minimalist', name: 'Tối Giản / Japandi', icon: 'fa-leaf' },
+            { id: 'indochine', name: 'Đông Dương', icon: 'fa-fan' },
+            { id: 'luxury', name: 'Luxury Đá & Kim Loại', icon: 'fa-gem' },
+            { id: 'scandi', name: 'Bắc Âu (Scandi)', icon: 'fa-snowflake' }
+        ];
+
+        const QUICK_TAGS = [
+            "Sofa da xám", "Đèn thả nghệ thuật", "Tường ốp đá Marble", "Sàn gỗ xương cá",
+            "Cửa kính kịch trần", "Tủ rượu kính LED", "Cây xanh Monstera", "Thảm nỉ dệt"
+        ];
+
+        // State Management
+        let currentCategory = 'interior';
+        let selectedStyle = 'modern';
+        let activeSourceImg = PRESET_SAMPLES[0].src;
+        let activeRenderedImg = PRESET_SAMPLES[0].rendered;
+        let previewMode = 'compare'; // 'compare', 'rendered', 'mask'
+        let renderHistory = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSampleGrid();
+            setCategory('interior');
+            initStylesGrid();
+            initQuickTags();
+            updateSpaceSelect();
+            initCompareSlider();
+            initMaskCanvas();
+            loadBoQData();
+            initPresetGallery();
+            loadRenderHistory();
+            loadAiSettings();
+            loadProjects();
+            updateWatermarkForCurrentResult();
+
+            // Set Initial Image
+            document.getElementById('img-source').src = activeSourceImg;
+            document.getElementById('img-rendered').src = activeRenderedImg;
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-brand-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-800');
+            });
+            document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
+                btn.classList.remove('active', 'bg-brand-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-800');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-brand-600', 'text-white', 'shadow');
+                activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800');
+            }
+            const activeMobileBtn = document.getElementById(`nav-mobile-${tabId}`);
+            if (activeMobileBtn) {
+                activeMobileBtn.classList.add('active', 'bg-brand-600', 'text-white', 'shadow');
+                activeMobileBtn.classList.remove('text-slate-400', 'hover:bg-slate-800');
+            }
+        }
+
+        // Category Switcher
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-400');
+            });
+            const activeCatBtn = document.getElementById(`cat-${cat}`);
+            if (activeCatBtn) {
+                activeCatBtn.classList.add('bg-brand-600', 'text-white', 'shadow');
+                activeCatBtn.classList.remove('text-slate-400');
+            }
+            updateSpaceSelect();
+        }
+
+        function updateSpaceSelect() {
+            const select = document.getElementById('space-type-select');
+            select.innerHTML = '';
+            SPACE_TYPES[currentCategory].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.val;
+                opt.innerText = item.label;
+                select.appendChild(opt);
+            });
+        }
+
+        function initSampleGrid() {
+            const grid = document.getElementById('sample-preset-grid');
+            grid.innerHTML = '';
+            PRESET_SAMPLES.forEach(s => {
+                const item = document.createElement('div');
+                item.className = "relative rounded-lg overflow-hidden border border-slate-700 cursor-pointer hover:border-brand-500 transition group h-14";
+                item.onclick = () => selectPresetSample(s);
+                item.innerHTML = `
+                    <img src="${s.src}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <div class="absolute inset-0 bg-slate-950/40 group-hover:bg-transparent transition"></div>
+                    <span class="absolute bottom-1 left-1 text-[9px] bg-slate-950/80 px-1 rounded text-slate-200 truncate max-w-[90%]">${s.title}</span>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        function initStylesGrid() {
+            const grid = document.getElementById('styles-grid');
+            grid.innerHTML = '';
+            STYLES.forEach(st => {
+                const btn = document.createElement('button');
+                btn.id = `style-${st.id}`;
+                btn.className = `p-2 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 ${st.id === 'modern' ? 'bg-brand-600/20 border-brand-500 text-brand-300 font-bold' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'}`;
+                btn.onclick = () => selectStyle(st.id);
+                btn.innerHTML = `
+                    <i class="fa-solid ${st.icon} text-sm"></i>
+                    <span class="text-[11px]">${st.name}</span>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectStyle(styleId) {
+            selectedStyle = styleId;
+            STYLES.forEach(st => {
+                const btn = document.getElementById(`style-${st.id}`);
+                if (btn) {
+                    btn.className = `p-2 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 ${st.id === styleId ? 'bg-brand-600/20 border-brand-500 text-brand-300 font-bold' : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'}`;
+                }
+            });
+            document.getElementById('info-style').innerText = STYLES.find(s => s.id === styleId)?.name || 'Hiện Đại';
+        }
+
+        function initQuickTags() {
+            const container = document.getElementById('quick-tags-container');
+            container.innerHTML = '';
+            QUICK_TAGS.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = "text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2 py-0.5 rounded-md cursor-pointer transition";
+                span.onclick = () => appendTagToPrompt(tag);
+                span.innerText = `+ ${tag}`;
+                container.appendChild(span);
+            });
+        }
+
+        function appendTagToPrompt(tag) {
+            const textarea = document.getElementById('prompt-input');
+            if (textarea.value.trim().length > 0) {
+                textarea.value += `, ${tag}`;
+            } else {
+                textarea.value = tag;
+            }
+        }
+
+        function randomizePrompt() {
+            const sample = PRESET_SAMPLES[Math.floor(Math.random() * PRESET_SAMPLES.length)];
+            document.getElementById('prompt-input').value = sample.prompt;
+        }
+
+        function selectPresetSample(sample) {
+            activeSourceImg = sample.src;
+            activeRenderedImg = sample.rendered;
+            document.getElementById('img-source').src = activeSourceImg;
+            document.getElementById('img-rendered').src = activeRenderedImg;
+            document.getElementById('prompt-input').value = sample.prompt;
+            setCategory(sample.cat);
+            document.getElementById('canvas-status-badge').innerText = `Đã chọn: ${sample.title}`;
+        }
+
+        // --- Thư Viện Mẫu (Presets Gallery) ---
+        let currentGalleryFilter = 'all';
+
+        function initPresetGallery() {
+            renderGalleryCards(currentGalleryFilter);
+        }
+
+        function renderGalleryCards(filterSpace) {
+            const grid = document.getElementById('preset-gallery-grid');
+            grid.innerHTML = '';
+            const list = filterSpace === 'all'
+                ? PRESET_SAMPLES
+                : PRESET_SAMPLES.filter(s => s.space === filterSpace);
+
+            if (list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 text-xs py-10">
+                    Chưa có mẫu nào trong danh mục này.
+                </div>`;
+                return;
+            }
+
+            list.forEach(sample => {
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-xl border border-slate-800 overflow-hidden hover:border-brand-500/50 transition group cursor-pointer flex flex-col";
+                card.onclick = () => {
+                    selectPresetSample(sample);
+                    switchTab('studio');
+                };
+                card.innerHTML = `
+                    <div class="h-44 overflow-hidden relative">
+                        <img src="${sample.rendered}" alt="${sample.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute top-2 right-2 bg-slate-950/80 text-[10px] px-2 py-0.5 rounded text-brand-300 font-mono border border-brand-500/30">${sample.style}</span>
+                    </div>
+                    <div class="p-3 space-y-1.5 flex-1 flex flex-col">
+                        <h4 class="text-sm font-bold text-white">${sample.title}</h4>
+                        <p class="text-[11px] text-slate-400 line-clamp-2 flex-1">${sample.prompt}</p>
+                        <span class="mt-1 text-[11px] font-semibold text-brand-400 group-hover:text-brand-300 flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Áp dụng vào Studio Render
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterGallery(space, evt) {
+            currentGalleryFilter = space;
+            document.querySelectorAll('.gal-filter').forEach(btn => {
+                btn.classList.remove('active', 'bg-brand-600', 'text-white', 'font-bold');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            const clickedBtn = evt ? evt.currentTarget : null;
+            if (clickedBtn) {
+                clickedBtn.classList.add('active', 'bg-brand-600', 'text-white', 'font-bold');
+                clickedBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            }
+            renderGalleryCards(space);
+        }
+
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
+        }
+
+        const MAX_UPLOAD_BYTES = 20 * 1024 * 1024; // 20MB
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Vui lòng chỉ tải lên file hình ảnh (JPG, PNG...).');
+                event.target.value = '';
+                return;
+            }
+            if (file.size > MAX_UPLOAD_BYTES) {
+                alert(`Ảnh quá lớn (${(file.size / 1024 / 1024).toFixed(1)}MB). Vui lòng chọn ảnh dưới 20MB.`);
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                activeSourceImg = e.target.result;
+                document.getElementById('img-source').src = activeSourceImg;
+                document.getElementById('canvas-status-badge').innerText = "Ảnh người dùng vừa tải";
+            };
+            reader.onerror = function() {
+                alert('Không thể đọc file ảnh này. Vui lòng thử lại với ảnh khác.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCompareSlider() {
+            const container = document.getElementById('view-compare-container');
+            const handle = document.getElementById('ba-handle');
+            const afterLayer = document.getElementById('ba-after-layer');
+            let isDragging = false;
+
+            const updateSliderPosition = (x) => {
+                const rect = container.getBoundingClientRect();
+                let position = x - rect.left;
+                if (position < 0) position = 0;
+                if (position > rect.width) position = rect.width;
+                const percentage = (position / rect.width) * 100;
+                handle.style.left = `${percentage}%`;
+                afterLayer.style.width = `${100 - percentage}%`;
+            };
+
+            handle.addEventListener('mousedown', () => isDragging = true);
+            window.addEventListener('mouseup', () => isDragging = false);
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) updateSliderPosition(e.clientX);
+            });
+
+            // Touch events for mobile
+            handle.addEventListener('touchstart', () => isDragging = true);
+            window.addEventListener('touchend', () => isDragging = false);
+            window.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches[0]) updateSliderPosition(e.touches[0].clientX);
+            });
+        }
+
+        let maskHasDrawing = false;
+
+        function initMaskCanvas() {
+            const canvas = document.getElementById('mask-canvas');
+            const ctx = canvas.getContext('2d');
+            const dataCanvas = document.getElementById('mask-data-canvas');
+            const dataCtx = dataCanvas.getContext('2d');
+            let isDrawing = false;
+
+            canvas.width = 700;
+            canvas.height = 420;
+            dataCanvas.width = 700;
+            dataCanvas.height = 420;
+
+            // Fill background with light transparent overlay (canvas hiển thị cho người dùng)
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Canvas dữ liệu: nền đen = vùng giữ nguyên, nét trắng = vùng cần AI vẽ lại (chuẩn mask inpaint)
+            dataCtx.fillStyle = '#000000';
+            dataCtx.fillRect(0, 0, dataCanvas.width, dataCanvas.height);
+            maskHasDrawing = false;
+
+            function pointFromEvent(clientX, clientY) {
+                const rect = canvas.getBoundingClientRect();
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            // Bắt đầu một nét vẽ mới: reset path để không nối với nét trước đó,
+            // đồng thời chấm 1 điểm tròn để click đơn cũng để lại dấu vẽ.
+            function beginStroke(x, y) {
+                const brushSize = document.getElementById('brush-size').value;
+                maskHasDrawing = true;
+
+                ctx.beginPath();
+                ctx.fillStyle = 'rgba(217, 70, 239, 0.7)';
+                ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+                dataCtx.beginPath();
+                dataCtx.fillStyle = '#ffffff';
+                dataCtx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
+                dataCtx.fill();
+                dataCtx.beginPath();
+                dataCtx.moveTo(x, y);
+            }
+
+            function continueStroke(x, y) {
+                if (!isDrawing) return;
+                const brushSize = document.getElementById('brush-size').value;
+
+                ctx.lineWidth = brushSize;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = 'rgba(217, 70, 239, 0.7)'; // Magenta translucent mask (hiển thị)
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+                dataCtx.lineWidth = brushSize;
+                dataCtx.lineCap = 'round';
+                dataCtx.strokeStyle = '#ffffff'; // Trắng đặc (dữ liệu mask thật gửi cho AI)
+                dataCtx.lineTo(x, y);
+                dataCtx.stroke();
+                dataCtx.beginPath();
+                dataCtx.moveTo(x, y);
+            }
+
+            // Chuột (desktop)
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const p = pointFromEvent(e.clientX, e.clientY);
+                beginStroke(p.x, p.y);
+            });
+            canvas.addEventListener('mousemove', (e) => {
+                const p = pointFromEvent(e.clientX, e.clientY);
+                continueStroke(p.x, p.y);
+            });
+            window.addEventListener('mouseup', () => isDrawing = false);
+
+            // Cảm ứng (mobile/tablet)
+            canvas.addEventListener('touchstart', (e) => {
+                if (!e.touches[0]) return;
+                isDrawing = true;
+                const p = pointFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+                beginStroke(p.x, p.y);
+                e.preventDefault();
+            }, { passive: false });
+            canvas.addEventListener('touchmove', (e) => {
+                if (!e.touches[0]) return;
+                const p = pointFromEvent(e.touches[0].clientX, e.touches[0].clientY);
+                continueStroke(p.x, p.y);
+                e.preventDefault();
+            }, { passive: false });
+            window.addEventListener('touchend', () => isDrawing = false);
+        }
+
+        function clearMaskCanvas() {
+            const canvas = document.getElementById('mask-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const dataCanvas = document.getElementById('mask-data-canvas');
+            const dataCtx = dataCanvas.getContext('2d');
+            dataCtx.fillStyle = '#000000';
+            dataCtx.fillRect(0, 0, dataCanvas.width, dataCanvas.height);
+            maskHasDrawing = false;
+        }
+
+        // Trả về base64 (không kèm tiền tố data:) của mask trắng/đen nếu người dùng đã vẽ, ngược lại trả null
+        function getMaskBase64() {
+            if (!maskHasDrawing) return null;
+            const dataCanvas = document.getElementById('mask-data-canvas');
+            return dataCanvas.toDataURL('image/png').split(',')[1];
+        }
+
+        function setPreviewMode(mode) {
+            previewMode = mode;
+            const compareContainer = document.getElementById('view-compare-container');
+            const maskContainer = document.getElementById('view-mask-container');
+
+            document.getElementById('btn-mode-compare').className = "px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+            document.getElementById('btn-mode-rendered').className = "px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+            document.getElementById('btn-mode-mask').className = "px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-white transition";
+
+            if (mode === 'compare') {
+                compareContainer.classList.remove('hidden');
+                maskContainer.classList.add('hidden');
+                document.getElementById('ba-after-layer').style.width = '50%';
+                document.getElementById('ba-handle').style.left = '50%';
+                document.getElementById('btn-mode-compare').className = "px-3 py-1 rounded-lg font-semibold bg-slate-800 text-slate-200 shadow transition";
+            } else if (mode === 'rendered') {
+                compareContainer.classList.remove('hidden');
+                maskContainer.classList.add('hidden');
+                document.getElementById('ba-after-layer').style.width = '100%';
+                document.getElementById('ba-handle').style.left = '0%';
+                document.getElementById('btn-mode-rendered').className = "px-3 py-1 rounded-lg font-semibold bg-slate-800 text-slate-200 shadow transition";
+            } else if (mode === 'mask') {
+                compareContainer.classList.add('hidden');
+                maskContainer.classList.remove('hidden');
+                document.getElementById('btn-mode-mask').className = "px-3 py-1 rounded-lg font-semibold bg-slate-800 text-slate-200 shadow transition";
+            }
+        }
+
+        function startAIRender() {
+            const prompt = document.getElementById('prompt-input').value.trim();
+            if (!prompt) {
+                randomizePrompt();
+            }
+
+            if (aiSettings.useRealAI && aiSettings.endpoint) {
+                runRealAIRender();
+            } else {
+                runSimulatedRender();
+            }
+        }
+
+        function runSimulatedRender() {
+            const overlay = document.getElementById('render-loading-overlay');
+            const bar = document.getElementById('ai-progress-bar');
+            const text = document.getElementById('ai-progress-text');
+            const title = document.getElementById('loading-step-title');
+            const subtitle = document.getElementById('loading-step-subtitle');
+
+            overlay.classList.remove('hidden');
+
+            const steps = [
+                { title: "Phân Tích Khung Không Gian 3D (ControlNet)...", sub: "Mô phỏng đường nét kiến trúc & vật thể từ ảnh nguồn", p: 20 },
+                { title: "Áp Dụng Phong Cách Thiết Kế & Vật Liệu...", sub: "Cấu hình vân gỗ, đá Marble, vải nỉ & mảng xanh theo Prompt", p: 50 },
+                { title: "Tính Toán Bức Xạ Ánh Sáng & Raytracing...", sub: "Đổ bóng chân thực, ánh sáng chiếu qua cửa kính kịch trần", p: 80 },
+                { title: "Làm Nét Chi Tiết Ultra HD (Upscaling 4K)...", sub: "Hoàn thiện hình ảnh rendered sắc nét chất lượng cao", p: 100 }
+            ];
+
+            let stepIdx = 0;
+            const interval = setInterval(() => {
+                if (stepIdx < steps.length) {
+                    const st = steps[stepIdx];
+                    title.innerText = st.title;
+                    subtitle.innerText = st.sub;
+                    bar.style.width = `${st.p}%`;
+                    text.innerText = `${st.p}%`;
+                    stepIdx++;
+                } else {
+                    clearInterval(interval);
+                    finishRenderSimulation();
+                }
+            }, 800);
+        }
+
+        function finishRenderSimulation() {
+            // Chế độ mô phỏng: chọn 1 ảnh mẫu có sẵn (KHÔNG xử lý ảnh người dùng thật)
+            const sample = PRESET_SAMPLES[Math.floor(Math.random() * PRESET_SAMPLES.length)];
+            activeRenderedImg = sample.rendered;
+            lastRenderWasReal = false;
+            applyRenderResult();
+        }
+
+        // Gọi Server AI thật (tương thích API kiểu AUTOMATIC1111: POST {endpoint}/sdapi/v1/img2img)
+        async function runRealAIRender() {
+            const overlay = document.getElementById('render-loading-overlay');
+            const bar = document.getElementById('ai-progress-bar');
+            const text = document.getElementById('ai-progress-text');
+            const title = document.getElementById('loading-step-title');
+            const subtitle = document.getElementById('loading-step-subtitle');
+
+            overlay.classList.remove('hidden');
+            title.innerText = "Đang gửi ảnh & prompt tới Server AI...";
+            subtitle.innerText = `Kết nối tới ${aiSettings.endpoint}`;
+            bar.style.width = '15%';
+            text.innerText = '15%';
+
+            try {
+                const sourceDataUrl = activeSourceImg.startsWith('data:')
+                    ? activeSourceImg
+                    : await imageUrlToDataUrl(activeSourceImg);
+                const sourceBase64 = sourceDataUrl.split(',')[1];
+
+                const payload = {
+                    init_images: [sourceBase64],
+                    prompt: document.getElementById('prompt-input').value.trim(),
+                    negative_prompt: 'low quality, blurry, distorted, watermark, deformed',
+                    steps: aiSettings.gpuMode === 'hq' ? 40 : 20,
+                    cfg_scale: 7,
+                    denoising_strength: 0.5
+                };
+
+                // Nếu người dùng đang ở chế độ Inpaint (Cọ Vẽ Vùng Cần Thay Thế) và đã tô mask,
+                // gửi kèm mask để Server chỉ vẽ lại đúng vùng được chọn.
+                if (previewMode === 'mask') {
+                    const maskBase64 = getMaskBase64();
+                    if (maskBase64) {
+                        payload.mask = maskBase64;
+                        payload.inpainting_fill = 1;
+                    }
+                }
+
+                title.innerText = "Server AI đang xử lý render...";
+                subtitle.innerText = "Có thể mất vài giây đến vài phút tuỳ cấu hình GPU của Server";
+                bar.style.width = '55%';
+                text.innerText = '55%';
+
+                const headers = { 'Content-Type': 'application/json' };
+                if (aiSettings.apiKey) headers['Authorization'] = `Bearer ${aiSettings.apiKey}`;
+
+                const endpointUrl = aiSettings.endpoint.replace(/\/+$/, '') + '/sdapi/v1/img2img';
+                const response = await fetch(endpointUrl, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server trả về lỗi HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                const renderedImg = extractRenderedImageFromResponse(data);
+                if (!renderedImg) {
+                    throw new Error('Không tìm thấy ảnh kết quả hợp lệ trong phản hồi từ Server.');
+                }
+
+                bar.style.width = '100%';
+                text.innerText = '100%';
+                title.innerText = "Hoàn tất!";
+
+                activeRenderedImg = renderedImg;
+                lastRenderWasReal = true;
+                applyRenderResult();
+            } catch (err) {
+                overlay.classList.add('hidden');
+                alert(
+                    'Không thể kết nối tới Server AI thật.\n\n' +
+                    'Lỗi: ' + err.message + '\n\n' +
+                    'Kiểm tra lại: URL Server đúng chưa, Server có bật CORS cho phép domain này gọi tới không, ' +
+                    'và API Key (nếu Server yêu cầu). Bạn có thể tắt "Kết Nối AI Thật" trong Cấu Hình để quay về chế độ Mô Phỏng.'
+                );
+            }
+        }
+
+        // Đọc phản hồi linh hoạt: hỗ trợ định dạng AUTOMATIC1111 ({images:[base64]}) và các API REST phổ biến khác
+        function extractRenderedImageFromResponse(data) {
+            if (!data) return null;
+            if (Array.isArray(data.images) && data.images.length) {
+                const img = data.images[0];
+                return img.startsWith('data:') ? img : `data:image/png;base64,${img}`;
+            }
+            if (typeof data.image_url === 'string') return data.image_url;
+            if (Array.isArray(data.output) && data.output.length) return data.output[0];
+            if (typeof data.output === 'string') return data.output;
+            return null;
+        }
+
+        async function imageUrlToDataUrl(url) {
+            const response = await fetch(url, { mode: 'cors' });
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // Dùng chung cho cả 2 chế độ (mô phỏng & AI thật): cập nhật UI + lưu lịch sử
+        function applyRenderResult() {
+            document.getElementById('img-rendered').src = activeRenderedImg;
+            document.getElementById('render-loading-overlay').classList.add('hidden');
+            document.getElementById('canvas-status-badge').innerText = "Render hoàn tất! (Ultra HD)";
+
+            setPreviewMode('compare');
+            updateWatermarkForCurrentResult();
+
+            renderHistory.unshift({
+                time: new Date().toLocaleTimeString('vi-VN'),
+                src: activeSourceImg,
+                rendered: activeRenderedImg,
+                prompt: document.getElementById('prompt-input').value,
+                isReal: lastRenderWasReal
+            });
+            if (renderHistory.length > MAX_HISTORY_ITEMS) {
+                renderHistory = renderHistory.slice(0, MAX_HISTORY_ITEMS);
+            }
+            updateHistoryGrid();
+            saveRenderHistory();
+        }
+
+        const BOQ_DEFAULT_ITEMS = [
+            { stt: 1, name: 'Sofa Băng Cao Cấp', spec: 'Bọc da bò Ý nhập khẩu, khung gỗ sồi tự nhiên', unit: 'Bộ', qty: 1, price: 32000000 },
+            { stt: 2, name: 'Bàn Trà Kép', spec: 'Mặt đá Marble vân mây, chân mạ PVD vàng bóng', unit: 'Cái', qty: 1, price: 8500000 },
+            { stt: 3, name: 'Vách Ốp Trang Trí Tivi', spec: 'Gợi ý đá nung kết kết hợp lam sóng gỗ nhựa Conwood', unit: 'm²', qty: 12, price: 2800000 },
+            { stt: 4, name: 'Hệ Đèn Thả Nghệ Thuật', spec: 'Bóng LED tiết kiệm điện, thân hợp kim mạ vàng 18K', unit: 'Bộ', qty: 1, price: 6500000 },
+            { stt: 5, name: 'Sàn Gỗ Công Nghiệp', spec: 'Gỗ Malaysia 12mm chịu nước, vân gỗ sồi Châu Âu', unit: 'm²', qty: 35, price: 450000 },
+            { stt: 6, name: 'Thảm Dệt Trải Sàn', spec: 'Sợi tổng hợp cao cấp chống bám bụi, size 2.0m x 2.8m', unit: 'Tấm', qty: 1, price: 4200000 },
+            { stt: 7, name: 'Tủ Kịch Trần Khung Nhôm Kính', spec: 'Cánh kính cường lực xám khói, tích hợp LED âm tủ', unit: 'm²', qty: 8, price: 3800000 },
+            { stt: 8, name: 'Sơn Tường Hiệu Ứng Bê Tông', spec: 'Sơn Dulux hiệu ứng cement cao cấp chống ẩm mốc', unit: 'm²', qty: 65, price: 220000 }
+        ];
+
+        const BOQ_STORAGE_KEY = 'ntcons_boq_items';
+        let boqItems = [];
+        let boqRowIdSeq = 0;
+
+        // Gán id nội bộ duy nhất cho mỗi dòng (khác với STT hiển thị, vì STT có thể trùng khi thêm/xoá)
+        function withRowIds(items) {
+            return items.map(item => ({ ...item, _rowId: item._rowId ?? ++boqRowIdSeq }));
+        }
+
+        function loadBoQData() {
+            try {
+                const saved = localStorage.getItem(BOQ_STORAGE_KEY);
+                boqItems = saved ? withRowIds(JSON.parse(saved)) : withRowIds(BOQ_DEFAULT_ITEMS);
+            } catch (err) {
+                console.warn('Không đọc được dữ liệu BoQ đã lưu:', err);
+                boqItems = withRowIds(BOQ_DEFAULT_ITEMS);
+            }
+            renderBoQTable();
+        }
+
+        function saveBoQData() {
+            try {
+                // Không lưu _rowId (chỉ dùng nội bộ để định danh dòng trong phiên hiện tại)
+                const toSave = boqItems.map(({ _rowId, ...rest }) => rest);
+                localStorage.setItem(BOQ_STORAGE_KEY, JSON.stringify(toSave));
+            } catch (err) {
+                console.warn('Không thể lưu dữ liệu BoQ:', err);
+            }
+        }
+
+        function resetBoQData() {
+            if (!confirm('Khôi phục về bảng dự toán mặc định? Toàn bộ chỉnh sửa hiện tại sẽ mất.')) return;
+            boqItems = withRowIds(BOQ_DEFAULT_ITEMS);
+            saveBoQData();
+            renderBoQTable();
+        }
+
+        function addBoQRow() {
+            boqItems.push({ stt: boqItems.length + 1, name: '', spec: '', unit: '', qty: 1, price: 0, _rowId: ++boqRowIdSeq });
+            saveBoQData();
+            renderBoQTable();
+        }
+
+        function removeBoQRow(rowId) {
+            boqItems = boqItems.filter(item => item._rowId !== rowId);
+            saveBoQData();
+            renderBoQTable();
+        }
+
+        function updateBoQField(rowId, field, rawValue) {
+            const item = boqItems.find(i => i._rowId === rowId);
+            if (!item) return;
+            if (field === 'qty' || field === 'price') {
+                const num = parseFloat(String(rawValue).replace(/[^\d.-]/g, ''));
+                item[field] = isNaN(num) ? 0 : num;
+            } else {
+                item[field] = rawValue;
+            }
+            saveBoQData();
+            // Chỉ cập nhật số liệu tổng, KHÔNG vẽ lại toàn bộ bảng, để không làm mất focus ô đang gõ
+            updateBoQRowTotal(rowId);
+            updateBoQGrandTotal();
+        }
+
+        function updateBoQRowTotal(rowId) {
+            const item = boqItems.find(i => i._rowId === rowId);
+            const cell = document.getElementById(`boq-row-total-${rowId}`);
+            if (item && cell) {
+                cell.innerText = ((item.qty || 0) * (item.price || 0)).toLocaleString('vi-VN');
+            }
+        }
+
+        function updateBoQGrandTotal() {
+            const grandTotal = boqItems.reduce((sum, item) => sum + (item.qty || 0) * (item.price || 0), 0);
+            document.getElementById('boq-grand-total').innerText = grandTotal.toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function renderBoQTable() {
+            const tbody = document.getElementById('boq-table-body');
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+
+            if (boqItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500">Chưa có hạng mục nào. Bấm "Thêm Hạng Mục" để bắt đầu.</td></tr>`;
+                document.getElementById('boq-grand-total').innerText = '0 VNĐ';
+                document.getElementById('boq-items-count').innerText = '0 Hạng mục';
+                return;
+            }
+
+            boqItems.forEach((item, idx) => {
+                const total = (item.qty || 0) * (item.price || 0);
+                grandTotal += total;
+                const rowId = item._rowId;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-900/50 transition";
+                tr.innerHTML = `
+                    <td class="p-2 font-mono text-slate-500 text-center">${idx + 1}</td>
+                    <td class="p-2">
+                        <input value="${escapeAttr(item.name)}" oninput="updateBoQField(${rowId}, 'name', this.value)"
+                            class="w-full bg-transparent border border-transparent hover:border-slate-700 focus:border-brand-500 focus:bg-slate-900 rounded px-2 py-1.5 text-white font-bold outline-none">
+                    </td>
+                    <td class="p-2">
+                        <input value="${escapeAttr(item.spec)}" oninput="updateBoQField(${rowId}, 'spec', this.value)"
+                            class="w-full bg-transparent border border-transparent hover:border-slate-700 focus:border-brand-500 focus:bg-slate-900 rounded px-2 py-1.5 text-slate-400 outline-none">
+                    </td>
+                    <td class="p-2">
+                        <input value="${escapeAttr(item.unit)}" oninput="updateBoQField(${rowId}, 'unit', this.value)"
+                            class="w-16 bg-transparent border border-transparent hover:border-slate-700 focus:border-brand-500 focus:bg-slate-900 rounded px-2 py-1.5 text-center text-slate-400 outline-none">
+                    </td>
+                    <td class="p-2">
+                        <input type="number" min="0" value="${item.qty}" oninput="updateBoQField(${rowId}, 'qty', this.value)"
+                            class="w-20 bg-transparent border border-transparent hover:border-slate-700 focus:border-brand-500 focus:bg-slate-900 rounded px-2 py-1.5 text-center font-bold text-brand-400 outline-none">
+                    </td>
+                    <td class="p-2">
+                        <input type="number" min="0" value="${item.price}" oninput="updateBoQField(${rowId}, 'price', this.value)"
+                            class="w-28 bg-transparent border border-transparent hover:border-slate-700 focus:border-brand-500 focus:bg-slate-900 rounded px-2 py-1.5 text-right font-mono outline-none">
+                    </td>
+                    <td class="p-3.5 text-right font-mono font-bold text-emerald-400" id="boq-row-total-${rowId}">${total.toLocaleString('vi-VN')}</td>
+                    <td class="p-2 text-center">
+                        <button onclick="removeBoQRow(${rowId})" class="text-red-400 hover:text-red-300 px-2" title="Xoá dòng">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('boq-grand-total').innerText = grandTotal.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('boq-items-count').innerText = boqItems.length + ' Hạng mục';
+        }
+
+        function escapeAttr(val) {
+            return String(val ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+        }
+
+        function openBoQEstimate() {
+            switchTab('boq');
+        }
+
+        function exportBoQReport() {
+            window.print();
+        }
+
+        function exportBoQCSV() {
+            const header = ['STT', 'Hạng Mục', 'Quy Cách', 'ĐVT', 'Số Lượng', 'Đơn Giá (VNĐ)', 'Thành Tiền (VNĐ)'];
+            const rows = boqItems.map((item, idx) => [
+                idx + 1,
+                item.name,
+                item.spec,
+                item.unit,
+                item.qty,
+                item.price,
+                (item.qty || 0) * (item.price || 0)
+            ]);
+
+            const escapeCsv = (val) => `"${String(val).replace(/"/g, '""')}"`;
+            const csvContent = [header, ...rows]
+                .map(row => row.map(escapeCsv).join(','))
+                .join('\r\n');
+
+            // Thêm BOM để Excel hiển thị đúng tiếng Việt có dấu
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'NTcons_BoQ_DuToan.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        const HISTORY_STORAGE_KEY = 'ntcons_render_history';
+        const MAX_HISTORY_ITEMS = 40;
+
+        function updateHistoryGrid() {
+            const grid = document.getElementById('history-grid');
+            grid.innerHTML = '';
+
+            if (renderHistory.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 text-xs py-10">
+                    Chưa có kết quả render nào trong lịch sử.
+                </div>`;
+                return;
+            }
+
+            renderHistory.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = "glass-panel p-3 rounded-xl border border-slate-800 flex flex-col space-y-2 cursor-pointer hover:border-brand-500/50 transition group";
+                card.title = "Bấm để xem lại phiên bản này trong Studio";
+                card.onclick = () => restoreHistoryItem(idx);
+                card.innerHTML = `
+                    <div class="h-32 rounded-lg overflow-hidden relative">
+                        <img src="${item.rendered}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute top-1 right-1 bg-slate-950/80 text-[10px] px-2 py-0.5 rounded text-slate-300 font-mono">${item.time}</span>
+                        <span class="absolute top-1 left-1 text-[10px] px-2 py-0.5 rounded font-bold ${item.isReal ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700/50' : 'bg-amber-950/80 text-amber-300 border border-amber-700/50'}">
+                            ${item.isReal ? 'AI Thật' : 'Mô Phỏng'}
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-300 line-clamp-2">${item.prompt}</p>
+                    <span class="text-[11px] font-semibold text-brand-400 group-hover:text-brand-300 flex items-center gap-1">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Xem lại trong Studio
+                    </span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function restoreHistoryItem(idx) {
+            const item = renderHistory[idx];
+            if (!item) return;
+            activeSourceImg = item.src;
+            activeRenderedImg = item.rendered;
+            lastRenderWasReal = !!item.isReal;
+
+            document.getElementById('img-source').src = activeSourceImg;
+            document.getElementById('img-rendered').src = activeRenderedImg;
+            document.getElementById('prompt-input').value = item.prompt;
+            document.getElementById('canvas-status-badge').innerText = `Đã khôi phục phiên bản lúc ${item.time}`;
+
+            updateWatermarkForCurrentResult();
+            switchTab('studio');
+            setPreviewMode('compare');
+        }
+
+        function saveRenderHistory() {
+            try {
+                // Chỉ lưu tối đa MAX_HISTORY_ITEMS mục gần nhất để tránh vượt giới hạn localStorage
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(renderHistory.slice(0, MAX_HISTORY_ITEMS)));
+            } catch (err) {
+                // Có thể localStorage đầy (ảnh base64 lớn) -> bỏ qua lưu, không chặn ứng dụng
+                console.warn('Không thể lưu lịch sử render:', err);
+            }
+        }
+
+        function loadRenderHistory() {
+            try {
+                const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
+                if (saved) {
+                    renderHistory = JSON.parse(saved);
+                    updateHistoryGrid();
+                }
+            } catch (err) {
+                console.warn('Không thể đọc lịch sử render đã lưu:', err);
+                renderHistory = [];
+            }
+        }
+
+        function clearHistory() {
+            renderHistory = [];
+            updateHistoryGrid();
+            saveRenderHistory();
+        }
+
+        // --- Dự Án Theo Khách Hàng ---
+        const PROJECTS_STORAGE_KEY = 'ntcons_projects';
+        let clientProjects = [];
+
+        function loadProjects() {
+            try {
+                const saved = localStorage.getItem(PROJECTS_STORAGE_KEY);
+                clientProjects = saved ? JSON.parse(saved) : [];
+            } catch (err) {
+                console.warn('Không đọc được danh sách dự án đã lưu:', err);
+                clientProjects = [];
+            }
+            renderProjectsGrid();
+        }
+
+        function saveProjectsToStorage() {
+            try {
+                localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(clientProjects));
+            } catch (err) {
+                // Thường do ảnh base64 người dùng tự upload quá lớn khiến localStorage đầy
+                alert('Không thể lưu dự án: bộ nhớ trình duyệt (localStorage) đã đầy hoặc ảnh quá lớn. Hãy thử xoá bớt dự án cũ hoặc dùng ảnh nhỏ hơn.');
+            }
+        }
+
+        function openSaveProjectPrompt() {
+            const clientName = prompt('Tên khách hàng / công trình:');
+            if (clientName === null) return; // Người dùng bấm Huỷ
+            if (!clientName.trim()) {
+                alert('Vui lòng nhập tên khách hàng.');
+                return;
+            }
+            const projectName = prompt('Tên dự án (VD: Phòng khách - Phong cách hiện đại):', document.getElementById('prompt-input').value.slice(0, 40) || 'Dự án mới');
+
+            const project = {
+                id: Date.now(),
+                clientName: clientName.trim(),
+                projectName: (projectName || 'Dự án chưa đặt tên').trim(),
+                createdAt: new Date().toLocaleString('vi-VN'),
+                sourceImg: activeSourceImg,
+                renderedImg: activeRenderedImg,
+                prompt: document.getElementById('prompt-input').value,
+                category: currentCategory,
+                isReal: lastRenderWasReal,
+                // Không lưu _rowId nội bộ, chỉ lưu dữ liệu thô của bảng BoQ hiện tại
+                boqItems: boqItems.map(({ _rowId, ...rest }) => rest)
+            };
+
+            clientProjects.unshift(project);
+            saveProjectsToStorage();
+            renderProjectsGrid();
+            switchTab('projects');
+        }
+
+        function renderProjectsGrid() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+
+            if (clientProjects.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 text-xs py-10">
+                    Chưa có dự án nào được lưu. Bấm "Lưu Công Việc Hiện Tại Thành Dự Án" trong Studio để bắt đầu.
+                </div>`;
+                return;
+            }
+
+            clientProjects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-xl border border-slate-800 overflow-hidden flex flex-col";
+                card.innerHTML = `
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="${project.renderedImg}" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded font-bold ${project.isReal ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700/50' : 'bg-amber-950/80 text-amber-300 border border-amber-700/50'}">
+                            ${project.isReal ? 'AI Thật' : 'Mô Phỏng'}
+                        </span>
+                    </div>
+                    <div class="p-3 space-y-1 flex-1 flex flex-col">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-user text-brand-400 text-xs"></i> ${escapeAttr(project.clientName)}
+                        </h4>
+                        <p class="text-xs text-slate-300">${escapeAttr(project.projectName)}</p>
+                        <p class="text-[10px] text-slate-500 flex-1">Lưu lúc: ${project.createdAt}</p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button onclick="loadProject(${project.id})" class="flex-1 text-[11px] font-semibold bg-brand-600 hover:bg-brand-500 text-white py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-folder-open"></i> Mở Lại
+                            </button>
+                            <button onclick="deleteProject(${project.id})" class="text-red-400 hover:text-red-300 px-2.5 py-1.5 rounded-lg border border-red-900/50 hover:bg-red-950/30 transition" title="Xoá dự án">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function loadProject(id) {
+            const project = clientProjects.find(p => p.id === id);
+            if (!project) return;
+
+            activeSourceImg = project.sourceImg;
+            activeRenderedImg = project.renderedImg;
+            lastRenderWasReal = !!project.isReal;
+
+            document.getElementById('img-source').src = activeSourceImg;
+            document.getElementById('img-rendered').src = activeRenderedImg;
+            document.getElementById('prompt-input').value = project.prompt || '';
+            setCategory(project.category || 'interior');
+            document.getElementById('canvas-status-badge').innerText = `Đã mở dự án: ${project.clientName} — ${project.projectName}`;
+
+            if (Array.isArray(project.boqItems)) {
+                boqItems = withRowIds(project.boqItems);
+                saveBoQData();
+                renderBoQTable();
+            }
+
+            updateWatermarkForCurrentResult();
+            switchTab('studio');
+            setPreviewMode('compare');
+        }
+
+        function deleteProject(id) {
+            if (!confirm('Xoá dự án này khỏi trình duyệt? Không thể hoàn tác.')) return;
+            clientProjects = clientProjects.filter(p => p.id !== id);
+            saveProjectsToStorage();
+            renderProjectsGrid();
+        }
+
+        const AI_SETTINGS_KEY = 'ntcons_ai_settings';
+        let aiSettings = { endpoint: '', apiKey: '', gpuMode: 'fast', useRealAI: false };
+
+        function loadAiSettings() {
+            try {
+                const saved = localStorage.getItem(AI_SETTINGS_KEY);
+                if (saved) aiSettings = { ...aiSettings, ...JSON.parse(saved) };
+            } catch (err) {
+                console.warn('Không đọc được cấu hình AI đã lưu:', err);
+            }
+            document.getElementById('api-endpoint-input').value = aiSettings.endpoint || '';
+            document.getElementById('api-key-input').value = aiSettings.apiKey || '';
+            document.getElementById('gpu-speed').value = aiSettings.gpuMode || 'fast';
+            document.getElementById('use-real-ai-toggle').checked = !!aiSettings.useRealAI;
+            updateAiStatusBadge();
+        }
+
+        function updateAiStatusBadge() {
+            const badge = document.getElementById('server-status-badge');
+            const isRealAI = aiSettings.useRealAI && aiSettings.endpoint;
+
+            if (badge) {
+                if (isRealAI) {
+                    badge.className = "hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-800/50 text-emerald-400 text-xs";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-mono text-[11px] font-semibold">AI Server Thật: Đã Kết Nối</span>`;
+                } else {
+                    badge.className = "hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-950/60 border border-amber-800/50 text-amber-400 text-xs";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span class="font-mono text-[11px] font-semibold">Chế Độ Mô Phỏng (Client)</span>`;
+                }
+            }
+        }
+
+        // Watermark phản ánh nguồn gốc của ẢNH ĐANG HIỂN THỊ (thật hay mô phỏng),
+        // không chỉ dựa vào công tắc cấu hình hiện tại — vì người dùng có thể đổi cấu hình sau khi đã render.
+        let lastRenderWasReal = false;
+
+        function updateWatermarkForCurrentResult() {
+            const watermark = document.getElementById('demo-watermark');
+            const watermarkBadge = document.getElementById('demo-watermark-badge');
+            if (!watermark || !watermarkBadge) return;
+            watermark.classList.toggle('hidden', lastRenderWasReal);
+            watermarkBadge.classList.toggle('hidden', lastRenderWasReal);
+        }
+
+        function toggleKeyModal() {
+            document.getElementById('key-modal').classList.toggle('hidden');
+        }
+
+        function saveKeySettings() {
+            const endpoint = document.getElementById('api-endpoint-input').value.trim();
+            const useReal = document.getElementById('use-real-ai-toggle').checked;
+
+            if (useReal && !endpoint) {
+                alert('Vui lòng nhập URL Server AI trước khi bật "Kết Nối AI Thật".');
+                return;
+            }
+
+            aiSettings.endpoint = endpoint;
+            aiSettings.apiKey = document.getElementById('api-key-input').value.trim();
+            aiSettings.gpuMode = document.getElementById('gpu-speed').value;
+            aiSettings.useRealAI = useReal;
+
+            try {
+                localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify(aiSettings));
+            } catch (err) {
+                console.warn('Không thể lưu cấu hình AI:', err);
+            }
+
+            updateAiStatusBadge();
+            toggleKeyModal();
+        }
+
+        function triggerDownloadFromUrl(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        async function downloadRenderedResult() {
+            // Ảnh render bằng AI thật -> tải nguyên bản, không chèn watermark
+            if (lastRenderWasReal) {
+                try {
+                    if (activeRenderedImg.startsWith('data:')) {
+                        triggerDownloadFromUrl(activeRenderedImg, 'NTcons_AI_Render.jpg');
+                        return;
+                    }
+                    const response = await fetch(activeRenderedImg, { mode: 'cors' });
+                    if (!response.ok) throw new Error('Fetch thất bại');
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    triggerDownloadFromUrl(blobUrl, 'NTcons_AI_Render.jpg');
+                    URL.revokeObjectURL(blobUrl);
+                } catch (err) {
+                    window.open(activeRenderedImg, '_blank');
+                }
+                return;
+            }
+
+            // Ảnh Mô Phỏng (Demo) -> tự động đóng dấu watermark trước khi tải, tránh gây hiểu nhầm là kết quả AI thật
+            await downloadWithWatermark(activeRenderedImg);
+        }
+
+        async function downloadWithWatermark(src) {
+            try {
+                const dataUrl = src.startsWith('data:') ? src : await imageUrlToDataUrl(src);
+                const img = new Image();
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = dataUrl;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // Watermark chéo mờ giữa ảnh
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(-25 * Math.PI / 180);
+                ctx.fillStyle = 'rgba(255,255,255,0.18)';
+                ctx.font = `bold ${Math.round(canvas.width / 10)}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('DEMO • MÔ PHỎNG', 0, 0);
+                ctx.restore();
+
+                // Nhãn nhỏ góc dưới bên phải
+                const fontSize = Math.max(14, Math.round(canvas.width / 45));
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                const label = 'Ảnh mô phỏng — chưa qua AI thật — NTCONS';
+                const textWidth = ctx.measureText(label).width;
+                const padX = 12, padY = 8, margin = 14;
+                ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                ctx.fillRect(
+                    canvas.width - textWidth - padX * 2 - margin,
+                    canvas.height - fontSize - padY * 2 - margin,
+                    textWidth + padX * 2,
+                    fontSize + padY * 2
+                );
+                ctx.fillStyle = 'rgba(255,255,255,0.92)';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillText(label, canvas.width - textWidth - padX - margin, canvas.height - fontSize - margin);
+
+                canvas.toBlob((blob) => {
+                    if (!blob) throw new Error('Không tạo được ảnh xuất');
+                    const blobUrl = URL.createObjectURL(blob);
+                    triggerDownloadFromUrl(blobUrl, 'NTcons_DEMO_Watermark.jpg');
+                    URL.revokeObjectURL(blobUrl);
+                }, 'image/jpeg', 0.92);
+            } catch (err) {
+                // Nếu không đóng dấu được (VD: Server ảnh chặn CORS) -> vẫn cho tải ảnh gốc, còn hơn không tải được gì
+                console.warn('Không thể chèn watermark, tải ảnh gốc thay thế:', err);
+                window.open(src, '_blank');
+            }
+        }
+
+        async function shareRenderedResult() {
+            try {
+                const dataUrl = activeRenderedImg.startsWith('data:')
+                    ? activeRenderedImg
+                    : await imageUrlToDataUrl(activeRenderedImg);
+                const blob = await (await fetch(dataUrl)).blob();
+                const file = new File([blob], 'NTcons_AI_Render.jpg', { type: blob.type || 'image/jpeg' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'NTcons AI Render',
+                        text: 'Ảnh render nội/ngoại thất từ NTcons AI Render Studio'
+                    });
+                    return;
+                }
+
+                if (navigator.clipboard && window.ClipboardItem) {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ [blob.type || 'image/png']: blob })
+                    ]);
+                    alert('Đã sao chép ảnh vào bộ nhớ tạm! Bạn có thể dán (Ctrl+V) vào Zalo, Messenger, email...');
+                    return;
+                }
+
+                window.open(dataUrl, '_blank');
+                alert('Trình duyệt này chưa hỗ trợ chia sẻ trực tiếp. Ảnh đã mở ở tab mới để bạn lưu/chia sẻ thủ công.');
+            } catch (err) {
+                if (err.name === 'AbortError') return; // Người dùng tự huỷ hộp thoại chia sẻ
+                alert('Không thể chia sẻ ảnh: ' + err.message);
+            }
+        }
+
+        function toggleFullscreen() {
+            const elem = document.getElementById('canvas-wrapper');
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => alert(`Lỗi toàn màn hình: ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>

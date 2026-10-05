@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Công cụ dựng nhanh cấu kiện bê tông 3D, bóc khối lượng và xuất DXF, IFC cho Revit.">
+  <title>NTCONS | Cấu kiện 3D, DXF & IFC — R8</title>
+  <style>
+    :root{
+      --navy:#0b1f3a; --navy2:#12345b; --blue:#1769aa; --cyan:#32a4c7;
+      --ink:#121820; --muted:#5e6b78; --line:#d7dee7; --soft:#f3f6f9;
+      --white:#fff; --red:#bf2d2d; --green:#157347; --shadow:0 12px 32px rgba(11,31,58,.10);
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{margin:0;background:#eef2f6;color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:17px;line-height:1.62;overflow-x:hidden}
+    button,input,select{font:inherit}
+    .topbar{background:var(--navy);color:#fff;border-bottom:4px solid var(--cyan)}
+    .topbar-inner{max-width:1480px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .mark{width:50px;height:50px;border:2px solid #fff;border-radius:10px;display:grid;place-items:center;font-size:22px;font-weight:900;letter-spacing:-1px;background:linear-gradient(145deg,#fff 0 18%,transparent 18% 100%)}
+    h1{font-size:clamp(25px,2.8vw,40px);line-height:1.15;margin:0;letter-spacing:-.6px}
+    .subtitle{font-size:14px;color:#cbd8e8;margin-top:4px}
+    .version{font-size:14px;border:1px solid #8194aa;border-radius:999px;padding:5px 11px;white-space:nowrap}
+    main{max-width:1480px;margin:0 auto;padding:20px 24px 34px}
+    .layout{display:grid;grid-template-columns:390px minmax(0,1fr);gap:18px;align-items:start}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+    .panel{padding:20px}
+    .panel h2,.result-head h2{font-size:22px;line-height:1.25;margin:0;color:var(--navy)}
+    .section-label{display:flex;align-items:center;gap:9px;margin:20px 0 10px;color:var(--navy);font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .section-label::after{content:"";height:1px;background:var(--line);flex:1}
+    .field{margin-bottom:13px}
+    label{display:flex;justify-content:space-between;gap:10px;font-weight:650;font-size:15px;margin:0 0 5px;color:#243344}
+    label .unit{font-weight:500;color:var(--muted)}
+    input,select{width:100%;min-height:44px;border:1px solid #b9c5d2;border-radius:9px;padding:8px 11px;background:#fff;color:#111;outline:none}
+    input{color:#0b5cab;font-weight:700}
+    input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,105,170,.14)}
+    .check-row{display:flex;align-items:flex-start;justify-content:flex-start;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;cursor:pointer}
+    .check-row input{width:20px;min-width:20px;height:20px;min-height:20px;margin:2px 0 0;padding:0;accent-color:var(--navy)}
+    .check-row span{font-size:14px;line-height:1.45;font-weight:600;color:#34475a}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .note{font-size:14px;line-height:1.5;color:var(--muted);background:var(--soft);border-left:3px solid var(--cyan);padding:9px 11px;border-radius:5px;margin-top:13px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .btn{min-height:45px;border:0;border-radius:9px;padding:9px 13px;font-weight:750;cursor:pointer;transition:.15s ease}
+    .btn:hover{transform:translateY(-1px);filter:brightness(.97)}
+    .btn-primary{background:var(--navy);color:#fff}
+    .btn-outline{background:#fff;color:var(--navy);border:1px solid #9eacbb}
+    .btn-accent{grid-column:1/-1;background:var(--blue);color:#fff}
+    .btn-ifc{grid-column:1/-1;background:var(--green);color:#fff}
+    .stage-card{overflow:hidden}
+    .stage-toolbar{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fafbfd}
+    .stage-toolbar .title{font-size:15px;font-weight:800;color:var(--navy);margin-right:auto}
+    .view-btn,.hidden-btn{border:1px solid #b7c3d0;background:#fff;color:#26384b;border-radius:7px;padding:6px 10px;min-height:36px;font-size:14px;font-weight:650;cursor:pointer}
+    .view-btn.active,.hidden-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .canvas-wrap{height:560px;min-height:430px;position:relative;background:linear-gradient(180deg,#f8fbfd,#e9eff5);touch-action:none}
+    canvas{display:block;width:100%;height:100%;cursor:grab}
+    canvas.dragging{cursor:grabbing}
+    .canvas-help{position:absolute;left:14px;bottom:12px;background:rgba(255,255,255,.91);border:1px solid #cbd4df;border-radius:7px;padding:6px 9px;color:#405164;font-size:13px;pointer-events:none}
+    .model-badge{position:absolute;right:14px;top:14px;background:rgba(11,31,58,.92);color:#fff;padding:6px 10px;border-radius:7px;font-size:14px;font-weight:750;pointer-events:none}
+    .legend{display:flex;gap:13px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);background:#fff;font-size:14px;color:#405164}
+    .legend span{display:flex;align-items:center;gap:6px}
+    .swatch{width:13px;height:13px;border-radius:3px;border:1px solid rgba(0,0,0,.14)}
+    .results{margin-top:18px;padding:20px}
+    .result-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:14px}
+    .result-head p{margin:2px 0 0;color:var(--muted);font-size:14px}
+    .total-group{display:flex;gap:22px;align-items:end;flex-wrap:wrap;justify-content:flex-end}
+    .total-box{text-align:right;min-width:180px}
+    .total-box small{display:block;color:var(--muted);font-size:13px}
+    .total-box strong{display:block;color:var(--red);font-size:25px;line-height:1.2}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}
+    table{width:100%;border-collapse:collapse;min-width:760px;font-size:15px}
+    th{background:var(--navy);color:#fff;text-align:center;padding:10px 11px;border-right:1px solid #314762;white-space:nowrap}
+    td{padding:9px 11px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}
+    td:nth-child(1){font-weight:700;color:var(--navy)}
+    td:nth-child(2){font-family:Consolas,"Courier New",monospace;font-size:14px;color:#3d4a57}
+    td:nth-child(3){text-align:center;white-space:nowrap}
+    td:nth-child(4),td:nth-child(5){text-align:right;font-variant-numeric:tabular-nums}
+    tr:last-child td{border-bottom:0}
+    .total-row td{font-weight:800;background:#f5f8fb;color:var(--red)}
+    .table-title{font-size:18px;color:var(--navy);margin:18px 0 8px}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .metric{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fbfcfd}
+    .metric span{display:block;font-size:13px;color:var(--muted)}
+    .metric b{font-size:18px;color:var(--navy)}
+    .footer{max-width:1480px;margin:auto;padding:0 24px 22px;color:#687786;font-size:13px;text-align:right}
+    .error{display:none;background:#fff1f0;color:#9f201b;border:1px solid #f1b9b5;padding:9px 11px;border-radius:8px;margin:10px 0;font-size:14px}
+    @media(max-width:1050px){.layout{grid-template-columns:340px minmax(0,1fr)}.canvas-wrap{height:510px}}
+    @media(max-width:820px){main{padding:14px}.topbar-inner{padding:15px}.layout{grid-template-columns:1fr}.canvas-wrap{height:470px}.panel{padding:16px}.results{padding:16px}.footer{padding:0 15px 18px}.subtitle{display:none}}
+    @media(max-width:520px){body{font-size:16px}.mark{width:44px;height:44px}.version{display:none}.grid2{grid-template-columns:1fr}.canvas-wrap{height:410px}.stage-toolbar{gap:6px}.view-btn{padding:5px 8px}.result-head{align-items:start;flex-direction:column}.total-box{text-align:left}.summary{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.btn-accent{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">NT</div>
+        <div><h1>Cấu kiện 3D & bóc khối lượng</h1><div class="subtitle">Dựng hình trực quan · kiểm tra kích thước · xuất DXF và IFC cho Revit</div></div>
+      </div>
+      <div class="version">R8 · 09/2026</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout">
+      <section class="card panel" aria-labelledby="inputTitle">
+        <h2 id="inputTitle">Thông số cấu kiện</h2>
+        <div class="section-label">Loại cấu kiện</div>
+        <div class="field">
+          <label for="type">Mẫu hình học <span class="unit">droplist</span></label>
+          <select id="type">
+            <option value="box">Cống hộp BTCT</option>
+            <option value="pipe">Cống tròn BTCT</option>
+            <option value="ditchU">Mương chữ U</option>
+            <option value="wallL">Tường góc L</option>
+          </select>
+        </div>
+        <div id="dynamicFields"></div>
+        <div class="section-label">Tùy chọn ván khuôn</div>
+        <label class="check-row" for="includeEnds"><input id="includeEnds" type="checkbox"><span>Cộng ván khuôn hai mặt đầu cấu kiện/đốt đúc</span></label>
+        <div id="errorBox" class="error" role="alert"></div>
+        <div class="note" id="shapeNote"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="resetValues">Khôi phục mẫu</button>
+          <button class="btn btn-outline" id="copyResults">Sao chép bảng KL</button>
+          <button class="btn btn-accent" id="exportDxf">Xuất DXF 3D</button>
+          <button class="btn btn-ifc" id="exportIfc">Xuất IFC cho Revit</button>
+        </div>
+      </section>
+
+      <section class="card stage-card" aria-label="Mô hình ba chiều">
+        <div class="stage-toolbar">
+          <div class="title">Mô hình trực quan</div>
+          <button class="view-btn active" data-view="iso">Phối cảnh</button>
+          <button class="view-btn" data-view="front">Mặt cắt ngang</button>
+          <button class="view-btn" data-view="side">Mặt bên</button>
+          <button class="view-btn" data-view="top">Mặt bằng</button>
+          <button class="hidden-btn active" id="hiddenToggle" type="button">Nét khuất: Bật</button>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="modelCanvas" aria-label="Mô hình cấu kiện có thể xoay bằng chuột"></canvas>
+          <div class="model-badge" id="modelBadge">Cống hộp BTCT</div>
+          <div class="canvas-help">Chuột trái: xoay · Chuột phải: di chuyển · Lăn: zoom · Nhấp đúp: đặt lại</div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </section>
+    </div>
+
+    <section class="card results" aria-labelledby="resultTitle">
+      <div class="result-head">
+        <div><h2 id="resultTitle">Bảng khối lượng bê tông</h2><p>Khối lượng hình học, chưa trừ khe nối và chưa tính hao hụt thi công.</p></div>
+        <div class="total-group">
+          <div class="total-box"><small>TỔNG THỂ TÍCH</small><strong id="totalVolume">0,000 m³</strong></div>
+          <div class="total-box"><small>TỔNG VÁN KHUÔN</small><strong id="totalFormwork">0,000 m²</strong></div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bộ phận</th><th>Công thức</th><th>Đơn vị</th><th>Số lượng</th><th>Giá trị</th><th>Ghi chú</th></tr></thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+      </div>
+      <h3 class="table-title">Diện tích ván khuôn</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Bộ phận</th><th>Công thức</th><th>Đơn vị</th><th>Số lượng</th><th>Giá trị</th><th>Ghi chú</th></tr></thead>
+          <tbody id="formworkBody"></tbody>
+        </table>
+      </div>
+      <div class="summary">
+        <div class="metric"><span>Chiều dài cấu kiện</span><b id="lengthMetric">—</b></div>
+        <div class="metric"><span>Tự trọng tham khảo (γ = 24 kN/m³)</span><b id="weightMetric">—</b></div>
+        <div class="metric"><span>Đơn vị DXF / IFC</span><b>mét (m)</b></div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">NTCONS Engineering Tool · Tính nhanh để kiểm tra, cần đối chiếu hồ sơ thiết kế trước khi phát hành.</div>
+
+  <script>
+  (() => {
+    'use strict';
+    const COLORS={base:'#4f86a8',wall:'#7da7bd',top:'#315c7b',chamfer:'#e7a44f',pipe:'#5d8aa4'};
+    const LABELS={base:'Bản đáy',wall:'Thành / thân',top:'Bản nắp',chamfer:'Vát góc',pipe:'Thân cống'};
+    const specs={
+      box:{name:'Cống hộp BTCT',note:'Kích thước B × H là khẩu độ thông thủy. Vát góc được cộng thêm vào bê tông tại các góc trong.',fields:[
+        ['B','Khẩu độ B','m',2.0,.1],['H','Khẩu độ H','m',2.0,.1],['L','Chiều dài L','m',6.0,.1],
+        ['tb','Dày bản đáy','m',.25,.01],['tw','Dày thành','m',.25,.01],['tt','Dày bản nắp','m',.25,.01],
+        ['cb','Vát góc dưới','m',.15,0],['ct','Vát góc trên','m',.10,0]
+      ]},
+      pipe:{name:'Cống tròn BTCT',note:'D là đường kính thông thủy. Thể tích thân ống tính theo hiệu diện tích hai đường tròn đồng tâm.',fields:[
+        ['D','Đường kính trong D','m',1.5,.1],['t','Chiều dày ống','m',.15,.01],['L','Chiều dài L','m',6.0,.1]
+      ]},
+      ditchU:{name:'Mương chữ U',note:'B là khẩu độ thông thủy. Bản đáy phủ toàn bề rộng ngoài; hai thành thu dần và có vát góc phía lòng mương.',fields:[
+        ['B','Khẩu độ mương B','m',1.5,.1],['H','Cao thành trên đáy','m',1.2,.1],['L','Chiều dài L','m',6.0,.1],
+        ['tb','Dày bản đáy','m',.20,.01],['wb','Dày chân thành','m',.20,.01],['wt','Dày đỉnh thành','m',.15,.01],['c','Vát chân thành','m',.12,0]
+      ]},
+      wallL:{name:'Tường góc L',note:'B là bề rộng toàn bộ móng; a là khoảng từ mép mũi đến mặt ngoài thân tường. Thân tường thu dần từ dày đáy đến dày đỉnh.',fields:[
+        ['B','Rộng bản móng B','m',2.8,.1],['a','Rộng mũi móng a','m',.45,.05],['H','Cao thân trên móng','m',3.0,.1],['L','Chiều dài tường L','m',6.0,.1],
+        ['tb','Dày bản móng','m',.35,.01],['wb','Dày chân tường','m',.35,.01],['wt','Dày đỉnh tường','m',.20,.01],['c','Vát chân tường','m',.20,0]
+      ]}
+    };
+    const el={type:document.getElementById('type'),fields:document.getElementById('dynamicFields'),note:document.getElementById('shapeNote'),error:document.getElementById('errorBox'),canvas:document.getElementById('modelCanvas'),wrap:document.getElementById('canvasWrap'),badge:document.getElementById('modelBadge'),legend:document.getElementById('legend'),body:document.getElementById('resultBody'),formBody:document.getElementById('formworkBody'),total:document.getElementById('totalVolume'),totalForm:document.getElementById('totalFormwork'),ends:document.getElementById('includeEnds'),length:document.getElementById('lengthMetric'),weight:document.getElementById('weightMetric')};
+    let model={meshes:[],rows:[],formRows:[],volume:0,formwork:0,length:0};
+    let camera={yaw:-Math.PI/4,pitch:-Math.atan(Math.sqrt(2)),zoom:1,panX:0,panY:0};
+    let hiddenLines=true;
+    let dragging=false,dragMode='orbit',renderPending=false,last={x:0,y:0};
+
+    const n=(v,d=3)=>Number(v).toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d});
+    const clean=(v)=>Math.max(0,Number(v)||0);
+    const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    function renderFields(){
+      const s=specs[el.type.value];
+      el.badge.textContent=s.name; el.note.textContent=s.note;
+      el.fields.innerHTML='<div class="section-label">Kích thước hình học</div><div class="grid2">'+s.fields.map((f,i)=>
+        `<div class="field"><label for="p_${f[0]}">${f[1]} <span class="unit">${f[2]}</span></label><input id="p_${f[0]}" data-key="${f[0]}" type="number" min="0" step="${f[4]}" value="${f[3]}" inputmode="decimal"></div>`
+      ).join('')+'</div>';
+      el.fields.querySelectorAll('input').forEach(x=>x.addEventListener('input',update));
+      update();
+    }
+    function vals(){const o={endForm:el.ends.checked};el.fields.querySelectorAll('input').forEach(x=>o[x.dataset.key]=clean(x.value));return o}
+    function v(x,y,z){return{x,y,z}}
+    function mesh(label,color,verts,faces,layer){return{label,color,verts,faces,layer}}
+    function box(x1,x2,y1,y2,z1,z2,label,color,layer){
+      const q=[v(x1,y1,z1),v(x2,y1,z1),v(x2,y2,z1),v(x1,y2,z1),v(x1,y1,z2),v(x2,y1,z2),v(x2,y2,z2),v(x1,y2,z2)];
+      return mesh(label,color,q,[[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]],layer);
+    }
+    function prism(poly,y1,y2,label,color,layer){
+      const vs=poly.map(p=>v(p[0],y1,p[1])).concat(poly.map(p=>v(p[0],y2,p[1]))),m=poly.length,fs=[];
+      fs.push([...Array(m).keys()].reverse());fs.push([...Array(m).keys()].map(i=>i+m));
+      for(let i=0;i<m;i++)fs.push([i,(i+1)%m,(i+1)%m+m,i+m]);
+      return mesh(label,color,vs,fs,layer);
+    }
+    function tube(D,t,L){
+      const seg=56,ri=D/2,ro=ri+t,vs=[],fs=[];
+      for(let y of [-L/2,L/2]) for(let r of [ro,ri]) for(let i=0;i<seg;i++){let a=2*Math.PI*i/seg;vs.push(v(r*Math.cos(a),y,r*Math.sin(a)))}
+      const idx=(end,ring,i)=>end*2*seg+ring*seg+(i%seg);
+      for(let i=0;i<seg;i++){
+        let j=(i+1)%seg;
+        fs.push([idx(0,0,i),idx(1,0,i),idx(1,0,j),idx(0,0,j)]);
+        fs.push([idx(0,1,j),idx(1,1,j),idx(1,1,i),idx(0,1,i)]);
+        fs.push([idx(0,0,j),idx(0,1,j),idx(0,1,i),idx(0,0,i)]);
+        fs.push([idx(1,0,i),idx(1,1,i),idx(1,1,j),idx(1,0,j)]);
+      }
+      return mesh('Thân cống',COLORS.pipe,vs,fs,'THAN_ONG');
+    }
+    function row(name,formula,qty,vol,note){return{name,formula,qty,vol,note}}
+
+    function build(type,p){
+      const ms=[],rs=[],frs=[];let volume=0,formwork=0,error='';
+      const positive=(keys)=>keys.every(k=>p[k]>0);
+      const endArea=(vol)=>p.endForm&&p.L>0?2*vol/p.L:0;
+      const endText=p.endForm?'Có cộng ván khuôn 2 mặt đầu':'Không tính 2 mặt đầu';
+      if(type==='box'){
+        if(!positive(['B','H','L','tb','tw','tt'])) error='Các kích thước chính phải lớn hơn 0.';
+        if(p.cb>Math.min(p.B/2,p.H/2)||p.ct>Math.min(p.B/2,p.H/2)) error='Kích thước vát không được lớn hơn một nửa khẩu độ.';
+        const W=p.B+2*p.tw,z0=0,z1=p.tb,z2=p.tb+p.H,z3=z2+p.tt,y1=-p.L/2,y2=p.L/2;
+        ms.push(box(-W/2,W/2,y1,y2,z0,z1,'Bản đáy',COLORS.base,'BAN_DAY'));
+        ms.push(box(-W/2,-p.B/2,y1,y2,z1,z2,'Thành trái',COLORS.wall,'THANH_TRAI'));
+        ms.push(box(p.B/2,W/2,y1,y2,z1,z2,'Thành phải',COLORS.wall,'THANH_PHAI'));
+        ms.push(box(-W/2,W/2,y1,y2,z2,z3,'Bản nắp',COLORS.top,'BAN_NAP'));
+        if(p.cb>0){ms.push(prism([[-p.B/2,z1],[-p.B/2+p.cb,z1],[-p.B/2,z1+p.cb]],y1,y2,'Vát dưới trái',COLORS.chamfer,'VAT_GOC'));
+          ms.push(prism([[p.B/2,z1],[p.B/2,z1+p.cb],[p.B/2-p.cb,z1]],y1,y2,'Vát dưới phải',COLORS.chamfer,'VAT_GOC'));}
+        if(p.ct>0){ms.push(prism([[-p.B/2,z2],[-p.B/2,z2-p.ct],[-p.B/2+p.ct,z2]],y1,y2,'Vát trên trái',COLORS.chamfer,'VAT_GOC'));
+          ms.push(prism([[p.B/2,z2],[p.B/2-p.ct,z2],[p.B/2,z2-p.ct]],y1,y2,'Vát trên phải',COLORS.chamfer,'VAT_GOC'));}
+        const vb=W*p.tb*p.L,vw=2*p.tw*p.H*p.L,vt=W*p.tt*p.L,vcb=p.cb*p.cb*p.L,vct=p.ct*p.ct*p.L,vc=vcb+vct;
+        rs.push(row('Bản đáy',`(${p.B} + 2×${p.tw}) × ${p.tb} × ${p.L}`,1,vb,'Toàn bề rộng ngoài'));
+        rs.push(row('Hai thành',`2 × ${p.tw} × ${p.H} × ${p.L}`,2,vw,'Không chồng lấn bản đáy/nắp'));
+        rs.push(row('Bản nắp',`(${p.B} + 2×${p.tw}) × ${p.tt} × ${p.L}`,1,vt,'Toàn bề rộng ngoài'));
+        if(p.cb>0)rs.push(row('Vát góc dưới',`2 × 1/2 × ${p.cb}² × ${p.L}`,2,p.cb*p.cb*p.L,'Vát tam giác hai bên'));
+        if(p.ct>0)rs.push(row('Vát góc trên',`2 × 1/2 × ${p.ct}² × ${p.L}`,2,p.ct*p.ct*p.L,'Vát tam giác hai bên'));
+        volume=vb+vw+vt+vc;
+        const fd=2*p.tb*p.L+endArea(vb);
+        const fw=2*(p.H+Math.max(0,p.H-p.cb-p.ct))*p.L+endArea(vw);
+        const ft=Math.max(0,p.B-2*p.ct)*p.L+2*p.tt*p.L+endArea(vt);
+        const fcb=2*Math.SQRT2*p.cb*p.L+endArea(vcb),fct=2*Math.SQRT2*p.ct*p.L+endArea(vct);
+        frs.push(row('Bản đáy',`2 × ${p.tb} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,fd,`Hai cạnh dọc; ${endText.toLowerCase()}`));
+        frs.push(row('Hai thành',`2 × [${p.H} + (${p.H}−${p.cb}−${p.ct})] × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,2,fw,'Mặt ngoài và mặt trong sau khi trừ đoạn vát'));
+        frs.push(row('Bản nắp',`(${p.B}−2×${p.ct}) × ${p.L} + 2 × ${p.tt} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,ft,'Đã tính mặt đáy nắp và hai cạnh ngoài; không tính mặt trên'));
+        if(p.cb>0)frs.push(row('Vát góc dưới',`2 × √2 × ${p.cb} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,2,fcb,'Hai mặt nghiêng vát dưới'));
+        if(p.ct>0)frs.push(row('Vát góc trên',`2 × √2 × ${p.ct} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,2,fct,'Hai mặt nghiêng vát trên'));
+        formwork=fd+fw+ft+fcb+fct;
+      }else if(type==='pipe'){
+        if(!positive(['D','t','L'])) error='Đường kính, chiều dày và chiều dài phải lớn hơn 0.';
+        ms.push(tube(p.D,p.t,p.L));
+        const vo=Math.PI/4*((p.D+2*p.t)**2-p.D**2)*p.L;
+        rs.push(row('Thân cống',`π/4 × [(${p.D}+2×${p.t})² − ${p.D}²] × ${p.L}`,1,vo,'Ống tròn đồng tâm'));
+        volume=vo;
+        formwork=Math.PI*(p.D+p.D+2*p.t)*p.L+endArea(vo);
+        frs.push(row('Thân cống',`π × ${p.D} × ${p.L} + π × (${p.D}+2×${p.t}) × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,formwork,`Mặt cong trong và ngoài; ${endText.toLowerCase()}`));
+      }else if(type==='ditchU'){
+        if(!positive(['B','H','L','tb','wb','wt'])) error='Các kích thước chính phải lớn hơn 0.';
+        if(p.c>Math.min(p.B/2,p.H)) error='Kích thước vát không phù hợp lòng mương.';
+        const W=p.B+2*p.wb,x0=-W/2,x3=W/2,y1=-p.L/2,y2=p.L/2,z1=p.tb,z2=z1+p.H;
+        ms.push(box(x0,x3,y1,y2,0,z1,'Bản đáy',COLORS.base,'BAN_DAY'));
+        ms.push(prism([[x0,z1],[-p.B/2,z1],[x0+p.wt,z2],[x0,z2]],y1,y2,'Thành trái',COLORS.wall,'THANH_TRAI'));
+        ms.push(prism([[p.B/2,z1],[x3,z1],[x3,z2],[x3-p.wt,z2]],y1,y2,'Thành phải',COLORS.wall,'THANH_PHAI'));
+        if(p.c>0){
+          ms.push(prism([[-p.B/2,z1],[-p.B/2+p.c,z1],[-p.B/2,z1+p.c]],y1,y2,'Vát trái',COLORS.chamfer,'VAT_GOC'));
+          ms.push(prism([[p.B/2,z1],[p.B/2,z1+p.c],[p.B/2-p.c,z1]],y1,y2,'Vát phải',COLORS.chamfer,'VAT_GOC'));
+        }
+        const vb=W*p.tb*p.L,vw=(p.wb+p.wt)*p.H*p.L,vc=p.c*p.c*p.L;
+        rs.push(row('Bản đáy',`(${p.B} + 2×${p.wb}) × ${p.tb} × ${p.L}`,1,vb,'Phủ toàn bề rộng ngoài'));
+        rs.push(row('Hai thành mương',`2 × (${p.wb}+${p.wt})/2 × ${p.H} × ${p.L}`,2,vw,'Hai tiết diện thành hình thang'));
+        if(p.c>0)rs.push(row('Hai vát chân thành',`2 × 1/2 × ${p.c}² × ${p.L}`,2,vc,'Vát tam giác phía lòng mương'));
+        volume=vb+vw+vc;
+        const slope=Math.hypot(p.H,p.wb-p.wt),fd=2*p.tb*p.L+endArea(vb),fw=2*(p.H+slope)*p.L+endArea(vw),fc=2*Math.SQRT2*p.c*p.L+endArea(vc);
+        frs.push(row('Bản đáy',`2 × ${p.tb} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,fd,`Hai cạnh dọc; ${endText.toLowerCase()}`));
+        frs.push(row('Hai thành mương',`2 × [${p.H} + √(${p.H}²+(${p.wb}−${p.wt})²)] × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,2,fw,'Mỗi thành gồm mặt ngoài đứng và mặt trong nghiêng'));
+        if(p.c>0)frs.push(row('Hai vát chân thành',`2 × √2 × ${p.c} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,2,fc,'Hai mặt nghiêng vát góc'));
+        formwork=fd+fw+fc;
+      }else{
+        if(!positive(['B','H','L','tb','wb','wt'])) error='Các kích thước chính phải lớn hơn 0.';
+        if(p.a+p.wb>p.B) error='Rộng mũi a + dày chân tường phải nhỏ hơn bề rộng móng B.';
+        if(p.c>Math.min(p.B-p.a-p.wb,p.H)) error='Kích thước vát lớn hơn vùng gót tường.';
+        const x0=-p.B/2,xw=x0+p.a,y1=-p.L/2,y2=p.L/2,z1=p.tb,z2=z1+p.H;
+        ms.push(box(x0,p.B/2,y1,y2,0,z1,'Bản móng',COLORS.base,'BAN_MONG'));
+        ms.push(prism([[xw,z1],[xw+p.wb,z1],[xw+p.wt,z2],[xw,z2]],y1,y2,'Thân tường',COLORS.wall,'THAN_TUONG'));
+        if(p.c>0)ms.push(prism([[xw+p.wb,z1],[xw+p.wb+p.c,z1],[xw+p.wb,z1+p.c]],y1,y2,'Vát chân tường',COLORS.chamfer,'VAT_GOC'));
+        const vb=p.B*p.tb*p.L,vw=(p.wb+p.wt)/2*p.H*p.L,vc=.5*p.c*p.c*p.L;
+        rs.push(row('Bản móng',`${p.B} × ${p.tb} × ${p.L}`,1,vb,`Mũi móng a = ${p.a} m`));
+        rs.push(row('Thân tường',`(${p.wb}+${p.wt})/2 × ${p.H} × ${p.L}`,1,vw,'Thân thu dần theo chiều cao'));
+        if(p.c>0)rs.push(row('Vát chân tường',`1/2 × ${p.c}² × ${p.L}`,1,vc,'Vát tam giác phía gót'));
+        volume=vb+vw+vc;
+        const slope=Math.hypot(p.H,p.wb-p.wt),fd=2*p.tb*p.L+endArea(vb),fw=(p.H+slope)*p.L+endArea(vw),fc=Math.SQRT2*p.c*p.L+endArea(vc);
+        frs.push(row('Bản móng',`2 × ${p.tb} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,fd,`Hai cạnh dọc; ${endText.toLowerCase()}`));
+        frs.push(row('Thân tường',`[${p.H} + √(${p.H}²+(${p.wb}−${p.wt})²)] × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,fw,'Mặt ngoài đứng và mặt trong nghiêng'));
+        if(p.c>0)frs.push(row('Vát chân tường',`√2 × ${p.c} × ${p.L}${p.endForm?' + 2 mặt đầu':''}`,1,fc,'Mặt nghiêng vát phía gót'));
+        formwork=fd+fw+fc;
+      }
+      return{meshes:ms,rows:rs,formRows:frs,volume,formwork,length:p.L,error};
+    }
+
+    function update(){
+      model=build(el.type.value,vals());
+      el.error.style.display=model.error?'block':'none';el.error.textContent=model.error;
+      const tableRows=(rows,unit,total,totalNote)=>rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.formula)}</td><td>${unit}</td><td>${r.qty}</td><td><b>${n(r.vol)}</b></td><td>${esc(r.note)}</td></tr>`).join('')+`<tr class="total-row"><td>TỔNG CỘNG</td><td></td><td>${unit}</td><td></td><td>${n(total)}</td><td>${esc(totalNote)}</td></tr>`;
+      el.body.innerHTML=tableRows(model.rows,'m³',model.volume,`Tổng khối lượng bê tông = ${n(model.volume)} m³`);
+      el.formBody.innerHTML=tableRows(model.formRows,'m²',model.formwork,`Tổng diện tích ván khuôn = ${n(model.formwork)} m²`);
+      el.total.textContent=n(model.volume)+' m³';el.totalForm.textContent=n(model.formwork)+' m²';el.length.textContent=n(model.length,2)+' m';el.weight.textContent=n(model.volume*24,1)+' kN';
+      const used=[...new Set(model.meshes.map(m=>m.layer==='VAT_GOC'?'chamfer':m.layer.includes('NAP')?'top':m.layer.includes('DAY')||m.layer.includes('MONG')?'base':m.layer==='THAN_ONG'?'pipe':'wall'))];
+      el.legend.innerHTML=used.map(k=>`<span><i class="swatch" style="background:${COLORS[k]}"></i>${LABELS[k]}</span>`).join('');
+      draw();
+    }
+
+    function resize(){const dpr=Math.min(devicePixelRatio||1,2),r=el.wrap.getBoundingClientRect();el.canvas.width=Math.round(r.width*dpr);el.canvas.height=Math.round(r.height*dpr);draw()}
+    function transform(p){
+      const cy=Math.cos(camera.yaw),sy=Math.sin(camera.yaw),cp=Math.cos(camera.pitch),sp=Math.sin(camera.pitch);
+      const x1=p.x*cy-p.y*sy,y1=p.x*sy+p.y*cy,z1=p.z;
+      return{x:x1,y:y1*cp-z1*sp,z:y1*sp+z1*cp};
+    }
+    function hexShade(hex,f){let x=parseInt(hex.slice(1),16),r=(x>>16)&255,g=(x>>8)&255,b=x&255;return`rgb(${Math.max(0,Math.min(255,r*f))|0},${Math.max(0,Math.min(255,g*f))|0},${Math.max(0,Math.min(255,b*f))|0})`}
+    function triangleDepth(px,py,a,b,c){
+      const den=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
+      if(Math.abs(den)<1e-12)return null;
+      const u=((b.y-c.y)*(px-c.x)+(c.x-b.x)*(py-c.y))/den;
+      const v=((c.y-a.y)*(px-c.x)+(a.x-c.x)*(py-c.y))/den,w=1-u-v,tol=2e-6;
+      return u>=-tol&&v>=-tol&&w>=-tol?u*a.z+v*b.z+w*c.z:null;
+    }
+    function nearestSurfaceDepth(px,py,faces){
+      let nearest=-Infinity;
+      for(const face of faces){
+        const b=face.bounds,tol=2e-6;
+        if(px<b.minX-tol||px>b.maxX+tol||py<b.minY-tol||py>b.maxY+tol)continue;
+        for(const tri of face.tris){const z=triangleDepth(px,py,tri[0],tri[1],tri[2]);if(z!==null&&z>nearest)nearest=z}
+      }
+      return nearest;
+    }
+    function draw(){
+      const c=el.canvas,ctx=c.getContext('2d'),W=c.width,H=c.height,dpr=Math.min(devicePixelRatio||1,2);ctx.clearRect(0,0,W,H);
+      if(!model.meshes.length)return;
+      const all=model.meshes.flatMap(m=>m.verts),xs=all.map(p=>p.x),ys=all.map(p=>p.y),zs=all.map(p=>p.z);
+      const center=v((Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2,(Math.min(...zs)+Math.max(...zs))/2);
+      const tv=all.map(p=>transform(v(p.x-center.x,p.y-center.y,p.z-center.z)));
+      const ex=Math.max(...tv.map(p=>p.x))-Math.min(...tv.map(p=>p.x))||1,ey=Math.max(...tv.map(p=>p.y))-Math.min(...tv.map(p=>p.y))||1;
+      const scale=Math.min(W*.78/ex,H*.72/ey)*camera.zoom;
+      const ox=W*.5+camera.panX*dpr,oy=H*.52+camera.panY*dpr;
+      const faces=[],edgeMap=new Map();
+      model.meshes.forEach((m,mi)=>m.faces.forEach(face=>{
+        const pts=face.map(i=>transform(v(m.verts[i].x-center.x,m.verts[i].y-center.y,m.verts[i].z-center.z)));
+        const depth=pts.reduce((s,p)=>s+p.z,0)/pts.length;
+        const tris=[];for(let i=1;i<pts.length-1;i++)tris.push([pts[0],pts[i],pts[i+1]]);
+        const bounds={minX:Math.min(...pts.map(p=>p.x)),maxX:Math.max(...pts.map(p=>p.x)),minY:Math.min(...pts.map(p=>p.y)),maxY:Math.max(...pts.map(p=>p.y))};
+        faces.push({pts,depth,color:m.color,tris,bounds});
+        face.forEach((idx,i)=>{
+          const idx2=face[(i+1)%face.length],lo=Math.min(idx,idx2),hi=Math.max(idx,idx2),key=`${mi}:${lo}:${hi}`;
+          if(!edgeMap.has(key))edgeMap.set(key,{a:transform(v(m.verts[lo].x-center.x,m.verts[lo].y-center.y,m.verts[lo].z-center.z)),b:transform(v(m.verts[hi].x-center.x,m.verts[hi].y-center.y,m.verts[hi].z-center.z))});
+        });
+      }));
+      faces.sort((a,b)=>a.depth-b.depth);
+      faces.forEach(f=>{
+        ctx.beginPath();f.pts.forEach((p,i)=>(i?ctx.lineTo(ox+p.x*scale,oy-p.y*scale):ctx.moveTo(ox+p.x*scale,oy-p.y*scale)));ctx.closePath();
+        const shade=.72+Math.max(0,Math.min(.28,(f.depth/(ex+ey)+.5)*.3));ctx.fillStyle=hexShade(f.color,shade);ctx.fill();
+      });
+      // Phân loại từng đoạn cạnh theo bề mặt gần camera nhất.
+      const depthValues=all.map(p=>transform(v(p.x-center.x,p.y-center.y,p.z-center.z)).z),depthSpan=Math.max(...depthValues)-Math.min(...depthValues)||1,depthTol=Math.max(1e-7,depthSpan*2e-5);
+      const segments=[];
+      edgeMap.forEach(e=>{
+        const pixelLength=Math.hypot((e.b.x-e.a.x)*scale,(e.b.y-e.a.y)*scale),steps=Math.max(1,Math.min(96,Math.ceil(pixelLength/(7*dpr))));
+        for(let i=0;i<steps;i++){
+          const t0=i/steps,t1=(i+1)/steps,tm=(t0+t1)/2;
+          const mid={x:e.a.x+(e.b.x-e.a.x)*tm,y:e.a.y+(e.b.y-e.a.y)*tm,z:e.a.z+(e.b.z-e.a.z)*tm};
+          const nearest=nearestSurfaceDepth(mid.x,mid.y,faces),visible=nearest===-Infinity||mid.z>=nearest-depthTol;
+          const p0={x:e.a.x+(e.b.x-e.a.x)*t0,y:e.a.y+(e.b.y-e.a.y)*t0},p1={x:e.a.x+(e.b.x-e.a.x)*t1,y:e.a.y+(e.b.y-e.a.y)*t1};
+          segments.push({p0,p1,visible});
+        }
+      });
+      if(hiddenLines){
+        ctx.save();ctx.setLineDash([5*dpr,4*dpr]);ctx.strokeStyle='rgba(47,72,96,.34)';ctx.lineWidth=Math.max(1,dpr*.68);ctx.beginPath();
+        segments.forEach(s=>{if(s.visible)return;ctx.moveTo(ox+s.p0.x*scale,oy-s.p0.y*scale);ctx.lineTo(ox+s.p1.x*scale,oy-s.p1.y*scale)});ctx.stroke();ctx.restore();
+      }
+      ctx.save();ctx.setLineDash([]);ctx.strokeStyle='rgba(25,43,60,.82)';ctx.lineWidth=Math.max(1.1,dpr*.92);ctx.beginPath();
+      segments.forEach(s=>{if(!s.visible)return;ctx.moveTo(ox+s.p0.x*scale,oy-s.p0.y*scale);ctx.lineTo(ox+s.p1.x*scale,oy-s.p1.y*scale)});ctx.stroke();
+      ctx.restore();
+      drawAxes(ctx,W,H,dpr);
+    }
+    function drawAxes(ctx,W,H,dpr){
+      const o={x:48*dpr,y:H-45*dpr},len=28*dpr,axes=[[v(1,0,0),'X','#c53b3b'],[v(0,1,0),'Y','#21834d'],[v(0,0,1),'Z','#1c66ad']];
+      ctx.font=`${12*dpr}px Segoe UI`;ctx.lineWidth=2*dpr;
+      axes.forEach(([a,t,col])=>{const q=transform(a);ctx.strokeStyle=col;ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(o.x,o.y);ctx.lineTo(o.x+q.x*len,o.y-q.y*len);ctx.stroke();ctx.fillText(t,o.x+q.x*len+3*dpr,o.y-q.y*len)})
+    }
+    function setView(view){
+      if(view==='iso'){
+        // Góc chiếu trục đo Đông Nam (SE Isometric): nhìn từ +X, -Y và phía trên.
+        camera.yaw=-Math.PI/4;camera.pitch=-Math.atan(Math.sqrt(2));
+      }else if(view==='front'){
+        // Mặt cắt ngang chính diện: nhìn dọc trục Y, thể hiện đúng mặt phẳng X-Z.
+        camera.yaw=0;camera.pitch=-Math.PI/2;
+      }else if(view==='side'){
+        // Hình chiếu cạnh: nhìn theo trục X, thể hiện mặt phẳng Y-Z.
+        camera.yaw=-Math.PI/2;camera.pitch=-Math.PI/2;
+      }else{
+        // Mặt bằng: nhìn từ +Z xuống, +X sang phải và +Y hướng lên.
+        camera.yaw=0;camera.pitch=0;
+      }
+      camera.zoom=1;camera.panX=0;camera.panY=0;draw();
+      document.querySelectorAll('.view-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+    }
+    function pointerPos(e){const r=el.canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+    function queueDraw(){if(renderPending)return;renderPending=true;requestAnimationFrame(()=>{renderPending=false;draw()})}
+    el.canvas.addEventListener('pointerdown',e=>{if(![0,1,2].includes(e.button))return;e.preventDefault();dragging=true;dragMode=e.button===2||e.button===1?'pan':'orbit';last=pointerPos(e);el.canvas.setPointerCapture(e.pointerId);el.canvas.classList.add('dragging')});
+    el.canvas.addEventListener('pointermove',e=>{if(!dragging)return;const q=pointerPos(e),dx=q.x-last.x,dy=q.y-last.y,turn=2*Math.PI;if(dragMode==='pan'){camera.panX+=dx;camera.panY+=dy}else{camera.yaw+=dx*.009;camera.pitch+=dy*.009;camera.yaw=((camera.yaw+Math.PI)%turn+turn)%turn-Math.PI;camera.pitch=((camera.pitch+Math.PI)%turn+turn)%turn-Math.PI;document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'))}last=q;queueDraw()});
+    el.canvas.addEventListener('pointerup',()=>{dragging=false;el.canvas.classList.remove('dragging')});
+    el.canvas.addEventListener('pointercancel',()=>{dragging=false;el.canvas.classList.remove('dragging')});
+    el.canvas.addEventListener('wheel',e=>{e.preventDefault();camera.zoom=Math.max(.35,Math.min(4,camera.zoom*(e.deltaY>0?.9:1.1)));queueDraw()},{passive:false});
+    el.canvas.addEventListener('contextmenu',e=>e.preventDefault());
+    el.canvas.addEventListener('dblclick',()=>setView('iso'));
+    document.querySelectorAll('.view-btn').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+    document.getElementById('hiddenToggle').addEventListener('click',e=>{hiddenLines=!hiddenLines;e.currentTarget.classList.toggle('active',hiddenLines);e.currentTarget.textContent=`Nét khuất: ${hiddenLines?'Bật':'Tắt'}`;draw()});
+
+    function dxf(){
+      const lines=[],add=(code,val)=>{lines.push(String(code),String(val))};
+      const fmt=value=>Math.abs(value)<5e-10?'0':Number(value).toFixed(6);
+      const vertices=model.meshes.flatMap(m=>m.verts);
+      const min={x:Math.min(...vertices.map(p=>p.x)),y:Math.min(...vertices.map(p=>p.y)),z:Math.min(...vertices.map(p=>p.z))};
+      const max={x:Math.max(...vertices.map(p=>p.x)),y:Math.max(...vertices.map(p=>p.y)),z:Math.max(...vertices.map(p=>p.z))};
+      const layers=[...new Set(model.meshes.map(m=>m.layer))];
+      const layerColor=name=>name==='VAT_GOC'?30:(name.includes('DAY')||name.includes('MONG')||name.includes('NAP')?5:4);
+
+      // DXF ASCII R12: cấu trúc tối giản nhưng đầy đủ, tương thích rộng với AutoCAD.
+      add(0,'SECTION');add(2,'HEADER');
+      add(9,'$ACADVER');add(1,'AC1009');
+      add(9,'$EXTMIN');add(10,fmt(min.x));add(20,fmt(min.y));add(30,fmt(min.z));
+      add(9,'$EXTMAX');add(10,fmt(max.x));add(20,fmt(max.y));add(30,fmt(max.z));
+      add(0,'ENDSEC');
+      add(0,'SECTION');add(2,'TABLES');
+      add(0,'TABLE');add(2,'LTYPE');add(70,1);
+      add(0,'LTYPE');add(2,'CONTINUOUS');add(70,0);add(3,'Solid line');add(72,65);add(73,0);add(40,'0.0');
+      add(0,'ENDTAB');
+      add(0,'TABLE');add(2,'LAYER');add(70,layers.length);
+      layers.forEach(layer=>{add(0,'LAYER');add(2,layer);add(70,0);add(62,layerColor(layer));add(6,'CONTINUOUS')});
+      add(0,'ENDTAB');add(0,'ENDSEC');
+      add(0,'SECTION');add(2,'BLOCKS');add(0,'ENDSEC');
+      add(0,'SECTION');add(2,'ENTITIES');
+      model.meshes.forEach(m=>m.faces.forEach(face=>{
+        const ps=face.map(i=>m.verts[i]);
+        const writeFace=q=>{
+          add(0,'3DFACE');add(8,m.layer);add(62,layerColor(m.layer));
+          q.forEach((p,i)=>{add(10+i,fmt(p.x));add(20+i,fmt(p.y));add(30+i,fmt(p.z))});add(70,0);
+        };
+        if(ps.length===3)writeFace([ps[0],ps[1],ps[2],ps[2]]);
+        else if(ps.length===4)writeFace(ps);
+        else{
+          // Chỉ chia tam giác đối với đa giác trên 4 đỉnh; các mặt chữ nhật luôn giữ nguyên 4 đỉnh.
+          for(let k=1;k<ps.length-1;k++)writeFace([ps[0],ps[k],ps[k+1],ps[k+1]]);
+        }
+      }));
+      add(0,'ENDSEC');add(0,'EOF');return lines.join('\r\n')+'\r\n';
+    }
+
+    function ifcGuid(){
+      const alphabet='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_$',bytes=new Uint8Array(22);
+      crypto.getRandomValues(bytes);let out=alphabet[bytes[0]&3];
+      for(let i=1;i<22;i++)out+=alphabet[bytes[i]&63];
+      return out;
+    }
+    function ifcText(value){
+      const s=String(value??'').replace(/[\r\n]+/g,' ');let out='',hex='';
+      const flush=()=>{if(hex){out+='\\X2\\'+hex+'\\X0\\';hex=''}};
+      for(let i=0;i<s.length;i++){
+        const code=s.charCodeAt(i),ch=s[i];
+        if(code>=32&&code<=126){flush();out+=ch==="'"?"''":ch==='\\'?'\\\\':ch}
+        else hex+=code.toString(16).padStart(4,'0').toUpperCase();
+      }
+      flush();return `'${out}'`;
+    }
+    function meshVolume(m){
+      let sum=0;
+      m.faces.forEach(face=>{
+        const a=m.verts[face[0]];
+        for(let i=1;i<face.length-1;i++){
+          const b=m.verts[face[i]],c=m.verts[face[i+1]];
+          sum+=(a.x*(b.y*c.z-b.z*c.y)-a.y*(b.x*c.z-b.z*c.x)+a.z*(b.x*c.y-b.y*c.x))/6;
+        }
+      });
+      return Math.abs(sum);
+    }
+    function ifc(){
+      const data=[];let seq=0;
+      const add=expr=>{data.push(`#${++seq}=${expr};`);return seq};
+      const ref=id=>`#${id}`;
+      const num=value=>{const x=Math.abs(Number(value))<5e-10?0:Number(value);return Number.isInteger(x)?`${x}.`:x.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')};
+      const guid=()=>ifcText(ifcGuid());
+      const p=vals(),timestamp=Math.floor(Date.now()/1000);
+
+      const person=add(`IFCPERSON($,${ifcText('NTCONS Engineering')},$,$,$,$,$,$)`);
+      const org=add(`IFCORGANIZATION($,${ifcText('AS Group')},$,$,$)`);
+      const personOrg=add(`IFCPERSONANDORGANIZATION(${ref(person)},${ref(org)},$)`);
+      const app=add(`IFCAPPLICATION(${ref(org)},${ifcText('R8')},${ifcText('NTCONS Cau kien 3D')},${ifcText('NTCONS_CAU_KIEN_R8')})`);
+      const owner=add(`IFCOWNERHISTORY(${ref(personOrg)},${ref(app)},$,.ADDED.,$,$,$,${timestamp})`);
+      const uLen=add('IFCSIUNIT(*,.LENGTHUNIT.,$,.METRE.)');
+      const uArea=add('IFCSIUNIT(*,.AREAUNIT.,$,.SQUARE_METRE.)');
+      const uVol=add('IFCSIUNIT(*,.VOLUMEUNIT.,$,.CUBIC_METRE.)');
+      const units=add(`IFCUNITASSIGNMENT((${ref(uLen)},${ref(uArea)},${ref(uVol)}))`);
+      const origin=add('IFCCARTESIANPOINT((0.,0.,0.))');
+      const axis=add(`IFCAXIS2PLACEMENT3D(${ref(origin)},$,$)`);
+      const context=add(`IFCGEOMETRICREPRESENTATIONCONTEXT($,${ifcText('Model')},3,1.E-05,${ref(axis)},$)`);
+      const project=add(`IFCPROJECT(${guid()},${ref(owner)},${ifcText('NTCONS Concrete Components')},$,$,$,$,(${ref(context)}),${ref(units)})`);
+      const sitePlace=add(`IFCLOCALPLACEMENT($,${ref(axis)})`);
+      const site=add(`IFCSITE(${guid()},${ref(owner)},${ifcText('Site')},$,$,${ref(sitePlace)},$,$,.ELEMENT.,$,$,$,$,$)`);
+      const buildingPlace=add(`IFCLOCALPLACEMENT(${ref(sitePlace)},${ref(axis)})`);
+      const building=add(`IFCBUILDING(${guid()},${ref(owner)},${ifcText('NTCONS Structure')},$,$,${ref(buildingPlace)},$,$,.ELEMENT.,$,$,$)`);
+      const storeyPlace=add(`IFCLOCALPLACEMENT(${ref(buildingPlace)},${ref(axis)})`);
+      const storey=add(`IFCBUILDINGSTOREY(${guid()},${ref(owner)},${ifcText('Level 0')},$,$,${ref(storeyPlace)},$,$,.ELEMENT.,0.)`);
+      add(`IFCRELAGGREGATES(${guid()},${ref(owner)},$,$,${ref(project)},(${ref(site)}))`);
+      add(`IFCRELAGGREGATES(${guid()},${ref(owner)},$,$,${ref(site)},(${ref(building)}))`);
+      add(`IFCRELAGGREGATES(${guid()},${ref(owner)},$,$,${ref(building)},(${ref(storey)}))`);
+
+      const elementIds=[];
+      model.meshes.forEach((m,index)=>{
+        let shape;
+        if(m.layer==='THAN_ONG'){
+          // Khối tròn rỗng tham số thật: Revit nhận đúng đường kính và thể tích, không đa giác hóa theo hình xem web.
+          const profileOrigin=add('IFCCARTESIANPOINT((0.,0.))');
+          const profilePosition=add(`IFCAXIS2PLACEMENT2D(${ref(profileOrigin)},$)`);
+          const profile=add(`IFCCIRCLEHOLLOWPROFILEDEF(.AREA.,${ifcText('Pipe profile')},${ref(profilePosition)},${num(p.D/2+p.t)},${num(p.t)})`);
+          const solidOrigin=add(`IFCCARTESIANPOINT((0.,${num(-p.L/2)},0.))`);
+          const solidAxis=add('IFCDIRECTION((0.,1.,0.))');
+          const solidRef=add('IFCDIRECTION((1.,0.,0.))');
+          const solidPosition=add(`IFCAXIS2PLACEMENT3D(${ref(solidOrigin)},${ref(solidAxis)},${ref(solidRef)})`);
+          const extrusionDirection=add('IFCDIRECTION((0.,0.,1.))');
+          const solid=add(`IFCEXTRUDEDAREASOLID(${ref(profile)},${ref(solidPosition)},${ref(extrusionDirection)},${num(p.L)})`);
+          shape=add(`IFCSHAPEREPRESENTATION(${ref(context)},${ifcText('Body')},${ifcText('SweptSolid')},(${ref(solid)}))`);
+        }else{
+          const pointIds=m.verts.map(q=>add(`IFCCARTESIANPOINT((${num(q.x)},${num(q.y)},${num(q.z)}))`));
+          const faceIds=m.faces.map(face=>{
+            const loop=add(`IFCPOLYLOOP((${face.map(i=>ref(pointIds[i])).join(',')}))`);
+            const bound=add(`IFCFACEOUTERBOUND(${ref(loop)},.T.)`);
+            return add(`IFCFACE((${ref(bound)}))`);
+          });
+          const shell=add(`IFCCLOSEDSHELL((${faceIds.map(ref).join(',')}))`);
+          const brep=add(`IFCFACETEDBREP(${ref(shell)})`);
+          shape=add(`IFCSHAPEREPRESENTATION(${ref(context)},${ifcText('Body')},${ifcText('Brep')},(${ref(brep)}))`);
+        }
+        add(`IFCPRESENTATIONLAYERASSIGNMENT(${ifcText(m.layer)},$,(${ref(shape)}),$)`);
+        const productShape=add(`IFCPRODUCTDEFINITIONSHAPE($,$,(${ref(shape)}))`);
+        const placement=add(`IFCLOCALPLACEMENT(${ref(storeyPlace)},${ref(axis)})`);
+        const tag=ifcText(`NTCONS-${String(index+1).padStart(3,'0')}`),base=`${guid()},${ref(owner)},${ifcText(m.label)},$,${ifcText(specs[el.type.value].name)},${ref(placement)},${ref(productShape)},${tag}`;
+        let element;
+        if(m.layer==='THAN_ONG')element=add(`IFCPIPESEGMENT(${base},.CULVERT.)`);
+        else if(m.layer.includes('DAY')||m.layer.includes('MONG'))element=add(`IFCSLAB(${base},.BASESLAB.)`);
+        else if(m.layer.includes('NAP'))element=add(`IFCSLAB(${base},.ROOF.)`);
+        else if(m.layer.startsWith('THAN'))element=add(`IFCWALL(${base})`);
+        else element=add(`IFCBUILDINGELEMENTPROXY(${base},.ELEMENT.)`);
+        elementIds.push(element);
+
+        const vol=m.layer==='THAN_ONG'?model.volume:meshVolume(m),quantity=add(`IFCQUANTITYVOLUME(${ifcText('NetVolume')},$,$,${num(vol)})`);
+        const quantities=add(`IFCELEMENTQUANTITY(${guid()},${ref(owner)},${ifcText('BaseQuantities')},$,$,(${ref(quantity)}))`);
+        add(`IFCRELDEFINESBYPROPERTIES(${guid()},${ref(owner)},$,$,(${ref(element)}),${ref(quantities)})`);
+
+        const props=[];
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_Component')},$,IFCLABEL(${ifcText(m.label)}),$)`));
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_StructureType')},$,IFCLABEL(${ifcText(specs[el.type.value].name)}),$)`));
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_DXF_Layer')},$,IFCLABEL(${ifcText(m.layer)}),$)`));
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_Volume_m3')},$,IFCVOLUMEMEASURE(${num(vol)}),$)`));
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_TotalVolume_m3')},$,IFCVOLUMEMEASURE(${num(model.volume)}),$)`));
+        props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_TotalFormwork_m2')},$,IFCAREAMEASURE(${num(model.formwork)}),$)`));
+        Object.entries(p).filter(([key,value])=>key!=='endForm'&&Number.isFinite(value)).forEach(([key,value])=>{
+          props.push(add(`IFCPROPERTYSINGLEVALUE(${ifcText('NTCONS_Dim_'+key)},$,IFCLENGTHMEASURE(${num(value)}),$)`));
+        });
+        const pset=add(`IFCPROPERTYSET(${guid()},${ref(owner)},${ifcText('Pset_NTCONS_ConcreteComponent')},$,(${props.map(ref).join(',')}))`);
+        add(`IFCRELDEFINESBYPROPERTIES(${guid()},${ref(owner)},$,$,(${ref(element)}),${ref(pset)})`);
+      });
+      add(`IFCRELCONTAINEDINSPATIALSTRUCTURE(${guid()},${ref(owner)},$,$,(${elementIds.map(ref).join(',')}),${ref(storey)})`);
+      const material=add(`IFCMATERIAL(${ifcText('Concrete')})`);
+      add(`IFCRELASSOCIATESMATERIAL(${guid()},${ref(owner)},$,$,(${elementIds.map(ref).join(',')}),${ref(material)})`);
+
+      const created=new Date().toISOString().replace(/\.\d{3}Z$/,'');
+      const filename=`NTCONS_${el.type.value}_Revit_R8_IFC2X3.ifc`;
+      return [
+        'ISO-10303-21;','HEADER;',
+        `FILE_DESCRIPTION(('ViewDefinition [CoordinationView_V2.0]'),'2;1');`,
+        `FILE_NAME(${ifcText(filename)},${ifcText(created)},(${ifcText('NTCONS Engineering')}),(${ifcText('AS Group')}),${ifcText('NTCONS IFC Export R8')},${ifcText('NTCONS HTML Tool')},'');`,
+        `FILE_SCHEMA(('IFC2X3'));`,'ENDSEC;','DATA;',...data,'ENDSEC;','END-ISO-10303-21;',''
+      ].join('\r\n');
+    }
+    function download(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+    document.getElementById('exportDxf').addEventListener('click',()=>{if(model.error){alert('Hãy sửa kích thước chưa phù hợp trước khi xuất DXF.');return}download(dxf(),`NTCONS_${el.type.value}_3D_R8_R12.dxf`,'application/dxf')});
+    document.getElementById('exportIfc').addEventListener('click',()=>{if(model.error){alert('Hãy sửa kích thước chưa phù hợp trước khi xuất IFC.');return}download(ifc(),`NTCONS_${el.type.value}_Revit_R8_IFC2X3.ifc`,'application/x-step')});
+    document.getElementById('resetValues').addEventListener('click',renderFields);
+    document.getElementById('copyResults').addEventListener('click',async e=>{
+      const matrix=(title,rows,unit,total,totalNote)=>[
+        [title,'','','','',''],
+        ['Bộ phận','Công thức','Đơn vị','Số lượng','Giá trị','Ghi chú'],
+        ...rows.map(r=>[r.name,r.formula,unit,r.qty,n(r.vol),r.note]),
+        ['TỔNG CỘNG','',unit,'',n(total),totalNote]
+      ];
+      const concrete=matrix('BẢNG KHỐI LƯỢNG BÊ TÔNG',model.rows,'m³',model.volume,`Tổng khối lượng bê tông = ${n(model.volume)} m³`);
+      const form=matrix('BẢNG DIỆN TÍCH VÁN KHUÔN',model.formRows,'m²',model.formwork,`Tổng diện tích ván khuôn = ${n(model.formwork)} m²`);
+      const text=[concrete,form].map(a=>a.map(r=>r.join('\t')).join('\n')).join('\n\n');
+      const htmlTable=a=>'<table border="1" style="border-collapse:collapse;font-family:Arial;font-size:11pt">'+a.map((r,ri)=>ri===0?`<tr><td colspan="6" style="padding:5px;border:1px solid #000;font-weight:bold;text-align:center;background:#d9eaf7">${esc(r[0])}</td></tr>`:'<tr>'+r.map(c=>`<td style="padding:5px;border:1px solid #000;${ri===1?'font-weight:bold;':''}">${esc(c)}</td>`).join('')+'</tr>').join('')+'</table>';
+      const html=htmlTable(concrete)+'<br>'+htmlTable(form);
+      try{
+        if(navigator.clipboard&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})])}
+        else{await navigator.clipboard.writeText(text)}
+        const old=e.currentTarget.textContent;e.currentTarget.textContent='Đã sao chép bảng';setTimeout(()=>e.currentTarget.textContent=old,1400);
+      }catch{download(text,'NTCONS_Bang_khoi_luong_R8.tsv','text/tab-separated-values')}
+    });
+    el.ends.addEventListener('change',update);
+    el.type.addEventListener('change',()=>{renderFields();setView('iso')});
+    new ResizeObserver(resize).observe(el.wrap);
+    renderFields();setView('iso');
+  })();
+  </script>
+</body>
+</html>

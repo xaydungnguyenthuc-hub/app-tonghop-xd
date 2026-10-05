@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Thông Tin & Quy Trình Quy Hoạch Cấp Xã</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        gov: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .step-active { border-color: #16a34a; background-color: #f0fdf4; }
+        .step-line::before { content: ''; position: absolute; top: 2rem; left: 2rem; right: -2rem; height: 3px; background: #e2e8f0; z-index: 0; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gov-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gradient-to-tr from-brand-600 to-emerald-400 p-3 rounded-xl shadow-inner text-white text-2xl">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">
+                            QUY TRÌNH QUY HOẠCH CẤP XÃ
+                        </h1>
+                        <p class="text-xs sm:text-sm text-gov-100/80">
+                            Cổng tra cứu, quản lý tiến độ & chỉ tiêu lập Đồ án Quy hoạch xây dựng Xã
+                        </p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3 text-xs sm:text-sm">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        <i class="fa-solid fa-scale-balanced mr-1.5"></i> Chuẩn Quy Hoạch Nông Thôn Mới
+                    </span>
+                    <button onclick="window.print()" class="no-print flex items-center gap-1.5 bg-gov-800 hover:bg-gov-700 text-white px-3 py-2 rounded-lg transition border border-gov-700">
+                        <i class="fa-solid fa-print"></i>
+                        <span>In Báo Cáo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <nav class="bg-gov-800 border-t border-gov-700/50 no-print">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto custom-scrollbar">
+                <div class="flex space-x-1 py-2" id="nav-tabs">
+                    <button onclick="switchTab('workflow')" id="tab-workflow" class="nav-tab active flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition text-white bg-brand-600 shadow">
+                        <i class="fa-solid fa-sitemap"></i>
+                        <span>1. Sơ Đồ Quy Trình (9 Bước)</span>
+                    </button>
+                    <button onclick="switchTab('tracker')" id="tab-tracker" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition text-slate-300 hover:text-white hover:bg-gov-700">
+                        <i class="fa-solid fa-tasks"></i>
+                        <span>2. Quản Lý Tiến Độ & Hồ Sơ</span>
+                    </button>
+                    <button onclick="switchTab('calculator')" id="tab-calculator" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition text-slate-300 hover:text-white hover:bg-gov-700">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>3. Tra Cứu Chỉ Tiêu & Chi Phí</span>
+                    </button>
+                    <button onclick="switchTab('documents')" id="tab-documents" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition text-slate-300 hover:text-white hover:bg-gov-700">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>4. Văn Bản Pháp Lý & Biểu Mẫu</span>
+                    </button>
+                    <button onclick="switchTab('faq')" id="tab-faq" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition text-slate-300 hover:text-white hover:bg-gov-700">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <span>5. Hỏi Đáp & Giải Đáp</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: WORKFLOW VIEW -->
+        <section id="view-workflow" class="space-y-6">
+            <!-- Hero Summary Card -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-700 font-semibold text-xs tracking-wider uppercase mb-1">
+                            <span class="bg-brand-100 px-2 py-0.5 rounded text-brand-800">Khung Pháp Lý Chuẩn</span>
+                            <span>Luật Quy Hoạch • Luật Xây Dựng • Thông Tư 02/2017/TT-BXD</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Quy Trình 3 Giai Đoạn & 9 Bước Lập Quy Hoạch Xã</h2>
+                        <p class="text-slate-600 mt-1 text-sm max-w-3xl">
+                            Hướng dẫn toàn diện về trình tự, thủ tục lập, thẩm định, phê duyệt và quản lý quy hoạch xây dựng xã nông thôn mới. Nhấp vào từng bước bên dưới để xem chi tiết căn cứ, thời gian, cơ quan chủ trì và sản phẩm bàn giao.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full lg:w-auto">
+                        <div class="bg-slate-100 p-3 rounded-xl flex items-center space-x-3 w-full lg:w-auto">
+                            <div class="bg-gov-600 text-white p-2.5 rounded-lg text-xl">
+                                <i class="fa-regular fa-clock"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500 font-medium">Tổng Thời Gian Dự Kiến</div>
+                                <div class="text-base font-bold text-slate-800">08 - 12 Tháng</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase Filter Tabs -->
+                <div class="flex flex-wrap gap-2 mt-6 border-t border-slate-100 pt-4">
+                    <button onclick="filterPhase('all')" id="phase-btn-all" class="phase-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-white shadow-sm">
+                        Tất Cả (9 Bước)
+                    </button>
+                    <button onclick="filterPhase('1')" id="phase-btn-1" class="phase-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        Giai Đoạn 1: Lập Nhiệm Vụ Quy Hoạch (Bước 1 - 3)
+                    </button>
+                    <button onclick="filterPhase('2')" id="phase-btn-2" class="phase-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        Giai Đoạn 2: Lập Đồ Án Quy Hoạch (Bước 4 - 6)
+                    </button>
+                    <button onclick="filterPhase('3')" id="phase-btn-3" class="phase-btn px-4 py-2 rounded-xl text-xs font-semibold transition bg-slate-100 text-slate-700 hover:bg-slate-200">
+                        Giai Đoạn 3: Thẩm Định, Phê Duyệt & Công Bố (Bước 7 - 9)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Process Step Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="workflow-grid">
+                <!-- Steps will be injected dynamically via JS -->
+            </div>
+
+            <!-- Detailed Step Inspector Drawer / Modal Area -->
+            <div id="step-detail-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100">
+                    <div id="step-modal-content" class="p-6">
+                        <!-- Dynamic Content injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PROGRESS TRACKER VIEW -->
+        <section id="view-tracker" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Bảng Theo Dõi Tiến Độ Lập Quy Hoạch Cấp Xã</h2>
+                        <p class="text-slate-600 text-sm mt-1">Đơn vị: UBND Xã / Ban Quản Lý Quy Hoạch. Đánh dấu tích để cập nhật tỷ lệ hoàn thành dự án.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="resetTrackerProgress()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg font-medium transition">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Đặt Lại Tiến Độ
+                        </button>
+                        <button onclick="exportTrackerPDF()" class="text-xs bg-brand-600 hover:bg-brand-700 text-white px-3 py-2 rounded-lg font-medium transition shadow-sm">
+                            <i class="fa-solid fa-file-export mr-1"></i> Xuất Báo Cáo 進度
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar Summary -->
+                <div class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-bold text-slate-800">Tổng Tiến Độ Hoàn Thành</span>
+                        <span id="tracker-percentage" class="text-xl font-extrabold text-brand-600">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-3.5 overflow-hidden">
+                        <div id="tracker-progress-bar" class="bg-gradient-to-r from-brand-500 to-emerald-600 h-3.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-4 text-center text-xs text-slate-600 font-medium">
+                        <div class="bg-white p-2 rounded border border-slate-200">Giai Đoạn 1: <span id="p1-status" class="font-bold text-slate-900">0/3 bước</span></div>
+                        <div class="bg-white p-2 rounded border border-slate-200">Giai Đoạn 2: <span id="p2-status" class="font-bold text-slate-900">0/3 bước</span></div>
+                        <div class="bg-white p-2 rounded border border-slate-200">Giai Đoạn 3: <span id="p3-status" class="font-bold text-slate-900">0/3 bước</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Checklists Breakdown -->
+            <div id="tracker-checklists-container" class="space-y-6">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- TAB 3: CALCULATOR & SPECS VIEW -->
+        <section id="view-calculator" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Calculator 1: Land Allocation Norms (QCVN 01:2021/BXD) -->
+                <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-brand-700 font-semibold text-xs uppercase mb-1">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Công Cụ Tính Toán Chỉ Tiêu Đất Đai Xã</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Tính Toán Chỉ Tiêu Sử Dụng Đất Theo Quy Chuẩn (QCVN)</h3>
+                        <p class="text-xs text-slate-600 mb-6">
+                            Nhập quy mô dân số và diện tích xã để tự động ước tính nhu cầu đất ở, đất công trình công cộng, hạ tầng kỹ thuật và cây xanh theo tiêu chuẩn quy hoạch nông thôn.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Dân Số Hiện Tại (Người)</label>
+                                <input type="number" id="calc-pop-current" value="6500" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Dân Số Dự Báo Đến Năm Tới (Người)</label>
+                                <input type="number" id="calc-pop-future" value="8500" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Tổng Diện Tích Tự Nhiên Xã (ha)</label>
+                                <input type="number" id="calc-area-total" value="1200" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Vùng Địa Lý / Địa Hình</label>
+                                <select id="calc-region" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="dongbang">Đồng Bằng (Chỉ tiêu đất ở: 25 - 40 m²/người)</option>
+                                    <option value="midland">Trung Du (Chỉ tiêu đất ở: 40 - 60 m²/người)</option>
+                                    <option value="mountain">Miền Núi (Chỉ tiêu đất ở: 60 - 90 m²/người)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="calculatePlanningNorms()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Tính Toán Chỉ Tiêu Bắt Buộc</span>
+                        </button>
+                    </div>
+
+                    <!-- Output Table -->
+                    <div id="norms-output-container" class="mt-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-sm text-slate-800 mb-3 border-b pb-2 flex justify-between items-center">
+                            <span>Kết Quả Ước Tính Nhu Cầu Đất Đai Đồ Án</span>
+                            <span class="text-xs text-brand-600 font-normal">Đơn vị: ha (Héc-ta)</span>
+                        </h4>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-200/60">
+                                <span class="text-slate-600">1. Đất ở nông thôn mới (Dự kiến):</span>
+                                <span id="out-land-residential" class="font-bold text-slate-900">0 ha</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-200/60">
+                                <span class="text-slate-600">2. Đất công trình công cộng xã (Trường học, Y tế, Văn hóa):</span>
+                                <span id="out-land-public" class="font-bold text-slate-900">0 ha</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-200/60">
+                                <span class="text-slate-600">3. Đất cây xanh, thể dục thể thao công cộng:</span>
+                                <span id="out-land-green" class="font-bold text-slate-900">0 ha</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-200/60">
+                                <span class="text-slate-600">4. Đất giao thông & hạ tầng kỹ thuật:</span>
+                                <span id="out-land-infra" class="font-bold text-slate-900">0 ha</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator 2: Budget & Cost Estimation -->
+                <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 text-gov-700 font-semibold text-xs uppercase mb-1">
+                            <i class="fa-solid fa-coins"></i>
+                            <span>Dự Toán Chi Phí Quy Hoạch</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Ước Tính Chi Phí Lập Đồ Án Quy Hoạch</h3>
+                        <p class="text-xs text-slate-600 mb-6">
+                            Ước tính kinh phí theo định mức căn cứ Thông tư của Bộ Xây dựng cho công tác lập quy hoạch xây dựng xã.
+                        </p>
+
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Diện Tích Quy Hoạch (ha)</label>
+                                <input type="number" id="cost-area" value="1200" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-gov-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Loại Quy Hoạch</label>
+                                <select id="cost-type" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-gov-500 focus:outline-none">
+                                    <option value="new">Quy hoạch chung xây dựng xã mới</option>
+                                    <option value="adjust">Điều chỉnh tổng thể quy hoạch xã</option>
+                                    <option value="detail">Quy hoạch chi tiết điểm dân cư nông thôn</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="calculatePlanningBudget()" class="w-full bg-gov-700 hover:bg-gov-800 text-white font-bold py-2.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Tính Kinh Phí Dự Kiến</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-6 bg-gov-50 p-4 rounded-xl border border-gov-100">
+                        <div class="text-xs text-gov-800 font-medium mb-1">Tổng Chi Phí Lập Quy Hoạch Ước Tính:</div>
+                        <div id="cost-total-result" class="text-2xl font-extrabold text-gov-900">0 VNĐ</div>
+                        <p class="text-[11px] text-gov-700 mt-2">
+                            * Gồm chi phí lập đồ án tư vấn, chi phí thẩm định, khảo sát địa hình, lấy ý kiến cộng đồng và công bố quy hoạch.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 4: LEGAL DOCUMENTS & TEMPLATES VIEW -->
+        <section id="view-documents" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">Thư Viện Văn Bản Pháp Lý & Biểu Mẫu</h2>
+                        <p class="text-slate-600 text-sm mt-1">Các căn cứ pháp luật hiện hành và mẫu Tờ trình, Quyết định, Biên bản trong quy hoạch xã</p>
+                    </div>
+                    <div class="w-full sm:w-72">
+                        <input type="text" id="doc-search-input" onkeyup="filterDocs()" placeholder="Tìm kiếm văn bản, biểu mẫu..." class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Document List Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docs-list">
+                    <!-- Legal Documents Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: FAQ VIEW -->
+        <section id="view-faq" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Hỏi Đáp Về Quy Trình Quy Hoạch Cấp Xã</h2>
+                <p class="text-slate-600 text-sm mb-6">Giải đáp các vướng mắc phổ biến của chính quyền xã, tư vấn và người dân trong quá trình lập, thẩm định quy hoạch xã.</p>
+
+                <div class="space-y-4" id="faq-accordion">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-2">
+            <p class="font-semibold text-slate-300">CỔNG THÔNG TIN QUY TRÌNH QUY HOẠCH CẤP XÃ © 2026</p>
+            <p>Hệ thống hỗ trợ tra cứu quy chuẩn, quản lý tiến độ và trình tự lập Đồ án Quy hoạch Xây dựng Xã theo pháp luật Việt Nam</p>
+            <p class="text-slate-500 pt-2">Căn cứ: Luật Quy hoạch 2017 • Luật Xây dựng • Luật Quy hoạch Đô thị & Nông thôn • Thông tư 02/2017/TT-BXD</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data Structures for the 9 Steps of Commune Planning
+        const PLAN_STEPS = [
+            {
+                id: 1,
+                phase: 1,
+                title: "Bước 1: Khảo sát, thu thập số liệu & Đánh giá hiện trạng xã",
+                desc: "Thành lập Tổ công tác, điều tra điều kiện tự nhiên, kinh tế - xã hội, hiện trạng sử dụng đất, hạ tầng kỹ thuật & xã hội.",
+                lead: "UBND Cấp Xã / Đơn vị Tư vấn",
+                duration: "15 - 30 Ngày",
+                documents: [
+                    "Báo cáo tổng hợp số liệu hiện trạng kinh tế - xã hội xã",
+                    "Bản đồ hiện trạng sử dụng đất & hạ tầng kỹ thuật",
+                    "Đánh giá việc thực hiện đồ án quy hoạch giai đoạn trước"
+                ],
+                legal: "Điều 29 Luật Xây dựng; Thông tư 02/2017/TT-BXD",
+                output: "Báo cáo Đánh giá Hiện trạng Xã & Số liệu Đầu vào"
+            },
+            {
+                id: 2,
+                phase: 1,
+                title: "Bước 2: Lập và Trình duyệt Nhiệm vụ Quy hoạch Xã",
+                desc: "Xác định mục tiêu quy hoạch, dự báo dân số, định hướng không gian, lập Tờ trình và dự thảo Nhiệm vụ Quy hoạch.",
+                lead: "UBND Cấp Xã",
+                duration: "30 - 45 Ngày",
+                documents: [
+                    "Tờ trình đề nghị phê duyệt Nhiệm vụ Quy hoạch",
+                    "Thuyết minh Nhiệm vụ quy hoạch xây dựng xã",
+                    "Dự thảo Quyết định phê duyệt Nhiệm vụ Quy hoạch",
+                    "Sơ đồ vị trí, ranh giới lập quy hoạch"
+                ],
+                legal: "Thông tư 02/2017/TT-BXD; Nghị định 44/2015/NĐ-CP",
+                output: "Hồ sơ Nhiệm vụ Quy hoạch Xã trình UBND Huyện"
+            },
+            {
+                id: 3,
+                phase: 1,
+                title: "Bước 3: Thẩm định & Phê duyệt Nhiệm vụ Quy hoạch Xã",
+                desc: "Phòng Quản lý Đô thị / Kinh tế - Hạ tầng cấp Huyện thẩm định; UBND Huyện ban hành Quyết định phê duyệt Nhiệm vụ.",
+                lead: "Phòng KT-HT Huyện / UBND Cấp Huyện",
+                duration: "15 - 20 Ngày",
+                documents: [
+                    "Báo cáo thẩm định Nhiệm vụ Quy hoạch của Phòng chuyên môn",
+                    "Quyết định của UBND Huyện phê duyệt Nhiệm vụ Quy hoạch xã"
+                ],
+                legal: "Điều 32 Luật Xây dựng",
+                output: "Quyết định Phê duyệt Nhiệm vụ Quy hoạch Xã"
+            },
+            {
+                id: 4,
+                phase: 2,
+                title: "Bước 4: Lựa chọn Đơn vị Tư vấn & Triển khai Lập Đồ án",
+                desc: "Lựa chọn nhà thầu tư vấn có đủ chứng chỉ năng lực hành nghề theo pháp luật xây dựng để lập Đồ án Quy hoạch.",
+                lead: "UBND Cấp Xã",
+                duration: "30 - 60 Ngày",
+                documents: [
+                    "Kế hoạch lựa chọn nhà thầu tư vấn quy hoạch",
+                    "Hợp đồng tư vấn lập Đồ án Quy hoạch xây dựng xã",
+                    "Đo đạc bổ sung bản đồ địa hình tỷ lệ 1/5000 - 1/2000"
+                ],
+                legal: "Luật Đấu thầu; Luật Xây dựng",
+                output: "Hợp đồng Tư vấn & Bản đồ Địa hình Chuẩn"
+            },
+            {
+                id: 5,
+                phase: 2,
+                title: "Bước 5: Lấy ý kiến Cộng đồng Dân cư & Cơ quan Liên quan",
+                desc: "Trưng bày công khai bản vẽ Đồ án quy hoạch tại trụ sở UBND xã, Nhà văn hóa thôn và tổ chức lấy ý kiến đại diện dân cư.",
+                lead: "UBND Cấp Xã / Mặt Trận Tổ Quốc Xã",
+                duration: "Tối thiểu 30 Ngày",
+                documents: [
+                    "Biên bản niêm yết công khai Đồ án Quy hoạch",
+                    "Phiếu góp ý kiến của cộng đồng dân cư các thôn",
+                    "Báo cáo tổng hợp, giải trình, tiếp thu ý kiến đóng góp"
+                ],
+                legal: "Điều 16, 17 Luật Xây dựng",
+                output: "Báo cáo Tổng hợp & Tiếp thu Ý kiến Dân cư"
+            },
+            {
+                id: 6,
+                phase: 2,
+                title: "Bước 6: Hoàn thiện Hồ sơ Đồ án Quy hoạch Xã",
+                desc: "Đơn vị tư vấn phối hợp UBND xã chỉnh sửa, hoàn thiện Thuyết minh, Bản vẽ, Quy định quản lý theo góp ý.",
+                lead: "Đơn vị Tư vấn / UBND Cấp Xã",
+                duration: "15 - 20 Ngày",
+                documents: [
+                    "Báo cáo Thuyết minh tổng hợp Đồ án Quy hoạch xã",
+                    "Hệ thống Bản vẽ quy hoạch (Sử dụng đất, Hạ tầng kỹ thuật)",
+                    "Dự thảo Quy định quản lý theo đồ án quy hoạch"
+                ],
+                legal: "Thông tư 02/2017/TT-BXD",
+                output: "Bộ Hồ sơ Đồ án Quy hoạch Hoàn chỉnh"
+            },
+            {
+                id: 7,
+                phase: 3,
+                title: "Bước 7: Thẩm định Đồ án Quy hoạch Xã",
+                desc: "Trình Phòng Kinh tế & Hạ tầng Huyện thẩm định, lấy ý kiến các Sở, Bàn ngành liên quan nếu cần thiết.",
+                lead: "Phòng KT-HT Huyện / Hội đồng Thẩm định",
+                duration: "20 - 25 Ngày",
+                documents: [
+                    "Tờ trình của UBND xã đề nghị thẩm định đồ án",
+                    "Báo cáo thẩm định của Phòng Kinh tế & Hạ tầng Huyện",
+                    "Văn bản góp ý của các Phòng, Ban cấp Huyện"
+                ],
+                legal: "Điều 33 Luật Xây dựng",
+                output: "Báo cáo Thẩm định Đồ án Quy hoạch Xã"
+            },
+            {
+                id: 8,
+                phase: 3,
+                title: "Bước 8: Trình Phê duyệt & UBND Huyện Ban hành Quyết định",
+                desc: "UBND xã trình UBND Huyện phê duyệt Đồ án Quy hoạch xây dựng xã kèm theo Quy định quản lý.",
+                lead: "UBND Cấp Huyện",
+                duration: "10 - 15 Ngày",
+                documents: [
+                    "Quyết định của UBND Huyện phê duyệt Đồ án Quy hoạch xã",
+                    "Quy định quản lý theo Đồ án quy hoạch được ban hành"
+                ],
+                legal: "Điều 34 Luật Xây dựng",
+                output: "Quyết định Phê duyệt Đồ án Quy hoạch Xã"
+            },
+            {
+                id: 9,
+                phase: 3,
+                title: "Bước 9: Công bố Quy hoạch, Cắm mốc Ranh giới & Quản lý",
+                desc: "Công bố công khai đồ án trong thời hạn 15 ngày kể từ ngày phê duyệt, cắm mốc giới ngoài thực địa và quản lý xây dựng.",
+                lead: "UBND Cấp Xã",
+                duration: "15 Ngày (Công bố) & Liên tục",
+                documents: [
+                    "Kế hoạch tổ chức Lễ công bố quy hoạch xã",
+                    "Hồ sơ mốc giới quy hoạch ngoài thực địa",
+                    "Sổ theo dõi cấp phép & quản lý trật tự xây dựng"
+                ],
+                legal: "Điều 40, 44 Luật Xây dựng",
+                output: "Mốc Giới Thực Địa & Đồ án Công bố Công khai"
+            }
+        ];
+
+        // Documents & Templates Data
+        const LEGAL_DOCS = [
+            {
+                title: "Luật Quy hoạch số 21/2017/QH14",
+                cat: "Luật",
+                code: "21/2017/QH14",
+                desc: "Quy định hệ thống quy hoạch quốc gia, tỉnh, huyện và quy định chung."
+            },
+            {
+                title: "Luật Xây dựng số 50/2014/QH13 & Luật sửa đổi 62/2020/QH14",
+                cat: "Luật",
+                code: "50/2014/QH13",
+                desc: "Quy định trực tiếp về việc lập, thẩm định, phê duyệt quy hoạch xây dựng xã."
+            },
+            {
+                title: "Luật Quy hoạch Đô thị và Nông thôn 2024",
+                cat: "Luật",
+                code: "Luật mới 2024",
+                desc: "Thống nhất quy định quy hoạch không gian đô thị và nông thôn."
+            },
+            {
+                title: "Thông tư 02/2017/TT-BXD",
+                cat: "Thông tư",
+                code: "02/2017/TT-BXD",
+                desc: "Hướng dẫn chi tiết về việc lập, thẩm định, phê duyệt quy hoạch xây dựng xã."
+            },
+            {
+                title: "QCVN 01:2021/BXD - Quy chuẩn Kỹ thuật Quốc gia về Quy hoạch Xây dựng",
+                cat: "Quy chuẩn",
+                code: "QCVN 01:2021/BXD",
+                desc: "Quy định mật độ, chỉ tiêu sử dụng đất ở, đất hạ tầng, đất công cộng xã."
+            },
+            {
+                title: "[Mẫu Tờ trình] Đề nghị phê duyệt Nhiệm vụ Quy hoạch Xã",
+                cat: "Biểu mẫu",
+                code: "BM-01/QH",
+                desc: "Mẫu Tờ trình do UBND xã lập gửi UBND Huyện và Phòng Kinh tế - Hạ tầng."
+            },
+            {
+                title: "[Mẫu Biên bản] Lấy ý kiến Cộng đồng Dân cư về Đồ án Quy hoạch",
+                cat: "Biểu mẫu",
+                code: "BM-02/QH",
+                desc: "Mẫu biên bản tham vấn ý kiến nhân dân tại các thôn."
+            },
+            {
+                title: "[Mẫu Quyết định] Phê duyệt Đồ án Quy hoạch Xây dựng Xã",
+                cat: "Biểu mẫu",
+                code: "BM-03/QH",
+                desc: "Dự thảo Quyết định trình UBND Huyện ban hành phê duyệt."
+            }
+        ];
+
+        // FAQ Data
+        const FAQ_ITEMS = [
+            {
+                q: "Cơ quan nào có thẩm quyền phê duyệt Nhiệm vụ và Đồ án Quy hoạch xây dựng xã?",
+                a: "Theo quy định tại Luật Xây dựng, UBND Cấp Huyện là cơ quan có thẩm quyền phê duyệt Nhiệm vụ và Đồ án quy hoạch xây dựng xã trên địa bàn. Phòng Kinh tế và Hạ tầng (hoặc Phòng Quản lý Đô thị) là cơ quan chủ trì thẩm định."
+            },
+            {
+                q: "Thời gian lấy ý kiến cộng đồng dân cư về đồ án quy hoạch xã là bao nhiêu ngày?",
+                a: "Thời gian lấy ý kiến cộng đồng dân cư về Đồ án quy hoạch xã tối thiểu là 30 ngày kể từ ngày niêm yết công khai hồ sơ đồ án tại trụ sở UBND xã và Nhà văn hóa các thôn."
+            },
+            {
+                q: "Quy hoạch chung xây dựng xã có thời hạn quy hoạch bao nhiêu năm?",
+                a: "Thời hạn quy hoạch đối với Quy hoạch chung xây dựng xã thường là từ 10 đến 20 năm, có định hướng đến 20 năm."
+            },
+            {
+                q: "Khi nào cần phải thực hiện điều chỉnh quy hoạch xây dựng xã?",
+                a: "Khi có sự điều chỉnh về quy hoạch cấp trên (Quy hoạch tỉnh, quy hoạch vùng huyện), thay đổi địa giới hành chính xã, hoặc khi có biến động lớn về điều kiện tự nhiên, kinh tế - xã hội ảnh hưởng đến định hướng phát triển của xã."
+            }
+        ];
+
+        // State Management
+        let completedTasks = JSON.parse(localStorage.getItem('xa_planning_completed')) || [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorkflowGrid('all');
+            renderTrackerChecklist();
+            renderLegalDocs();
+            renderFAQ();
+            calculatePlanningNorms();
+            calculatePlanningBudget();
+        });
+
+        // Tab Switching Function
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active', 'bg-brand-600', 'text-white', 'shadow');
+                btn.classList.add('text-slate-300', 'hover:bg-gov-700');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-brand-600', 'text-white', 'shadow');
+                activeBtn.classList.remove('text-slate-300', 'hover:bg-gov-700');
+            }
+        }
+
+        function renderWorkflowGrid(phaseFilter) {
+            const grid = document.getElementById('workflow-grid');
+            grid.innerHTML = '';
+
+            const filteredSteps = phaseFilter === 'all' 
+                ? PLAN_STEPS 
+                : PLAN_STEPS.filter(s => s.phase === parseInt(phaseFilter));
+
+            filteredSteps.forEach(step => {
+                const phaseBadges = {
+                    1: { name: "Giai Đoạn 1: Lập Nhiệm Vụ", bg: "bg-blue-100 text-blue-800 border-blue-200" },
+                    2: { name: "Giai Đoạn 2: Lập Đồ Án", bg: "bg-amber-100 text-amber-800 border-amber-200" },
+                    3: { name: "Giai Đoạn 3: Thẩm Định & Phê Duyệt", bg: "bg-emerald-100 text-emerald-800 border-emerald-200" }
+                };
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition duration-200 flex flex-col justify-between cursor-pointer group";
+                card.onclick = () => openStepModal(step.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${phaseBadges[step.phase].bg}">
+                                ${phaseBadges[step.phase].name}
+                            </span>
+                            <span class="text-xs font-semibold text-slate-500 flex items-center">
+                                <i class="fa-regular fa-clock mr-1 text-slate-400"></i> ${step.duration}
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition mb-2">
+                            ${step.title}
+                        </h3>
+                        <p class="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">
+                            ${step.desc}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 text-xs flex justify-between items-center text-slate-500">
+                        <span class="truncate max-w-[200px]"><i class="fa-solid fa-user-tie mr-1"></i> ${step.lead}</span>
+                        <span class="text-brand-600 font-semibold group-hover:translate-x-1 transition">Chi tiết <i class="fa-solid fa-arrow-right ml-0.5"></i></span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterPhase(phase) {
+            document.querySelectorAll('.phase-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+            const activeBtn = document.getElementById(`phase-btn-${phase}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                activeBtn.classList.add('bg-slate-900', 'text-white');
+            }
+            renderWorkflowGrid(phase);
+        }
+
+        function openStepModal(stepId) {
+            const step = PLAN_STEPS.find(s => s.id === stepId);
+            if (!step) return;
+
+            const modal = document.getElementById('step-detail-modal');
+            const container = document.getElementById('step-modal-content');
+
+            container.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md border border-brand-200">
+                            Thủ Tục Quy Hoạch Cấp Xã - Bước ${step.id}/9
+                        </span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-2">${step.title}</h2>
+                    </div>
+                    <button onclick="closeStepModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4 text-sm text-slate-700">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+                        <h4 class="font-bold text-slate-900 mb-1">Mô tả nội dung công việc:</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${step.desc}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-blue-50/60 p-3 rounded-lg border border-blue-100">
+                            <span class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i> Cơ Quan Chủ Trì:</span>
+                            <span class="text-blue-800">${step.lead}</span>
+                        </div>
+                        <div class="bg-amber-50/60 p-3 rounded-lg border border-amber-100">
+                            <span class="font-bold text-amber-900 block mb-1"><i class="fa-regular fa-clock mr-1"></i> Thời Gian Thực Hiện Dự Kiến:</span>
+                            <span class="text-amber-800">${step.duration}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-900 mb-2 text-xs uppercase tracking-wider">Thành Phần Hồ Sơ / Sản Phẩm Yêu Cầu:</h4>
+                        <ul class="space-y-1.5 text-xs text-slate-600">
+                            ${step.documents.map(doc => `<li class="flex items-start"><i class="fa-solid fa-check text-brand-600 mr-2 mt-0.5"></i> ${doc}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                        <div class="text-slate-500">
+                            <i class="fa-solid fa-scale-balanced mr-1"></i> <strong>Căn cứ pháp lý:</strong> ${step.legal}
+                        </div>
+                        <button onclick="closeStepModal(); switchTab('tracker');" class="bg-brand-600 hover:bg-brand-700 text-white font-medium px-3.5 py-2 rounded-lg transition">
+                            Chuyển Đền Bảng Tiến Độ
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeStepModal() {
+            document.getElementById('step-detail-modal').classList.add('hidden');
+        }
+
+        function renderTrackerChecklist() {
+            const container = document.getElementById('tracker-checklists-container');
+            container.innerHTML = '';
+
+            PLAN_STEPS.forEach(step => {
+                const isChecked = completedTasks.includes(step.id);
+
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-xl p-4 border transition ${isChecked ? 'border-brand-500 bg-brand-50/30' : 'border-slate-200'}`;
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="check-step-${step.id}" ${isChecked ? 'checked' : ''} onchange="toggleTask(${step.id})" class="mt-1 h-5 w-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
+                        <div class="flex-1">
+                            <label for="check-step-${step.id}" class="font-bold text-slate-900 text-sm cursor-pointer hover:text-brand-700 transition">
+                                ${step.title}
+                            </label>
+                            <p class="text-xs text-slate-500 mt-0.5">${step.desc}</p>
+                            <div class="flex flex-wrap gap-3 mt-2 text-[11px] text-slate-500">
+                                <span><i class="fa-solid fa-user mr-1"></i> ${step.lead}</span>
+                                <span><i class="fa-regular fa-clock mr-1"></i> ${step.duration}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateTrackerSummary();
+        }
+
+        function toggleTask(stepId) {
+            if (completedTasks.includes(stepId)) {
+                completedTasks = completedTasks.filter(id => id !== stepId);
+            } else {
+                completedTasks.push(stepId);
+            }
+            localStorage.setItem('xa_planning_completed', JSON.stringify(completedTasks));
+            renderTrackerChecklist();
+        }
+
+        function resetTrackerProgress() {
+            if (confirm('Bạn có chắc chắn muốn đặt lại tiến độ về 0%?')) {
+                completedTasks = [];
+                localStorage.setItem('xa_planning_completed', JSON.stringify([]));
+                renderTrackerChecklist();
+            }
+        }
+
+        function updateTrackerSummary() {
+            const total = PLAN_STEPS.length;
+            const completed = completedTasks.length;
+            const percentage = Math.round((completed / total) * 100);
+
+            document.getElementById('tracker-percentage').innerText = `${percentage}%`;
+            document.getElementById('tracker-progress-bar').style.width = `${percentage}%`;
+
+            const p1Count = completedTasks.filter(id => id <= 3).length;
+            const p2Count = completedTasks.filter(id => id >= 4 && id <= 6).length;
+            const p3Count = completedTasks.filter(id => id >= 7).length;
+
+            document.getElementById('p1-status').innerText = `${p1Count}/3 bước`;
+            document.getElementById('p2-status').innerText = `${p2Count}/3 bước`;
+            document.getElementById('p3-status').innerText = `${p3Count}/3 bước`;
+        }
+
+        function exportTrackerPDF() {
+            window.print();
+        }
+
+        function calculatePlanningNorms() {
+            const popFuture = parseFloat(document.getElementById('calc-pop-future').value) || 0;
+            const region = document.getElementById('calc-region').value;
+
+            // Standard land allocation per capita (m²/person)
+            let resNorm = 30; // default dongbang
+            if (region === 'midland') resNorm = 50;
+            if (region === 'mountain') resNorm = 75;
+
+            // Calculations in ha
+            const residentialArea = (popFuture * resNorm) / 10000;
+            const publicArea = (popFuture * 5) / 10000; // 5m²/person minimum for public facilities
+            const greenArea = (popFuture * 4) / 10000;  // 4m²/person for parks/sports
+            const infraArea = (popFuture * 12) / 10000; // 12m²/person for transport & technical infrastructure
+
+            document.getElementById('out-land-residential').innerText = `${residentialArea.toFixed(2)} ha (${resNorm} m²/người)`;
+            document.getElementById('out-land-public').innerText = `${publicArea.toFixed(2)} ha (Tối thiểu 5 m²/người)`;
+            document.getElementById('out-land-green').innerText = `${greenArea.toFixed(2)} ha (Tối thiểu 4 m²/người)`;
+            document.getElementById('out-land-infra').innerText = `${infraArea.toFixed(2)} ha (Tối thiểu 12 m²/người)`;
+        }
+
+        function calculatePlanningBudget() {
+            const area = parseFloat(document.getElementById('cost-area').value) || 0;
+            const type = document.getElementById('cost-type').value;
+
+            // Base rate per ha (rough standard index for estimation)
+            let baseRate = 350000; // VNĐ/ha for general planning
+            if (type === 'adjust') baseRate = 250000;
+            if (type === 'detail') baseRate = 1200000;
+
+            let estimatedCost = area * baseRate;
+            if (estimatedCost < 250000000) estimatedCost = 250000000; // Minimum baseline fee
+
+            document.getElementById('cost-total-result').innerText = estimatedCost.toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function renderLegalDocs() {
+            const container = document.getElementById('docs-list');
+            container.innerHTML = '';
+
+            LEGAL_DOCS.forEach(doc => {
+                const card = document.createElement('div');
+                card.className = "p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 transition doc-card";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-gov-100 text-gov-800">${doc.cat}</span>
+                        <span class="text-xs font-mono text-slate-500">${doc.code}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm mt-2">${doc.title}</h4>
+                    <p class="text-xs text-slate-600 mt-1">${doc.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterDocs() {
+            const query = document.getElementById('doc-search-input').value.toLowerCase();
+            document.querySelectorAll('.doc-card').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+
+        function renderFAQ() {
+            const container = document.getElementById('faq-accordion');
+            container.innerHTML = '';
+
+            FAQ_ITEMS.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = "border border-slate-200 rounded-xl overflow-hidden";
+                el.innerHTML = `
+                    <button onclick="toggleFAQ(${index})" class="w-full text-left p-4 bg-slate-50 hover:bg-slate-100 transition font-bold text-sm text-slate-800 flex justify-between items-center">
+                        <span>${item.q}</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform" id="faq-icon-${index}"></i>
+                    </button>
+                    <div id="faq-answer-${index}" class="hidden p-4 text-xs text-slate-600 border-t border-slate-200 bg-white leading-relaxed">
+                        ${item.a}
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function toggleFAQ(index) {
+            const ans = document.getElementById(`faq-answer-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            if (ans.classList.contains('hidden')) {
+                ans.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                ans.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+    </script>
+</body>
+</html>

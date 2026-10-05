@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NTCONS Group | Bể BTCT 3D – R15 Maps + 3D Control</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --navy:#0b2a4a;
+    --navy2:#123c66;
+    --cyan:#00a7b5;
+    --line:#d9e2ea;
+    --text:#111827;
+    --muted:#64748b;
+    --panel:#ffffff;
+    --bg:#f5f8fb;
+    --accent:#0f6fa8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
+  body{overflow:hidden}
+  .app{height:100vh;display:grid;grid-template-columns:330px 1fr}
+  .sidebar{
+    background:#fff;border-right:1px solid var(--line);padding:16px 15px 18px;
+    overflow:auto;z-index:5;box-shadow:0 0 24px rgba(15,23,42,.05)
+  }
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .logo{
+    width:42px;height:42px;border:2px solid var(--navy);border-radius:9px;display:grid;place-items:center;
+    font-weight:800;color:var(--navy);letter-spacing:-1px
+  }
+  .brand h1{font-size:15px;margin:0;color:var(--navy);letter-spacing:.2px}
+  .brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+  .section{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+  .section-title{font-size:12px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:7px}
+  label{font-size:11px;color:#334155;font-weight:700}
+  .input-wrap{position:relative}
+  input[type=number]{
+    width:100%;height:34px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;padding:0 42px 0 9px;
+    font-size:13px;color:#0f172a;outline:none
+  }
+  input[type=number]:focus{border-color:#4989b8;box-shadow:0 0 0 2px rgba(73,137,184,.12)}
+  .unit{position:absolute;right:9px;top:9px;font-size:10px;color:#64748b}
+  .checks{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px}
+  .check{
+    border:1px solid var(--line);border-radius:7px;padding:7px 8px;display:flex;gap:7px;align-items:center;
+    font-size:11px;background:#fafcfe
+  }
+  .check input{accent-color:var(--navy)}
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+  button{
+    border:1px solid #cbd5e1;background:#ffffff;color:#1f3b53;border-radius:9px;height:34px;font-size:11px;
+    font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(15,23,42,.03);transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s ease
+  }
+  button:hover{background:#f2f8fc;border-color:#9dbfd6;box-shadow:0 2px 6px rgba(15,23,42,.06)}
+  button:active{transform:translateY(1px)}
+  button.primary{background:#eaf4fb;color:#0b4f78;border-color:#9fc8df;box-shadow:0 1px 3px rgba(15,78,120,.08)}
+  button.primary:hover{background:#dceef9;border-color:#79b1d2}
+  .views{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .views button{padding:0 4px}
+  .metric{
+    display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px dashed #dbe3ea;padding:6px 0;font-size:11px
+  }
+  .metric b{color:var(--navy)}
+  .note{
+    margin-top:9px;font-size:10.5px;line-height:1.45;color:#475569;background:#f8fafc;border-left:3px solid var(--navy);
+    padding:8px 9px;border-radius:0 6px 6px 0
+  }
+
+  .stage{position:relative;min-width:0;overflow:auto;background:linear-gradient(180deg,#f8fbfd 0%,#eef4f8 100%)}
+  .viewer{position:relative;height:68vh;min-height:560px;border-bottom:1px solid #d8e1e8}
+  #canvasWrap{position:absolute;inset:0}
+  canvas{display:block;width:100%;height:100%}
+  .topbar{
+    position:absolute;left:18px;right:18px;top:14px;display:flex;justify-content:space-between;align-items:flex-start;
+    pointer-events:none
+  }
+  .title-card,.status-card{
+    pointer-events:auto;background:rgba(255,255,255,.93);border:1px solid rgba(203,213,225,.85);
+    box-shadow:0 5px 18px rgba(15,23,42,.08);border-radius:10px;padding:10px 12px;backdrop-filter:blur(8px)
+  }
+  .title-card strong{display:block;color:var(--navy);font-size:13px}
+  .title-card span{display:block;color:#64748b;font-size:10.5px;margin-top:3px}
+  .status-card{font-size:10.5px;line-height:1.45;color:#334155;text-align:right}
+  .topbar-right{display:flex;gap:10px;align-items:flex-start;pointer-events:auto}
+  .quick-map-btn{min-width:58px;height:36px;padding:0 12px;border-radius:9px;border:1px solid #b8cede;background:rgba(255,255,255,.97);box-shadow:0 3px 12px rgba(15,23,42,.07);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;letter-spacing:.2px;color:#175d86;cursor:pointer}
+  .quick-map-btn:hover{background:#edf7fc;border-color:#84b7d5;box-shadow:0 4px 14px rgba(15,78,120,.10)}
+  .legend{
+    position:absolute;right:16px;bottom:15px;background:rgba(255,255,255,.92);border:1px solid #d8e1e8;
+    padding:9px 10px;border-radius:9px;font-size:10px;line-height:1.7;box-shadow:0 4px 14px rgba(15,23,42,.06)
+  }
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  .help{
+    position:absolute;left:18px;bottom:15px;background:rgba(255,255,255,.92);border:1px solid #d8e1e8;
+    padding:8px 10px;border-radius:9px;font-size:10px;color:#475569
+  }
+
+  .qty-panel{background:#fff;padding:18px 20px 26px;border-top:1px solid #e2e8f0}
+  .qty-head{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:0}
+  .qty-head h2{font-size:15px;color:var(--navy);margin:0}
+  .qty-head p{font-size:10.5px;color:#64748b;margin:3px 0 0}
+  .qty-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid #b8cede;background:#f9fcfe;color:#174e70;border-radius:9px;height:36px;padding:0 12px;font-size:11px;font-weight:800;cursor:pointer}
+  .qty-toggle:hover{background:#f8fafc;border-color:#94a3b8}
+  .qty-toggle .arrow{font-size:12px;transition:transform .18s ease}
+  .qty-panel.open .qty-toggle .arrow{transform:rotate(180deg)}
+  .qty-body{display:none;margin-top:14px}
+  .qty-panel.open .qty-body{display:block}
+  .export-row{display:flex;gap:7px;flex-wrap:wrap}
+  .export-row button{padding:0 12px}
+  .summary-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .summary-card{border:1px solid #dbe4ec;border-radius:9px;padding:11px 12px;background:#f8fbfd}
+  .summary-card span{display:block;font-size:10px;color:#64748b;margin-bottom:4px}
+  .summary-card b{font-size:17px;color:var(--navy)}
+  .qty-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}
+  .table-card{border:1px solid #dbe4ec;border-radius:9px;overflow:hidden;background:white}
+  .table-card h3{font-size:11px;margin:0;padding:9px 10px;background:#eef5fa;color:#0b2a4a;border-bottom:1px solid #dbe4ec;text-transform:uppercase;letter-spacing:.35px}
+  .qtable{width:100%;border-collapse:collapse;font-size:10px}
+  .qtable th,.qtable td{border-bottom:1px solid #e7edf2;padding:7px 7px;text-align:right;white-space:nowrap}
+  .qtable th{background:#f8fafc;color:#475569;font-weight:800}
+  .qtable th:first-child,.qtable td:first-child{text-align:left}
+  .qtable tr.total td{font-weight:800;color:#b91c1c;background:#fffaf9}
+  .qty-note{font-size:10px;line-height:1.45;color:#64748b;margin-top:12px}
+  @media(max-width:1100px){.qty-grid{grid-template-columns:1fr}.summary-cards{grid-template-columns:1fr 1fr 1fr}}
+  @media(max-width:700px){.summary-cards{grid-template-columns:1fr}.qty-head{align-items:flex-start;flex-direction:column}.topbar-right{gap:8px}.quick-map-btn{min-width:52px;height:34px;font-size:10px;padding:0 9px}}
+
+
+  /* Smooth map overlay - direct tiles, no API key */
+  .map-demo{position:absolute;inset:0;z-index:30;display:none;overflow:hidden;background:#dbeafe}
+  .map-demo.active{display:block}
+  #mapRotateShell{position:absolute;inset:-18%;z-index:1;transform-origin:50% 50%;will-change:transform;background:#cbd5e1;overflow:hidden}
+  #smoothMap{position:absolute;inset:0;background:#cbd5e1}
+  #smoothMap .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.80)}
+  #mapCanvasWrap{position:absolute;inset:0;z-index:2;pointer-events:auto}
+  #mapCanvasWrap canvas{width:100%;height:100%;background:transparent}
+  #mapInputLayer{position:absolute;inset:0;z-index:3;pointer-events:none;touch-action:none;cursor:grab}
+  #mapInputLayer.dragging{cursor:grabbing}
+  .map-demo-bar{position:absolute;z-index:5;left:14px;right:14px;top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px 10px;background:rgba(255,255,255,.94);border:1px solid rgba(203,213,225,.95);border-radius:10px;box-shadow:0 7px 22px rgba(15,23,42,.16);backdrop-filter:blur(8px)}
+  .map-demo-bar strong{color:var(--navy);font-size:11px;margin-right:4px}
+  .map-demo-bar label{display:flex;align-items:center;gap:5px;font-size:10px;color:#334155;white-space:nowrap}
+  .map-demo-bar select,.map-demo-bar input[type=text]{height:30px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;padding:0 8px;font-size:10.5px;color:#0f172a;max-width:190px}
+  .map-demo-bar input[type=text]{width:260px;max-width:34vw;min-width:180px}
+  .map-demo-bar input[type=range]{width:86px;accent-color:var(--navy)}
+  .map-demo-bar .mini-val{min-width:34px;font-size:10px;color:#64748b;text-align:right}
+  .map-demo-bar button{height:30px;padding:0 10px}
+  .control-mode-btn{min-width:46px!important;padding:0 10px!important;border-radius:8px!important;font-size:10.5px!important;font-weight:800!important}
+  .control-mode-btn.active{background:#e8f3fb!important;border-color:#8bb8d8!important;color:#0b5f91!important;box-shadow:0 1px 3px rgba(15,78,120,.08)!important}
+  .control-mode-btn:not(.active){background:#fff!important;border-color:#cbd5e1!important;color:#475569!important}
+  .map-demo-bar .spacer{flex:1}
+  .map-search-status{font-size:10px;color:#475569;min-width:70px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .map-crosshair{position:absolute;z-index:4;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%);pointer-events:none;opacity:.82}
+  .map-crosshair:before,.map-crosshair:after{content:'';position:absolute;background:#ef4444;box-shadow:0 0 2px #fff}
+  .map-crosshair:before{left:10px;top:0;width:2px;height:22px}.map-crosshair:after{left:0;top:10px;width:22px;height:2px}
+  @media(max-width:900px){.map-demo-bar{right:8px;left:8px}.map-demo-bar label{display:none}.map-search-status{display:none}}
+
+  .error{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #ef4444;
+    border-radius:10px;padding:14px 16px;color:#991b1b;font-size:12px;display:none;z-index:20;max-width:500px
+  }
+  @media(max-width:900px){
+    body{overflow:auto}
+    .app{grid-template-columns:1fr;height:auto;min-height:100vh}
+    .sidebar{height:auto;max-height:none}
+    .viewer{height:64vh;min-height:500px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">NT</div>
+      <div>
+        <h1>NTCONS GROUP · BỂ BTCT 3D</h1>
+        
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1. Kích thước hình học</div>
+      <div class="grid2">
+        <div class="field"><label>Dài ngoài L</label><div class="input-wrap"><input id="L" type="number" value="3400" min="1000"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Rộng ngoài B</label><div class="input-wrap"><input id="B" type="number" value="1900" min="800"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Cao thông thủy H</label><div class="input-wrap"><input id="H" type="number" value="1800" min="500"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Dày tường</label><div class="input-wrap"><input id="tw" type="number" value="200" min="100"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Dày nắp</label><div class="input-wrap"><input id="tt" type="number" value="200" min="100"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Dày đáy</label><div class="input-wrap"><input id="tb" type="number" value="200" min="100"><span class="unit">mm</span></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Lỗ thăm nắp</div>
+      <div class="grid2">
+        <div class="field"><label>Kích thước X</label><div class="input-wrap"><input id="opX" type="number" value="800" min="200"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Kích thước Y</label><div class="input-wrap"><input id="opZ" type="number" value="800" min="200"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Cách mép trái</label><div class="input-wrap"><input id="offX" type="number" value="200" min="0"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Cách mép trước</label><div class="input-wrap"><input id="offZ" type="number" value="200" min="0"><span class="unit">mm</span></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Vật liệu & cốt thép</div>
+      <div class="grid2">
+        <div class="field"><label>Đường kính thép</label><div class="input-wrap"><input id="dia" type="number" value="12" min="6"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Khoảng cách a</label><div class="input-wrap"><input id="sp" type="number" value="200" min="80"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Lớp bảo vệ</label><div class="input-wrap"><input id="cover" type="number" value="35" min="20"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Thép tăng cường / cạnh</label><div class="input-wrap"><input id="extraN" type="number" value="2" min="0" max="6"><span class="unit">thanh</span></div></div>
+      </div>
+      <div class="note">Mặc định: BT M350, thép CB400-V. Mô hình R3 <b>đã bỏ các thanh chéo</b> ở 4 góc lỗ thăm. Thép đứng của thành được kéo liên tục vào cả nắp và đáy để thể hiện neo/liên kết trực quan.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Cao độ tham chiếu</div>
+      <div class="grid2">
+        <div class="field"><label>MDTN dưới nắp</label><div class="input-wrap"><input id="topAG" type="number" value="200" min="0"><span class="unit">mm</span></div></div>
+        <div class="field"><label>Mực nước ngầm dưới MDTN</label><div class="input-wrap"><input id="gw" type="number" value="330" min="0"><span class="unit">mm</span></div></div>
+      </div>
+      <div class="note">Hiểu theo setup: <b>MDTN = +0.00</b>; mặt trên nắp bể = <b>+0.20 m</b>; mực nước ngầm = <b>-0.33 m</b> so với MDTN.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Hiển thị</div>
+      <div class="checks">
+        <label class="check"><input id="showConcrete" type="checkbox" checked> Bê tông</label>
+        <label class="check"><input id="showTop" type="checkbox" checked> Thép nắp</label>
+        <label class="check"><input id="showWalls" type="checkbox" checked> Thép tường</label>
+        <label class="check"><input id="showBottom" type="checkbox" checked> Thép đáy</label>
+        <label class="check"><input id="showExtra" type="checkbox" checked> Gia cường lỗ</label>
+        <label class="check"><input id="showGW" type="checkbox" checked> MDTN + nước ngầm</label>
+        <label class="check"><input id="xray" type="checkbox"> X-ray cốt thép</label>
+        <label class="check"><input id="wire" type="checkbox" checked> Viền cấu kiện</label>
+      </div>
+      <div class="btn-row">
+        <button class="primary" id="apply">Cập nhật mô hình</button>
+        <button id="reset">Khôi phục mặc định</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Góc nhìn</div>
+      <div class="views">
+        <button data-view="iso">3D</button>
+        <button data-view="top">Bằng</button>
+        <button data-view="front">Đứng</button>
+        <button data-view="right">Cạnh</button>
+      </div>
+      <div class="btn-row">
+        <button id="fit">Fit mô hình</button>
+        <button id="png">Xuất PNG</button>
+      </div>
+      <div class="btn-row" style="grid-template-columns:1fr">
+        <button class="primary" id="mapDemoBtn">Maps</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Kiểm tra nhanh</div>
+      <div class="metric"><span>Diện tích thép / m / lớp</span><b id="aspm">—</b></div>
+      <div class="metric"><span>Số thanh chính bị lỗ cắt</span><b id="cutbars">—</b></div>
+      <div class="metric"><span>Thép cần bù mỗi cạnh</span><b id="needbars">—</b></div>
+      <div class="metric"><span>BTCT sơ bộ</span><b id="vol">—</b></div>
+      <div class="metric"><span>Lọt lòng</span><b id="clear">—</b></div>
+      <div class="note">Mô hình dùng để bố trí và kiểm tra trực quan. Khi phát hành thiết kế cần kiểm toán tải trọng nắp, nứt, đẩy nổi, nền/cừ tràm và neo nối theo tiêu chuẩn áp dụng.</div>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <section class="viewer">
+      <div id="canvasWrap"></div>
+
+      <div id="mapDemo" class="map-demo">
+        <div id="mapRotateShell"><div id="smoothMap"></div></div>
+        <div id="mapCanvasWrap"></div>
+        <div id="mapInputLayer" aria-hidden="true"></div>
+        <div id="mapAnchorMarker" class="map-crosshair"></div>
+        <div class="map-demo-bar">
+          <strong>MAPS + MÔ HÌNH</strong>
+          <input id="mapSearch" type="text" value="10.79510,106.72180" placeholder="Nhập địa điểm / địa chỉ / toạ độ">
+          <button id="mapSearchBtn">Tìm vị trí</button>
+          <span id="mapSearchStatus" class="map-search-status">Sẵn sàng</span>
+          <select id="mapPlace">
+            <option value="10.79510,106.72180">TP.HCM · vị trí giả định 1</option>
+            <option value="10.77690,106.70090">TP.HCM · vị trí giả định 2</option>
+            <option value="16.05440,108.20220">Đà Nẵng · vị trí giả định</option>
+            <option value="21.02850,105.85420">Hà Nội · vị trí giả định</option>
+          </select>
+          <select id="mapBase">
+            <option value="satellite">Vệ tinh</option>
+            <option value="street">Bản đồ đường</option>
+          </select>
+          <label>Zoom <input id="mapZoom" type="range" min="14" max="20" step="0.25" value="19"><span id="mapZoomVal" class="mini-val">19</span></label>
+          <label>Góc nhìn <input id="mapTilt" type="range" min="0" max="60" value="38"><span id="mapTiltVal" class="mini-val">38°</span></label>
+          <label>Hướng <input id="mapHeading" type="range" min="0" max="359" value="25"><span id="mapHeadingVal" class="mini-val">25°</span></label>
+          <label>Scale <input id="mapScale" type="range" min="0.35" max="2.50" step="0.05" value="1.00"><span id="mapScaleVal" class="mini-val">1.00×</span></label>
+          <label>Độ rõ <input id="mapOpacity" type="range" min="0.35" max="1" step="0.05" value="0.95"><span id="mapOpacityVal" class="mini-val">95%</span></label>
+          <span class="spacer"></span>
+          <button id="mapOpenGoogle">Mở Google</button>
+          <button id="mapSetCenter">Đặt mô hình tại tâm</button>
+          <button id="mapModeBtn" class="control-mode-btn" title="Điều khiển bản đồ: lăn để zoom, chuột phải để pan">Map</button>
+          <button id="modelModeBtn" class="control-mode-btn active" title="Điều khiển mô hình 3D">3D</button>
+          <button id="mapSync">Cập nhật từ R6</button>
+          <button id="mapClose">Đóng</button>
+        </div>
+      </div>
+
+      <div class="topbar">
+        <div class="title-card">
+          <strong>BỂ TK01 · MÔ HÌNH CỐT THÉP 3D</strong>
+          <span id="subtitle">3400 × 1900 · H thông thủy 1800 · t = 200 mm</span>
+        </div>
+        <div class="topbar-right">
+          <button id="quickMapBtn" class="quick-map-btn" title="Mở bản đồ">Maps</button>
+          <div class="status-card">
+            <b>BT M350 · CB400-V</b><br>
+            D12a200 · 2 phương · 2 lớp/mặt<br>
+            MDTN = +0.00 · Nắp = +0.20
+          </div>
+        </div>
+      </div>
+      <div class="help">Chuột trái: xoay · Chuột phải: di chuyển · Con lăn: zoom · Phím 1/2/3/4: 3D/Bằng/Đứng/Cạnh</div>
+      <div class="legend">
+        <div><span class="dot" style="background:#7dd3fc"></span>Bê tông</div>
+        <div><span class="dot" style="background:#ef4444"></span>Thép lớp trên / mặt trong</div>
+        <div><span class="dot" style="background:#2563eb"></span>Thép lớp dưới / mặt ngoài</div>
+        <div><span class="dot" style="background:#f59e0b"></span>Gia cường cạnh lỗ</div>
+        <div><span class="dot" style="background:#94a3b8"></span>MDTN = +0.00</div>
+        <div><span class="dot" style="background:#38bdf8"></span>Mực nước ngầm</div>
+      </div>
+      <div id="err" class="error"></div>
+    </section>
+
+    <section id="qtyPanel" class="qty-panel">
+      <div class="qty-head">
+        <div>
+          <h2>THỐNG KÊ KHỐI LƯỢNG SƠ BỘ</h2>
+          <p>Bấm nút để xổ/thu gọn nội dung thống kê chi tiết bên dưới.</p>
+        </div>
+        <div class="export-row">
+          <button id="toggleQty" class="qty-toggle" type="button"><span id="toggleQtyText">Xem thống kê</span><span class="arrow">▼</span></button>
+          <button class="primary" id="exportExcel">Xuất KL Excel</button>
+          <button id="exportDXF">Xuất 3D DXF</button>
+        </div>
+      </div>
+      <div id="qtyBody" class="qty-body">
+        <div class="qty-head">
+          <div>
+            <h2 style="font-size:13px">CHI TIẾT KHỐI LƯỢNG</h2>
+            <p>Cập nhật tự động theo kích thước và bố trí thép đang nhập trên mô hình.</p>
+          </div>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card"><span>Tổng thép</span><b id="steelTotal">—</b></div>
+          <div class="summary-card"><span>Tổng bê tông</span><b id="concreteTotal">—</b></div>
+          <div class="summary-card"><span>Tổng ván khuôn sơ bộ</span><b id="formworkTotal">—</b></div>
+        </div>
+        <div class="qty-grid">
+          <div class="table-card" style="grid-column:1 / -1">
+            <h3>Bảng tính chi tiết cấu kiện</h3>
+            <table class="qtable"><thead><tr><th>Nhóm</th><th>Cấu kiện</th><th>Dài (mm)</th><th>Rộng (mm)</th><th>Cao (mm)</th><th>Dày (mm)</th><th>SL</th><th>BT (m³)</th><th>VK (m²)</th><th>Ghi chú</th></tr></thead><tbody id="componentStatsBody"></tbody></table>
+          </div>
+          <div class="table-card">
+            <h3>Thống kê thép</h3>
+            <table class="qtable"><thead><tr><th>Hạng mục</th><th>ĐK</th><th>Số đoạn</th><th>Chiều dài (m)</th><th>KL (kg)</th></tr></thead><tbody id="steelStatsBody"></tbody></table>
+          </div>
+          <div class="table-card">
+            <h3>Khối lượng bê tông</h3>
+            <table class="qtable"><thead><tr><th>Cấu kiện</th><th>KL (m³)</th></tr></thead><tbody id="concreteStatsBody"></tbody></table>
+          </div>
+          <div class="table-card">
+            <h3>Ván khuôn</h3>
+            <table class="qtable"><thead><tr><th>Hạng mục</th><th>Diện tích (m²)</th></tr></thead><tbody id="formworkStatsBody"></tbody></table>
+          </div>
+        </div>
+        <div class="qty-note">Bảng chi tiết bên trên tự nhảy theo số liệu đầu vào. DXF R5 chỉ xuất bê tông + viền bê tông + thép; hệ trục AutoCAD: X = X web, Y = -Z web, Z = Y web, trong đó thép giữ màu giống trên web (đỏ / xanh / cam). Mặt đất và mực nước ngầm không xuất DXF theo yêu cầu.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const wrap = document.getElementById('canvasWrap');
+const errBox = document.getElementById('err');
+
+let scene, camera, renderer, controls;
+let mapScene, mapCamera, mapRenderer, mapControls, mapModelRoot;
+let mapDemoReady = false, mapModelMode = true, mapBaseSize = 1, mapModelBaseY = 0;
+let mapBearing = 0, mapDragState = null, mapWheelAccum = 0, mapWheelRAF = 0;
+let leafletMap = null, mapSatelliteLayer = null, mapStreetLayer = null, activeTileLayer = null;
+let modelLatLng = {lat:10.79510, lng:106.72180};
+const MAP_REF_ZOOM=19;
+const mapRaycaster=new THREE.Raycaster();
+const mapGroundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+const mapHitPoint=new THREE.Vector3();
+let modelRoot, concreteGroup, topRebarGroup, wallRebarGroup, bottomRebarGroup, extraGroup, levelGroup, edgeGroup;
+let current = {};
+let barRecords = [];
+let boxRecords = [];
+const COLORS = {
+  concrete: 0x7dd3fc,
+  edge: 0x0b2a4a,
+  top: 0xef4444,
+  bottom: 0x2563eb,
+  extra: 0xf59e0b,
+  water: 0x38bdf8,
+  ground: 0x94a3b8
+};
+
+function q(id){ return document.getElementById(id); }
+function num(id){ return Number(q(id).value); }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function init(){
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf4f8fb);
+
+  camera = new THREE.PerspectiveCamera(38, wrap.clientWidth/wrap.clientHeight, 1, 100000);
+  camera.up.set(0,1,0);
+
+  renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  wrap.appendChild(renderer.domElement);
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.screenSpacePanning = true;
+  controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+  controls.mouseButtons.RIGHT = THREE.MOUSE.PAN;
+  controls.mouseButtons.MIDDLE = THREE.MOUSE.DOLLY;
+  controls.minDistance = 700;
+  controls.maxDistance = 30000;
+
+  const hemi = new THREE.HemisphereLight(0xffffff, 0xb7c5d1, 1.5);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xffffff, 2.1);
+  sun.position.set(4500,6500,3000);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048,2048);
+  scene.add(sun);
+
+  modelRoot = new THREE.Group();
+  scene.add(modelRoot);
+
+  buildModel();
+  setView('iso');
+  bindEvents();
+  animate();
+}
+
+function readParams(){
+  const p = {
+    L:num('L'), B:num('B'), H:num('H'), tw:num('tw'), tt:num('tt'), tb:num('tb'),
+    opX:num('opX'), opZ:num('opZ'), offX:num('offX'), offZ:num('offZ'),
+    dia:num('dia'), sp:num('sp'), cover:num('cover'), extraN:Math.round(num('extraN')),
+    gw:num('gw'), topAG:num('topAG')
+  };
+  if(!Object.values(p).every(Number.isFinite)) throw new Error('Có giá trị nhập không hợp lệ.');
+  if(p.L <= 2*p.tw+300 || p.B <= 2*p.tw+300) throw new Error('Kích thước ngoài phải lớn hơn 2 lần chiều dày tường.');
+  if(p.offX < 0 || p.offZ < 0 || p.offX+p.opX > p.L || p.offZ+p.opZ > p.B) throw new Error('Lỗ thăm đang vượt ra ngoài phạm vi nắp.');
+  return p;
+}
+
+function disposeObject(obj){
+  obj.traverse(o=>{
+    if(o.geometry) o.geometry.dispose();
+    if(o.material){
+      if(Array.isArray(o.material)) o.material.forEach(m=>m.dispose());
+      else o.material.dispose();
+    }
+  });
+}
+
+function clearModel(){
+  while(modelRoot.children.length){
+    const obj = modelRoot.children.pop();
+    disposeObject(obj);
+  }
+}
+
+function matConcrete(){
+  return new THREE.MeshPhysicalMaterial({
+    color:COLORS.concrete, transparent:true, opacity:0.28, roughness:0.65,
+    metalness:0, side:THREE.DoubleSide, depthWrite:false
+  });
+}
+function matSteel(color){
+  return new THREE.MeshStandardMaterial({
+    color, roughness:0.45, metalness:0.25, transparent:true, opacity:1
+  });
+}
+function addBox(group, sx, sy, sz, x, y, z, material, edges=true){
+  if(sx<=0 || sy<=0 || sz<=0) return;
+  const geo = new THREE.BoxGeometry(sx,sy,sz);
+  const mesh = new THREE.Mesh(geo, material.clone());
+  mesh.position.set(x,y,z);
+  mesh.castShadow = false;
+  mesh.receiveShadow = true;
+  group.add(mesh);
+  if(group === concreteGroup){
+    boxRecords.push({sx,sy,sz,x,y,z});
+  }
+  if(edges){
+    const e = new THREE.LineSegments(
+      new THREE.EdgesGeometry(geo),
+      new THREE.LineBasicMaterial({color:COLORS.edge,transparent:true,opacity:.7})
+    );
+    e.position.copy(mesh.position);
+    edgeGroup.add(e);
+  }
+  return mesh;
+}
+function cylBetween(group, a, b, radius, color, opacity=1, depthTest=true){
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b);
+  const dir = new THREE.Vector3().subVectors(B,A);
+  const len = dir.length();
+  if(len < 1) return;
+  const geo = new THREE.CylinderGeometry(Math.max(2,radius),Math.max(2,radius),len,8,1,false);
+  const mat = matSteel(color);
+  mat.opacity = opacity; mat.transparent = opacity < 1; mat.depthTest = depthTest;
+  const mesh = new THREE.Mesh(geo,mat);
+  mesh.position.copy(A).add(B).multiplyScalar(.5);
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.clone().normalize());
+  group.add(mesh);
+  let part = null;
+  if(group === topRebarGroup) part = 'Nắp';
+  else if(group === wallRebarGroup) part = 'Tường';
+  else if(group === bottomRebarGroup) part = 'Đáy';
+  else if(group === extraGroup) part = 'Gia cường lỗ';
+  if(part){
+    barRecords.push({part, dia: current.dia, lenMm: len, a:[...a], b:[...b], color});
+  }
+  return mesh;
+}
+function seq(start,end,step){
+  const arr=[];
+  if(step<=0) return arr;
+  for(let v=start; v<=end+0.001; v+=step) arr.push(v);
+  return arr;
+}
+function splitAround(v, hole0, hole1, start, end, pad=0){
+  if(v > hole0 && v < hole1) return [[start,hole0-pad],[hole1+pad,end]].filter(s=>s[1]-s[0]>2);
+  return [[start,end]];
+}
+
+function makeLevelLine(group, y, lenX, lenZ, color, opacity){
+  const mat = new THREE.MeshBasicMaterial({color, transparent:true, opacity});
+  const stripX = new THREE.Mesh(new THREE.BoxGeometry(lenX,2,2), mat);
+  const stripZ = new THREE.Mesh(new THREE.BoxGeometry(2,2,lenZ), mat);
+  stripX.position.set(0,y,0);
+  stripZ.position.set(0,y,0);
+  group.add(stripX, stripZ);
+
+  const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(lenX, lenZ),
+    new THREE.MeshBasicMaterial({color, transparent:true, opacity:opacity*0.18, side:THREE.DoubleSide, depthWrite:false})
+  );
+  plane.rotation.x = -Math.PI/2;
+  plane.position.y = y;
+  group.add(plane);
+}
+
+function buildModel(){
+  try{
+    errBox.style.display='none';
+    current = readParams();
+    clearModel();
+    barRecords = [];
+    boxRecords = [];
+
+    concreteGroup = new THREE.Group();
+    topRebarGroup = new THREE.Group();
+    wallRebarGroup = new THREE.Group();
+    bottomRebarGroup = new THREE.Group();
+    extraGroup = new THREE.Group();
+    levelGroup = new THREE.Group();
+    edgeGroup = new THREE.Group();
+    modelRoot.add(concreteGroup,topRebarGroup,wallRebarGroup,bottomRebarGroup,extraGroup,levelGroup,edgeGroup);
+
+    const p=current;
+    const innerL = p.L-2*p.tw;
+    const innerB = p.B-2*p.tw;
+
+    // Coordinate system:
+    // MDTN = +0.00
+    // Top of cover = +topAG
+    // Water table = -gw
+    const yTopSlabTop = p.topAG;
+    const yTopSlabBot = yTopSlabTop - p.tt;
+    const yWallTop = yTopSlabBot;
+    const yWallBot = yWallTop - p.H;
+    const yBottomTop = yWallBot;
+    const yBottomBot = yBottomTop - p.tb;
+
+    const C = matConcrete();
+
+    addBox(concreteGroup,p.L,p.tb,p.B,0,(yBottomBot+yBottomTop)/2,0,C);
+    addBox(concreteGroup,p.tw,p.H,p.B,-p.L/2+p.tw/2,(yWallBot+yWallTop)/2,0,C);
+    addBox(concreteGroup,p.tw,p.H,p.B, p.L/2-p.tw/2,(yWallBot+yWallTop)/2,0,C);
+    addBox(concreteGroup,innerL,p.H,p.tw,0,(yWallBot+yWallTop)/2,-p.B/2+p.tw/2,C);
+    addBox(concreteGroup,innerL,p.H,p.tw,0,(yWallBot+yWallTop)/2, p.B/2-p.tw/2,C);
+
+    const hx0 = -p.L/2 + p.offX;
+    const hx1 = hx0 + p.opX;
+    const hz0 = -p.B/2 + p.offZ;
+    const hz1 = hz0 + p.opZ;
+    const yTopMid = (yTopSlabTop+yTopSlabBot)/2;
+
+    if(hx0 > -p.L/2) addBox(concreteGroup,hx0-(-p.L/2),p.tt,p.B,(-p.L/2+hx0)/2,yTopMid,0,C);
+    if(hx1 < p.L/2) addBox(concreteGroup,p.L/2-hx1,p.tt,p.B,(hx1+p.L/2)/2,yTopMid,0,C);
+    const midW = hx1-hx0;
+    if(hz0 > -p.B/2) addBox(concreteGroup,midW,p.tt,hz0-(-p.B/2),(hx0+hx1)/2,yTopMid,(-p.B/2+hz0)/2,C);
+    if(hz1 < p.B/2) addBox(concreteGroup,midW,p.tt,p.B/2-hz1,(hx0+hx1)/2,yTopMid,(hz1+p.B/2)/2,C);
+
+    const rr = Math.max(3,p.dia/2);
+    const c = clamp(p.cover+p.dia/2, p.dia, Math.max(p.tw,p.tt,p.tb)/2-5);
+    const xMin = -p.L/2+c, xMax = p.L/2-c;
+    const zMin = -p.B/2+c, zMax = p.B/2-c;
+
+    const yTop = yTopSlabTop-c;
+    const yBotTop = yTopSlabBot+c;
+    const slabLayers = [
+      {y:yTop,color:COLORS.top},
+      {y:yBotTop,color:COLORS.bottom}
+    ];
+    for(const lay of slabLayers){
+      for(const z of seq(zMin,zMax,p.sp)){
+        const segments = splitAround(z,hz0,hz1,xMin,xMax,0);
+        for(const [xa,xb] of segments){
+          if(z>hz0 && z<hz1){
+            if(xa < hx0) cylBetween(topRebarGroup,[xa,lay.y,z],[Math.min(xb,hx0),lay.y,z],rr,lay.color);
+            if(xb > hx1) cylBetween(topRebarGroup,[Math.max(xa,hx1),lay.y,z],[xb,lay.y,z],rr,lay.color);
+          } else cylBetween(topRebarGroup,[xa,lay.y,z],[xb,lay.y,z],rr,lay.color);
+        }
+      }
+      for(const x of seq(xMin,xMax,p.sp)){
+        if(x>hx0 && x<hx1){
+          if(zMin < hz0) cylBetween(topRebarGroup,[x,lay.y,zMin],[x,lay.y,hz0],rr,lay.color);
+          if(zMax > hz1) cylBetween(topRebarGroup,[x,lay.y,hz1],[x,lay.y,zMax],rr,lay.color);
+        } else cylBetween(topRebarGroup,[x,lay.y,zMin],[x,lay.y,zMax],rr,lay.color);
+      }
+    }
+
+    const yBU = yBottomTop-c, yBL = yBottomBot+c;
+    for(const [y,color] of [[yBU,COLORS.top],[yBL,COLORS.bottom]]){
+      for(const z of seq(zMin,zMax,p.sp)) cylBetween(bottomRebarGroup,[xMin,y,z],[xMax,y,z],rr,color);
+      for(const x of seq(xMin,xMax,p.sp)) cylBetween(bottomRebarGroup,[x,y,zMin],[x,y,zMax],rr,color);
+    }
+
+    const y0 = yWallBot+c, y1 = yWallTop-c;
+    const yVert0 = yBottomBot+c, yVert1 = yTopSlabTop-c;
+    const wallX1 = -p.L/2+c, wallX2 = -p.L/2+p.tw-c;
+    const wallX3 = p.L/2-p.tw+c, wallX4 = p.L/2-c;
+    const wallZ1 = -p.B/2+c, wallZ2 = -p.B/2+p.tw-c;
+    const wallZ3 = p.B/2-p.tw+c, wallZ4 = p.B/2-c;
+
+    for(const x of [wallX1,wallX2,wallX3,wallX4]){
+      const col = (x===wallX2 || x===wallX3) ? COLORS.top : COLORS.bottom;
+      for(const z of seq(zMin,zMax,p.sp)) cylBetween(wallRebarGroup,[x,yVert0,z],[x,yVert1,z],rr,col);
+      for(const y of seq(y0,y1,p.sp)) cylBetween(wallRebarGroup,[x,y,zMin],[x,y,zMax],rr,col);
+    }
+    const longWallXMin = -p.L/2 + c, longWallXMax = p.L/2 - c;
+    for(const z of [wallZ1,wallZ2,wallZ3,wallZ4]){
+      const col = (z===wallZ2 || z===wallZ3) ? COLORS.top : COLORS.bottom;
+      for(const x of seq(longWallXMin,longWallXMax,p.sp)) cylBetween(wallRebarGroup,[x,yVert0,z],[x,yVert1,z],rr,col);
+      for(const y of seq(y0,y1,p.sp)) cylBetween(wallRebarGroup,[longWallXMin,y,z],[longWallXMax,y,z],rr,col);
+    }
+
+    const extraGap = Math.max(25,p.dia*2.5);
+    const ext = Math.max(400, 40*p.dia);
+    for(const y of [yTop,yBotTop]){
+      for(let i=0;i<p.extraN;i++){
+        const d = extraGap*(i+1);
+        cylBetween(extraGroup,[Math.max(xMin,hx0-ext),y,hz0-d],[Math.min(xMax,hx1+ext),y,hz0-d],rr*1.12,COLORS.extra);
+        cylBetween(extraGroup,[Math.max(xMin,hx0-ext),y,hz1+d],[Math.min(xMax,hx1+ext),y,hz1+d],rr*1.12,COLORS.extra);
+        cylBetween(extraGroup,[hx0-d,y,Math.max(zMin,hz0-ext)],[hx0-d,y,Math.min(zMax,hz1+ext)],rr*1.12,COLORS.extra);
+        cylBetween(extraGroup,[hx1+d,y,Math.max(zMin,hz0-ext)],[hx1+d,y,Math.min(zMax,hz1+ext)],rr*1.12,COLORS.extra);
+      }
+    }
+
+    const lenX = p.L*1.8, lenZ = p.B*2.6;
+    makeLevelLine(levelGroup, 0, lenX, lenZ, COLORS.ground, 0.75);
+    makeLevelLine(levelGroup, -p.gw, lenX*0.95, lenZ*0.95, COLORS.water, 0.65);
+
+    applyVisibility();
+    updateMetrics();
+    if(mapDemoReady) syncMapModel(false);
+    q('subtitle').textContent = `${p.L} × ${p.B} · H thông thủy ${p.H} · tường/nắp/đáy ${p.tw}/${p.tt}/${p.tb} mm`;
+  }catch(e){
+    errBox.textContent = e.message || String(e);
+    errBox.style.display='block';
+  }
+}
+
+function applyVisibility(){
+  if(!concreteGroup) return;
+  concreteGroup.visible=q('showConcrete').checked;
+  topRebarGroup.visible=q('showTop').checked;
+  wallRebarGroup.visible=q('showWalls').checked;
+  bottomRebarGroup.visible=q('showBottom').checked;
+  extraGroup.visible=q('showExtra').checked;
+  levelGroup.visible=q('showGW').checked;
+  edgeGroup.visible=q('wire').checked;
+
+  const xray = q('xray').checked;
+  for(const g of [topRebarGroup,wallRebarGroup,bottomRebarGroup,extraGroup]){
+    g.traverse(o=>{
+      if(o.material){
+        o.material.depthTest = !xray;
+        o.material.transparent = xray;
+        o.material.opacity = xray ? .88 : 1;
+        o.material.needsUpdate = true;
+      }
+    });
+  }
+}
+
+
+function quantityData(){
+  const p=current;
+  const innerL=p.L-2*p.tw, innerB=p.B-2*p.tw;
+  const leftW = p.offX;
+  const rightW = p.L - p.offX - p.opX;
+  const frontD = p.offZ;
+  const backD = p.B - p.offZ - p.opZ;
+  const components = [];
+  function addComp(group,name,L,W,H,T,qty,concEach,formEach,note=''){
+    components.push({group,name,L,W,H,T,qty,concEach,formEach,concrete:concEach*qty,formwork:formEach*qty,note});
+  }
+  addComp('Bê tông','Đáy bể',p.L,p.B,0,p.tb,1,p.L*p.B*p.tb/1e9,2*(p.L+p.B)*p.tb/1e6,'VK tính 4 cạnh đáy');
+  addComp('Bê tông','Tường trái',0,p.B,p.H,p.tw,1,p.B*p.H*p.tw/1e9,2*p.B*p.H/1e6,'2 mặt tường');
+  addComp('Bê tông','Tường phải',0,p.B,p.H,p.tw,1,p.B*p.H*p.tw/1e9,2*p.B*p.H/1e6,'2 mặt tường');
+  addComp('Bê tông','Tường trước',innerL,0,p.H,p.tw,1,innerL*p.H*p.tw/1e9,2*innerL*p.H/1e6,'2 mặt tường');
+  addComp('Bê tông','Tường sau',innerL,0,p.H,p.tw,1,innerL*p.H*p.tw/1e9,2*innerL*p.H/1e6,'2 mặt tường');
+  if(leftW>0) addComp('Bê tông','Nắp trái',leftW,p.B,0,p.tt,1,leftW*p.B*p.tt/1e9,leftW*p.B/1e6 + p.B*p.tt/1e6,'Mặt dưới + cạnh ngoài trái');
+  if(rightW>0) addComp('Bê tông','Nắp phải',rightW,p.B,0,p.tt,1,rightW*p.B*p.tt/1e9,rightW*p.B/1e6 + p.B*p.tt/1e6,'Mặt dưới + cạnh ngoài phải');
+  if(frontD>0) addComp('Bê tông','Nắp trước lỗ',p.opX,frontD,0,p.tt,1,p.opX*frontD*p.tt/1e9,p.opX*frontD/1e6 + p.opX*p.tt/1e6,'Mặt dưới + cạnh ngoài trước');
+  if(backD>0) addComp('Bê tông','Nắp sau lỗ',p.opX,backD,0,p.tt,1,p.opX*backD*p.tt/1e9,p.opX*backD/1e6 + p.opX*p.tt/1e6,'Mặt dưới + cạnh ngoài sau');
+  addComp('Ván khuôn','Thành lỗ thăm',p.opX,p.opZ,0,p.tt,1,0,2*(p.opX+p.opZ)*p.tt/1e6,'4 cạnh lỗ thăm');
+
+  const concrete = [
+    {name:'Đáy', value:components.filter(x=>x.name==='Đáy bể').reduce((a,b)=>a+b.concrete,0)},
+    {name:'Tường', value:components.filter(x=>x.name.startsWith('Tường')).reduce((a,b)=>a+b.concrete,0)},
+    {name:'Nắp', value:components.filter(x=>x.name.startsWith('Nắp')).reduce((a,b)=>a+b.concrete,0)}
+  ];
+  const formwork = [
+    {name:'Đáy', value:components.filter(x=>x.name==='Đáy bể').reduce((a,b)=>a+b.formwork,0)},
+    {name:'Tường', value:components.filter(x=>x.name.startsWith('Tường')).reduce((a,b)=>a+b.formwork,0)},
+    {name:'Nắp', value:components.filter(x=>x.name.startsWith('Nắp')).reduce((a,b)=>a+b.formwork,0)},
+    {name:'Lỗ thăm', value:components.filter(x=>x.name==='Thành lỗ thăm').reduce((a,b)=>a+b.formwork,0)}
+  ];
+  const map = new Map();
+  for(const r of barRecords){
+    const key=r.part+'|'+r.dia;
+    if(!map.has(key)) map.set(key,{part:r.part,dia:r.dia,count:0,lenM:0,kg:0});
+    const o=map.get(key);
+    const lm=r.lenMm/1000;
+    o.count += 1;
+    o.lenM += lm;
+    o.kg += lm*(r.dia*r.dia/162);
+  }
+  const steel=[...map.values()];
+  return {components,concrete,formwork,steel};
+}
+
+function updateQuantityTables(){
+  const d=quantityData();
+  const compBody=q('componentStatsBody'), sbody=q('steelStatsBody'), cbody=q('concreteStatsBody'), fbody=q('formworkStatsBody');
+  compBody.innerHTML=''; sbody.innerHTML=''; cbody.innerHTML=''; fbody.innerHTML='';
+  let steelKg=0, steelLen=0, steelCount=0;
+  let totalConcrete=0, totalForm=0;
+  for(const r of d.components){
+    totalConcrete += r.concrete;
+    totalForm += r.formwork;
+    const show = v => v ? Math.round(v) : '—';
+    compBody.insertAdjacentHTML('beforeend', `<tr><td>${r.group}</td><td>${r.name}</td><td>${show(r.L)}</td><td>${show(r.W)}</td><td>${show(r.H)}</td><td>${show(r.T)}</td><td>${r.qty}</td><td>${r.concrete.toFixed(3)}</td><td>${r.formwork.toFixed(2)}</td><td>${r.note||''}</td></tr>`);
+  }
+  compBody.insertAdjacentHTML('beforeend', `<tr class="total"><td colspan="7">TỔNG</td><td>${totalConcrete.toFixed(3)}</td><td>${totalForm.toFixed(2)}</td><td></td></tr>`);
+
+  for(const r of d.steel){
+    steelKg+=r.kg; steelLen+=r.lenM; steelCount+=r.count;
+    sbody.insertAdjacentHTML('beforeend',`<tr><td>${r.part}</td><td>D${r.dia}</td><td>${r.count}</td><td>${r.lenM.toFixed(2)}</td><td>${r.kg.toFixed(1)}</td></tr>`);
+  }
+  sbody.insertAdjacentHTML('beforeend',`<tr class="total"><td>TỔNG</td><td></td><td>${steelCount}</td><td>${steelLen.toFixed(2)}</td><td>${steelKg.toFixed(1)}</td></tr>`);
+
+  const cv=d.concrete.reduce((a,b)=>a+b.value,0);
+  for(const r of d.concrete) cbody.insertAdjacentHTML('beforeend',`<tr><td>${r.name}</td><td>${r.value.toFixed(3)}</td></tr>`);
+  cbody.insertAdjacentHTML('beforeend',`<tr class="total"><td>TỔNG</td><td>${cv.toFixed(3)}</td></tr>`);
+  const fv=d.formwork.reduce((a,b)=>a+b.value,0);
+  for(const r of d.formwork) fbody.insertAdjacentHTML('beforeend',`<tr><td>${r.name}</td><td>${r.value.toFixed(2)}</td></tr>`);
+  fbody.insertAdjacentHTML('beforeend',`<tr class="total"><td>TỔNG</td><td>${fv.toFixed(2)}</td></tr>`);
+  q('steelTotal').textContent=`${steelKg.toFixed(1)} kg`;
+  q('concreteTotal').textContent=`${cv.toFixed(3)} m³`;
+  q('formworkTotal').textContent=`${fv.toFixed(2)} m²`;
+}
+
+function downloadBlob(blob, filename){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+
+async function exportQuantityExcel(){
+  if(!window.ExcelJS){ alert('Chưa tải được thư viện ExcelJS. Kiểm tra kết nối internet rồi thử lại.'); return; }
+  const d=quantityData(), p=current;
+  const wb=new ExcelJS.Workbook();
+  wb.creator='AS Group'; wb.created=new Date();
+  const headerFill='0B2A4A', inputFill='DDEBFF', red='C00000';
+  const border={top:{style:'thin',color:{argb:'000000'}},left:{style:'thin',color:{argb:'000000'}},bottom:{style:'thin',color:{argb:'000000'}},right:{style:'thin',color:{argb:'000000'}}};
+  function title(ws,text,lastCol){
+    ws.mergeCells(1,1,1,lastCol); const c=ws.getCell(1,1); c.value=text; c.font={bold:true,size:14,color:{argb:'FFFFFF'}}; c.fill={type:'pattern',pattern:'solid',fgColor:{argb:headerFill}}; c.alignment={horizontal:'center'};
+  }
+  function styleHeader(row){ row.eachCell(c=>{c.font={bold:true,color:{argb:'FFFFFF'}};c.fill={type:'pattern',pattern:'solid',fgColor:{argb:headerFill}};c.alignment={horizontal:'center'};c.border=border;}); }
+  function styleBody(ws,r1,r2,c1,c2){ for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++){ const cell=ws.getCell(r,c);cell.border=border; if(c>2) cell.alignment={horizontal:'right'}; } }
+
+  const ws=wb.addWorksheet('TONG_HOP'); title(ws,'BỂ BTCT TK01 - THỐNG KÊ KHỐI LƯỢNG R5',10);
+  ws.addRow([]); ws.addRow(['Nhóm','Cấu kiện','Dài (mm)','Rộng (mm)','Cao (mm)','Dày (mm)','SL','BT (m3)','VK (m2)','Ghi chú']); styleHeader(ws.getRow(3));
+  for(const x of d.components) ws.addRow([x.group,x.name,x.L||'',x.W||'',x.H||'',x.T||'',x.qty,x.concrete,x.formwork,x.note||'']);
+  ws.addRow(['TỔNG','','','','','','',d.components.reduce((a,b)=>a+b.concrete,0),d.components.reduce((a,b)=>a+b.formwork,0),'']);
+  styleBody(ws,4,ws.rowCount,1,10); [14,24,12,12,12,12,8,12,12,28].forEach((w,i)=>ws.getColumn(i+1).width=w);
+  ws.getColumn(8).numFmt='0.000'; ws.getColumn(9).numFmt='0.00'; ws.getRow(ws.rowCount).font={bold:true,color:{argb:red}};
+
+  const st=wb.addWorksheet('THEP'); title(st,'THỐNG KÊ CỐT THÉP TỪ MÔ HÌNH 3D',5);
+  st.addRow([]);st.addRow(['Hạng mục','Đường kính','Số đoạn','Tổng chiều dài (m)','Khối lượng (kg)']);styleHeader(st.getRow(3));
+  for(const x of d.steel) st.addRow([x.part,'D'+x.dia,x.count,x.lenM,x.kg]);
+  const tr=st.addRow(['TỔNG','',d.steel.reduce((a,b)=>a+b.count,0),d.steel.reduce((a,b)=>a+b.lenM,0),d.steel.reduce((a,b)=>a+b.kg,0)]);tr.font={bold:true,color:{argb:red}};
+  styleBody(st,4,st.rowCount,1,5); [22,14,12,20,18].forEach((w,i)=>st.getColumn(i+1).width=w); st.getColumn(4).numFmt='0.00';st.getColumn(5).numFmt='0.0';
+
+  const bv=wb.addWorksheet('BETONG_VK'); title(bv,'TỔNG HỢP BÊ TÔNG VÀ VÁN KHUÔN',4);
+  bv.addRow([]);bv.addRow(['Nhóm','Hạng mục','Đơn vị','Khối lượng']);styleHeader(bv.getRow(3));
+  for(const x of d.concrete) bv.addRow(['Bê tông',x.name,'m3',x.value]);
+  for(const x of d.formwork) bv.addRow(['Ván khuôn',x.name,'m2',x.value]);
+  styleBody(bv,4,bv.rowCount,1,4); [16,26,10,14].forEach((w,i)=>bv.getColumn(i+1).width=w); bv.getColumn(4).numFmt='0.000';
+
+  const ip=wb.addWorksheet('THONG_SO'); title(ip,'THÔNG SỐ ĐẦU VÀO',4);
+  ip.addRow([]);ip.addRow(['Ký hiệu','Nội dung','Giá trị','Đơn vị']);styleHeader(ip.getRow(3));
+  const inputs=[['L','Dài ngoài',p.L,'mm'],['B','Rộng ngoài',p.B,'mm'],['H','Cao thông thủy',p.H,'mm'],['tw','Dày tường',p.tw,'mm'],['tt','Dày nắp',p.tt,'mm'],['tb','Dày đáy',p.tb,'mm'],['opX','Lỗ thăm X',p.opX,'mm'],['opZ','Lỗ thăm Y',p.opZ,'mm'],['offX','Cách mép trái',p.offX,'mm'],['offZ','Cách mép trước',p.offZ,'mm'],['D','Đường kính thép',p.dia,'mm'],['a','Khoảng cách thép',p.sp,'mm'],['c','Lớp bảo vệ',p.cover,'mm'],['MDTN','Mặt đất tự nhiên',0,'m'],['MNN','Mực nước ngầm',-p.gw/1000,'m']];
+  for(const x of inputs){const r=ip.addRow(x);r.getCell(3).font={color:{argb:'0000FF'}};r.getCell(3).fill={type:'pattern',pattern:'solid',fgColor:{argb:inputFill}};}
+  styleBody(ip,4,ip.rowCount,1,4); [14,28,14,12].forEach((w,i)=>ip.getColumn(i+1).width=w);
+
+  const buf=await wb.xlsx.writeBuffer();
+  downloadBlob(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'NTCONS_Be_BTCT_KhoiLuong_R6.xlsx');
+}
+
+// Three.js dùng Y là phương đứng; AutoCAD dùng Z là phương đứng.
+// Chuyển hệ trục khi xuất: Xcad = Xweb, Ycad = -Zweb, Zcad = Yweb.
+// Dấu âm ở Ycad giữ hướng mặt bằng trực quan giống màn hình web.
+function cadPt(p){ return [p[0], -p[2], p[1]]; }
+function dxfFace(layer,pts,color=4){
+  let s=`0
+3DFACE
+8
+${layer}
+62
+${color}
+`;
+  const codes=[[10,20,30],[11,21,31],[12,22,32],[13,23,33]];
+  for(let i=0;i<4;i++){ const p=cadPt(pts[i]); s+=`${codes[i][0]}
+${p[0]}
+${codes[i][1]}
+${p[1]}
+${codes[i][2]}
+${p[2]}
+`; }
+  return s;
+}
+function dxfLine(layer,a,b,color=7){
+  const A=cadPt(a), B=cadPt(b);
+  return `0
+LINE
+8
+${layer}
+62
+${color}
+10
+${A[0]}
+20
+${A[1]}
+30
+${A[2]}
+11
+${B[0]}
+21
+${B[1]}
+31
+${B[2]}
+`;
+}
+function boxFaces(b){
+  const x0=b.x-b.sx/2,x1=b.x+b.sx/2,y0=b.y-b.sy/2,y1=b.y+b.sy/2,z0=b.z-b.sz/2,z1=b.z+b.sz/2;
+  return [
+    [[x0,y0,z0],[x1,y0,z0],[x1,y1,z0],[x0,y1,z0]],
+    [[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],[x1,y0,z1]],
+    [[x0,y0,z0],[x0,y1,z0],[x0,y1,z1],[x0,y0,z1]],
+    [[x1,y0,z0],[x1,y0,z1],[x1,y1,z1],[x1,y1,z0]],
+    [[x0,y0,z0],[x0,y0,z1],[x1,y0,z1],[x1,y0,z0]],
+    [[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]]
+  ];
+}
+function boxEdges(b){
+  const x0=b.x-b.sx/2,x1=b.x+b.sx/2,y0=b.y-b.sy/2,y1=b.y+b.sy/2,z0=b.z-b.sz/2,z1=b.z+b.sz/2;
+  return [
+    [[x0,y0,z0],[x1,y0,z0]],[[x1,y0,z0],[x1,y0,z1]],[[x1,y0,z1],[x0,y0,z1]],[[x0,y0,z1],[x0,y0,z0]],
+    [[x0,y1,z0],[x1,y1,z0]],[[x1,y1,z0],[x1,y1,z1]],[[x1,y1,z1],[x0,y1,z1]],[[x0,y1,z1],[x0,y1,z0]],
+    [[x0,y0,z0],[x0,y1,z0]],[[x1,y0,z0],[x1,y1,z0]],[[x1,y0,z1],[x1,y1,z1]],[[x0,y0,z1],[x0,y1,z1]]
+  ];
+}
+function exportDXF(){
+  let dxf='0\nSECTION\n2\nHEADER\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+  for(const b of boxRecords){
+    for(const f of boxFaces(b)) dxf+=dxfFace('BETONG',f,4);
+    for(const e of boxEdges(b)) dxf+=dxfLine('BETONG_VIEN',e[0],e[1],8);
+  }
+  const colorMap={0xef4444:1,0x2563eb:5,0xf59e0b:30};
+  const layerMap={'Nắp':'THEP_NAP','Tường':'THEP_TUONG','Đáy':'THEP_DAY','Gia cường lỗ':'THEP_LO'};
+  for(const r of barRecords){
+    const c = colorMap[r.color] || 7;
+    dxf+=dxfLine(layerMap[r.part]||'THEP',r.a,r.b,c);
+  }
+  dxf+='0\nENDSEC\n0\nEOF\n';
+  downloadBlob(new Blob([dxf],{type:'application/dxf'}),'NTCONS_Be_BTCT_3D_R6.dxf');
+}
+
+function updateMetrics(){
+  const p=current;
+  const Ab = Math.PI*p.dia*p.dia/4;
+  const Asm = Ab*1000/p.sp;
+  const nCut = Math.max(1,Math.round(Math.max(p.opX,p.opZ)/p.sp));
+  const lost = nCut*Ab;
+  const needPerEdge = Math.max(1,Math.ceil(lost/(2*Ab)));
+  const innerL=p.L-2*p.tw, innerB=p.B-2*p.tw;
+  const vBottom=p.L*p.B*p.tb;
+  const vWalls=p.H*(2*p.L*p.tw+2*innerB*p.tw);
+  const vTop=(p.L*p.B-p.opX*p.opZ)*p.tt;
+  const vol=(vBottom+vWalls+vTop)/1e9;
+
+  q('aspm').textContent = `${Asm.toFixed(0)} mm²/m`;
+  q('cutbars').textContent = `≈ ${nCut}D${p.dia}`;
+  q('needbars').textContent = `≈ ${needPerEdge}D${p.dia} / cạnh`;
+  q('vol').textContent = `${vol.toFixed(2)} m³`;
+  q('clear').textContent = `${innerL} × ${innerB} × ${p.H} mm`;
+  updateQuantityTables();
+}
+
+function setQtyPanel(open){
+  const panel=q('qtyPanel');
+  const textEl=q('toggleQtyText');
+  if(!panel || !textEl) return;
+  panel.classList.toggle('open', !!open);
+  textEl.textContent = open ? 'Thu gọn thống kê' : 'Xem thống kê';
+}
+function toggleQtyPanel(){
+  const panel=q('qtyPanel');
+  if(!panel) return;
+  setQtyPanel(!panel.classList.contains('open'));
+}
+
+function initLeafletMap(){
+  if(leafletMap) return;
+  if(!window.L) throw new Error('Chưa tải được thư viện bản đồ. Kiểm tra kết nối internet.');
+  leafletMap=L.map('smoothMap',{
+    zoomControl:false,preferCanvas:true,zoomAnimation:true,fadeAnimation:true,markerZoomAnimation:true,
+    zoomSnap:0.25,zoomDelta:0.25,wheelPxPerZoomLevel:90,inertia:true,inertiaDeceleration:2600,inertiaMaxSpeed:1800,
+    dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,keyboard:false
+  }).setView([modelLatLng.lat,modelLatLng.lng],19);
+  mapSatelliteLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    maxNativeZoom:19,maxZoom:20,attribution:'Tiles © Esri'
+  });
+  mapStreetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxNativeZoom:19,maxZoom:20,attribution:'© OpenStreetMap contributors'
+  });
+  activeTileLayer=mapSatelliteLayer.addTo(leafletMap);
+  leafletMap.on('move zoom zoomanim resize',()=>{
+    const z=leafletMap.getZoom();
+    q('mapZoom').value=String(z);
+    q('mapZoomVal').textContent=Number(z).toFixed(z%1?2:0);
+    applyMapModelStyle();
+    updateMapOverlayPosition();
+  });
+}
+
+function initMapDemo(){
+  if(mapDemoReady) return;
+  initLeafletMap();
+  const mw=q('mapCanvasWrap');
+  mapScene=new THREE.Scene();
+  mapCamera=new THREE.PerspectiveCamera(42, Math.max(1,mw.clientWidth)/Math.max(1,mw.clientHeight), 1, 100000);
+  mapCamera.up.set(0,1,0);
+  mapRenderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
+  mapRenderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  mapRenderer.setSize(Math.max(1,mw.clientWidth),Math.max(1,mw.clientHeight));
+  mapRenderer.setClearColor(0x000000,0);
+  mapRenderer.outputColorSpace=THREE.SRGBColorSpace;
+  mw.appendChild(mapRenderer.domElement);
+  mapControls=new OrbitControls(mapCamera,mapRenderer.domElement);
+  mapControls.enableDamping=true; mapControls.dampingFactor=.08; mapControls.screenSpacePanning=true;
+  mapControls.enablePan=false;
+  mapControls.enableZoom=true;
+  mapControls.zoomSpeed=.85;
+  mapControls.rotateSpeed=.75;
+  mapControls.mouseButtons.LEFT=THREE.MOUSE.ROTATE;
+  mapControls.mouseButtons.MIDDLE=THREE.MOUSE.DOLLY;
+  mapScene.add(new THREE.HemisphereLight(0xffffff,0x64748b,2.0));
+  const dl=new THREE.DirectionalLight(0xffffff,2.2); dl.position.set(4000,7000,3500); mapScene.add(dl);
+  mapRenderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+  bindCustomMapInput();
+  mapDemoReady=true;
+  syncMapModel(true);
+  setMapInteraction(true);
+}
+
+function cloneForMap(src){
+  const c=src.clone(true);
+  c.traverse(o=>{
+    if(o.material){
+      if(Array.isArray(o.material)) o.material=o.material.map(m=>m.clone()); else o.material=o.material.clone();
+      if(o.material && 'transparent' in o.material) o.material.needsUpdate=true;
+    }
+  });
+  if(c.children[5]) c.children[5].visible=false;
+  return c;
+}
+
+function syncMapModel(resetCamera=false){
+  if(!mapDemoReady || !modelRoot) return;
+  if(mapModelRoot) mapScene.remove(mapModelRoot);
+  mapModelRoot=cloneForMap(modelRoot); mapScene.add(mapModelRoot);
+  const box=new THREE.Box3().setFromObject(mapModelRoot);
+  const size=box.getSize(new THREE.Vector3()); mapBaseSize=Math.max(size.x,size.y,size.z,1000);
+  const center=box.getCenter(new THREE.Vector3()); mapModelRoot.position.sub(center);
+  mapModelBaseY=-center.y+Math.max(size.y*.22,120); mapModelRoot.position.y=mapModelBaseY;
+  applyMapModelStyle(); if(resetCamera) setMapCameraFromTilt(); updateMapOverlayPosition();
+}
+
+function applyMapModelStyle(){
+  if(!mapModelRoot) return;
+  const userScale=Number(q('mapScale').value)||1;
+  const heading=Number(q('mapHeading').value)||0;
+  const opacity=Number(q('mapOpacity').value)||.95;
+  const zoom=leafletMap ? leafletMap.getZoom() : MAP_REF_ZOOM;
+  const geoScale=Math.pow(2,zoom-MAP_REF_ZOOM);
+  mapModelRoot.scale.setScalar(userScale*geoScale);
+  mapModelRoot.rotation.y=THREE.MathUtils.degToRad(heading);
+  mapModelRoot.traverse(o=>{
+    if(!o.material) return;
+    const mats=Array.isArray(o.material)?o.material:[o.material];
+    mats.forEach(m=>{
+      if(!('opacity' in m)) return;
+      const base=(m.userData.mapBaseOpacity ?? m.opacity); m.userData.mapBaseOpacity=base;
+      m.opacity=Math.min(1,base*opacity); m.transparent=m.opacity<1 || m.transparent; m.needsUpdate=true;
+    });
+  });
+  q('mapHeadingVal').textContent=`${Math.round(heading)}°`;
+  q('mapScaleVal').textContent=`${userScale.toFixed(2)}×`;
+  q('mapOpacityVal').textContent=`${Math.round(opacity*100)}%`;
+}
+
+function setMapCameraFromTilt(){
+  if(!mapDemoReady) return;
+  const tilt=Number(q('mapTilt').value)||0; q('mapTiltVal').textContent=`${Math.round(tilt)}°`;
+  const elev=THREE.MathUtils.degToRad(90-tilt*.82), az=THREE.MathUtils.degToRad(42), d=mapBaseSize*2.05;
+  const horizontal=d*Math.cos(elev), y=d*Math.sin(elev);
+  mapCamera.position.set(horizontal*Math.cos(az),y,horizontal*Math.sin(az));
+  mapControls.target.set(0,0,0); mapCamera.lookAt(mapControls.target); mapControls.update(); updateMapOverlayPosition();
+}
+
+function updateMapOverlayPosition(){
+  if(!leafletMap || !mapModelRoot || !mapCamera) return;
+  const size=leafletMap.getSize(); if(!size.x || !size.y) return;
+  const rawPt=leafletMap.latLngToContainerPoint([modelLatLng.lat,modelLatLng.lng]);
+  const cx=size.x/2, cy=size.y/2, rad=THREE.MathUtils.degToRad(mapBearing);
+  const dx=rawPt.x-cx, dy=rawPt.y-cy, cs=Math.cos(rad), sn=Math.sin(rad);
+  const pt={x:cx + dx*cs - dy*sn, y:cy + dx*sn + dy*cs};
+  const marker=q('mapAnchorMarker'); marker.style.left=`${pt.x}px`; marker.style.top=`${pt.y}px`;
+  marker.style.opacity=(pt.x<-30||pt.y<-30||pt.x>size.x+30||pt.y>size.y+30)?'.25':'.82';
+  const ndc=new THREE.Vector2((pt.x/size.x)*2-1,-(pt.y/size.y)*2+1);
+  mapRaycaster.setFromCamera(ndc,mapCamera);
+  if(mapRaycaster.ray.intersectPlane(mapGroundPlane,mapHitPoint)){
+    mapModelRoot.position.set(mapHitPoint.x,mapModelBaseY,mapHitPoint.z);
+  }
+}
+
+function parseLatLng(raw){
+  const m=String(raw||'').trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*[,; ]\s*(-?\d+(?:\.\d+)?)\s*$/);
+  if(!m) return null;
+  const lat=Number(m[1]),lng=Number(m[2]);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null;
+  return {lat,lng};
+}
+
+function setMapLocation(lat,lng,zoom=19,animate=true,label=''){
+  if(!leafletMap) return;
+  modelLatLng={lat:Number(lat),lng:Number(lng)};
+  const z=Math.max(14,Math.min(20,Number(zoom)||19));
+  if(animate) leafletMap.flyTo([modelLatLng.lat,modelLatLng.lng],z,{animate:true,duration:.75,easeLinearity:.22});
+  else leafletMap.setView([modelLatLng.lat,modelLatLng.lng],z,{animate:false});
+  q('mapSearch').value=label || `${modelLatLng.lat.toFixed(6)},${modelLatLng.lng.toFixed(6)}`;
+  q('mapZoom').value=String(z); q('mapZoomVal').textContent=Number(z).toFixed(z%1?2:0);
+  updateMapOverlayPosition();
+}
+
+async function searchMapPlace(){
+  const raw=(q('mapSearch').value||'').trim(); if(!raw) return;
+  const status=q('mapSearchStatus'), ll=parseLatLng(raw);
+  if(ll){ status.textContent='Đã đặt toạ độ'; setMapLocation(ll.lat,ll.lng,Number(q('mapZoom').value)||19,true,raw); return; }
+  status.textContent='Đang tìm…'; q('mapSearchBtn').disabled=true;
+  try{
+    const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=vi&q=${encodeURIComponent(raw)}`;
+    const res=await fetch(url,{headers:{Accept:'application/json'}}); if(!res.ok) throw new Error('search failed');
+    const arr=await res.json(); if(!arr.length) throw new Error('not found');
+    status.textContent='Đã tìm thấy'; setMapLocation(Number(arr[0].lat),Number(arr[0].lon),Number(q('mapZoom').value)||19,true,raw);
+  }catch(e){ status.textContent='Không tìm thấy'; console.warn(e); }
+  finally{ q('mapSearchBtn').disabled=false; }
+}
+
+function updateMapPreset(){
+  const ll=parseLatLng(q('mapPlace').value);
+  if(ll) setMapLocation(ll.lat,ll.lng,19,true,q('mapPlace').selectedOptions[0]?.textContent||'');
+}
+function updateBaseLayer(){
+  if(!leafletMap) return;
+  const next=q('mapBase').value==='street'?mapStreetLayer:mapSatelliteLayer;
+  if(activeTileLayer===next) return;
+  if(activeTileLayer) leafletMap.removeLayer(activeTileLayer); activeTileLayer=next.addTo(leafletMap);
+}
+function openGoogleSearch(){
+  const z=leafletMap?Math.round(leafletMap.getZoom()):19;
+  window.open(`https://www.google.com/maps?q=${modelLatLng.lat},${modelLatLng.lng}&z=${z}`,'_blank');
+}
+
+function applyMapBearing(){
+  // R15: bản đồ giữ hướng Bắc cố định; không còn xoay bằng chuột.
+  mapBearing=0;
+  const shell=q('mapRotateShell');
+  if(shell) shell.style.transform='rotate(0deg)';
+  updateMapOverlayPosition();
+}
+
+function bindCustomMapInput(){
+  const input=q('mapInputLayer');
+  if(!input || input.dataset.bound==='1') return;
+  input.dataset.bound='1';
+  input.addEventListener('contextmenu',e=>e.preventDefault());
+
+  input.addEventListener('pointerdown',e=>{
+    // Chế độ Map: chỉ chuột phải dùng để pan. Chuột trái không xoay bản đồ.
+    if(mapModelMode || e.button!==2) return;
+    e.preventDefault();
+    mapDragState={mode:'pan',x:e.clientX,y:e.clientY,id:e.pointerId};
+    input.classList.add('dragging');
+    try{ input.setPointerCapture(e.pointerId); }catch(_){ }
+  });
+
+  input.addEventListener('pointermove',e=>{
+    if(mapModelMode || !mapDragState || mapDragState.id!==e.pointerId) return;
+    e.preventDefault();
+    const dx=e.clientX-mapDragState.x, dy=e.clientY-mapDragState.y;
+    mapDragState.x=e.clientX; mapDragState.y=e.clientY;
+    if(leafletMap){
+      leafletMap.panBy([-dx,-dy],{animate:false});
+      updateMapOverlayPosition();
+    }
+  });
+
+  const endDrag=e=>{
+    if(mapDragState && (!e || mapDragState.id===e.pointerId)){
+      try{ if(e) input.releasePointerCapture(e.pointerId); }catch(_){ }
+      mapDragState=null;
+      input.classList.remove('dragging');
+    }
+  };
+  input.addEventListener('pointerup',endDrag);
+  input.addEventListener('pointercancel',endDrag);
+  input.addEventListener('pointerleave',e=>{ if(e.buttons===0) endDrag(e); });
+
+  input.addEventListener('wheel',e=>{
+    if(mapModelMode || !leafletMap) return;
+    e.preventDefault();
+    mapWheelAccum += e.deltaY;
+    if(mapWheelRAF) return;
+    mapWheelRAF=requestAnimationFrame(()=>{
+      const delta=mapWheelAccum;
+      mapWheelAccum=0; mapWheelRAF=0;
+      if(Math.abs(delta)<1) return;
+      const dir=delta<0?1:-1;
+      const step=Math.min(0.75,Math.max(0.25,Math.abs(delta)/420));
+      const next=Math.max(14,Math.min(20,leafletMap.getZoom()+dir*step));
+      leafletMap.setZoom(next,{animate:true});
+    });
+  },{passive:false});
+}
+
+function centerMapForNavigation(){
+  if(!leafletMap) return;
+  const currentZoom=leafletMap.getZoom();
+  // Khi chuyển sang điều khiển bản đồ: tự zoom ra nhẹ và đưa điểm neo công trình về tâm.
+  const navZoom=Math.max(14,Math.min(20,currentZoom-0.75));
+  leafletMap.flyTo([modelLatLng.lat,modelLatLng.lng],navZoom,{animate:true,duration:.55,easeLinearity:.2});
+}
+
+function setMapInteraction(modelMode){
+  mapModelMode=!!modelMode;
+  const input=q('mapInputLayer');
+  const mapBtn=q('mapModeBtn');
+  const modelBtn=q('modelModeBtn');
+
+  if(mapModelMode){
+    // Điều khiển riêng mô hình 3D. Bản đồ khóa hoàn toàn.
+    if(input) input.style.pointerEvents='none';
+    if(mapRenderer) mapRenderer.domElement.style.pointerEvents='auto';
+    if(mapControls){
+      mapControls.enabled=true;
+      mapControls.enableRotate=true;
+      mapControls.enableZoom=true;
+      mapControls.enablePan=true;
+    }
+    if(modelBtn) modelBtn.classList.add('active');
+    if(mapBtn) mapBtn.classList.remove('active');
+  }else{
+    // Điều khiển riêng bản đồ: con lăn = zoom, chuột phải + kéo = pan.
+    // Chuột trái không có chức năng để tránh xoay bản đồ.
+    if(mapRenderer) mapRenderer.domElement.style.pointerEvents='none';
+    if(mapControls) mapControls.enabled=false;
+    if(input) input.style.pointerEvents='auto';
+    centerMapForNavigation();
+    if(mapBtn) mapBtn.classList.add('active');
+    if(modelBtn) modelBtn.classList.remove('active');
+  }
+}
+
+function setModelAtMapCenter(){
+  if(!leafletMap) return;
+  const c=leafletMap.getCenter();
+  modelLatLng={lat:c.lat,lng:c.lng};
+  q('mapSearch').value=`${c.lat.toFixed(6)},${c.lng.toFixed(6)}`;
+  q('mapSearchStatus').textContent='Đã đặt tại tâm';
+  updateMapOverlayPosition();
+}
+
+function openMapDemo(){
+  q('mapDemo').classList.add('active'); initMapDemo();
+  requestAnimationFrame(()=>{
+    leafletMap.invalidateSize({animate:false});
+    const mw=q('mapCanvasWrap'); mapCamera.aspect=Math.max(1,mw.clientWidth)/Math.max(1,mw.clientHeight); mapCamera.updateProjectionMatrix();
+    mapRenderer.setSize(Math.max(1,mw.clientWidth),Math.max(1,mw.clientHeight)); syncMapModel(true); updateMapOverlayPosition();
+  });
+}
+function closeMapDemo(){q('mapDemo').classList.remove('active');}
+
+function fitDistance(){
+  const p=current;
+  return Math.max(p.L,p.B,p.H+p.tb+p.tt)*1.65;
+}
+function tankMidY(){
+  const p=current;
+  const yTop = p.topAG;
+  const yBot = p.topAG - (p.tt+p.H+p.tb);
+  return (yTop+yBot)/2;
+}
+function setView(type){
+  const d=fitDistance();
+  const tgt=new THREE.Vector3(0,tankMidY(),0);
+  let pos;
+  if(type==='top') pos=new THREE.Vector3(0,tgt.y+d*1.2,1);
+  else if(type==='front') pos=new THREE.Vector3(0,tgt.y,d*1.35);
+  else if(type==='right') pos=new THREE.Vector3(d*1.35,tgt.y,0);
+  else pos=new THREE.Vector3(d*.95,tgt.y+d*.35,d*.95);
+  camera.position.copy(pos);
+  camera.lookAt(tgt);
+  controls.target.copy(tgt);
+  controls.update();
+}
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+  if(mapDemoReady && q('mapDemo').classList.contains('active')){
+    mapControls.update();
+    updateMapOverlayPosition();
+    mapRenderer.render(mapScene,mapCamera);
+  }
+}
+function bindEvents(){
+  window.addEventListener('resize',()=>{
+    camera.aspect=wrap.clientWidth/wrap.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(wrap.clientWidth,wrap.clientHeight);
+    if(mapDemoReady){
+      const mw=q('mapCanvasWrap');
+      mapCamera.aspect=Math.max(1,mw.clientWidth)/Math.max(1,mw.clientHeight);
+      mapCamera.updateProjectionMatrix();
+      mapRenderer.setSize(Math.max(1,mw.clientWidth),Math.max(1,mw.clientHeight));
+      if(leafletMap) leafletMap.invalidateSize({animate:false});
+      updateMapOverlayPosition();
+    }
+  });
+  q('apply').addEventListener('click',()=>{buildModel();setView('iso');});
+  q('reset').addEventListener('click',()=>{
+    const defaults={L:3400,B:1900,H:1800,tw:200,tt:200,tb:200,opX:800,opZ:800,offX:200,offZ:200,dia:12,sp:200,cover:35,extraN:2,gw:330,topAG:200};
+    for(const [k,v] of Object.entries(defaults)) q(k).value=v;
+    buildModel();setView('iso');
+  });
+  for(const id of ['showConcrete','showTop','showWalls','showBottom','showExtra','showGW','xray','wire']){
+    q(id).addEventListener('change',applyVisibility);
+  }
+  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+  q('fit').addEventListener('click',()=>setView('iso'));
+  q('toggleQty').addEventListener('click',toggleQtyPanel);
+  q('exportExcel').addEventListener('click',exportQuantityExcel);
+  q('exportDXF').addEventListener('click',exportDXF);
+  q('png').addEventListener('click',()=>{
+    renderer.render(scene,camera);
+    const a=document.createElement('a');
+    a.download='NTCONS_Be_BTCT_3D_R6.png';
+    a.href=renderer.domElement.toDataURL('image/png');
+    a.click();
+  });
+
+  q('mapDemoBtn').addEventListener('click',openMapDemo);
+  q('quickMapBtn').addEventListener('click',openMapDemo);
+  q('mapClose').addEventListener('click',closeMapDemo);
+  q('mapSync').addEventListener('click',()=>syncMapModel(true));
+  q('mapModeBtn').addEventListener('click',()=>setMapInteraction(false));
+  q('modelModeBtn').addEventListener('click',()=>setMapInteraction(true));
+  q('mapPlace').addEventListener('change',updateMapPreset);
+  q('mapBase').addEventListener('change',updateBaseLayer);
+  q('mapSearchBtn').addEventListener('click',searchMapPlace);
+  q('mapSearch').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); searchMapPlace(); } });
+  q('mapOpenGoogle').addEventListener('click',openGoogleSearch);
+  q('mapSetCenter').addEventListener('click',setModelAtMapCenter);
+  q('mapZoom').addEventListener('input',()=>{
+    const z=Number(q('mapZoom').value)||19;
+    q('mapZoomVal').textContent=Number(z).toFixed(z%1?2:0);
+    if(leafletMap) leafletMap.setZoom(z,{animate:true});
+  });
+  q('mapTilt').addEventListener('input',setMapCameraFromTilt);
+  q('mapHeading').addEventListener('input',applyMapModelStyle);
+  q('mapScale').addEventListener('input',applyMapModelStyle);
+  q('mapOpacity').addEventListener('input',applyMapModelStyle);
+
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape' && q('mapDemo').classList.contains('active')){ closeMapDemo(); return; }
+    if(e.target.tagName==='INPUT' || e.target.tagName==='SELECT') return;
+    if(q('mapDemo').classList.contains('active')) return;
+    if(e.key==='1') setView('iso');
+    if(e.key==='2') setView('top');
+    if(e.key==='3') setView('front');
+    if(e.key==='4') setView('right');
+  });
+
+  let t;
+  document.querySelectorAll('input[type=number]').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      clearTimeout(t); t=setTimeout(()=>buildModel(),300);
+    });
+  });
+}
+
+setQtyPanel(false);
+init();
+</script>
+</body>
+</html>
