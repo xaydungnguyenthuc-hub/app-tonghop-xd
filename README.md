@@ -1,35 +1,31 @@
-# app-tonghop-xd
+# Ứng dụng Xây dựng — NTCONS Application Portal
 
-Kho công cụ HTML tĩnh của **NTCONS** — demo kỹ thuật 3D, tiện ích offline và trang giới thiệu liên minh chuyên gia.
+Cổng tổng hợp các **công cụ HTML tĩnh** của **NTCONS**: demo kỹ thuật 3D, cẩm nang quản lý dự án đầu tư xây dựng, quy trình quy hoạch, thư viện văn bản pháp luật và tiện ích offline.
 
-**Repo:** [xaydungnguyenthuc-hub/app-tonghop-xd](https://github.com/xaydungnguyenthuc-hub/app-tonghop-xd)
-
----
-
-## Mục lục nhanh
-
-| Nhóm | Nội dung |
-|------|----------|
-| Trang chủ | `index.html` — danh mục tự động tất cả file HTML |
-| NTCONS | Trang thương hiệu, QR Zalo, liên hệ |
-| Demo / công cụ kỹ thuật | Bê BTCT, Cầu kiện 3D, Đặc trưng tiết diện, Thang Long… |
-| Tiện ích | Bói bài (Tarot), Lịch Âm–Dương offline |
-| Cẩm nang & quy trình | Quản lý ĐTXD, quy hoạch cấp xã, VBPL, render kiến trúc… |
+**Demo online:** [https://ungdungxaydung.vercel.app](https://ungdungxaydung.vercel.app)
 
 ---
 
-## Trang chính & thương hiệu
+## Tính năng trang chủ
+
+- `index.html` — danh mục tất cả ứng dụng, tìm kiếm & lọc theo nhóm
+- Giao diện responsive, hỗ trợ dark mode
+- Mỗi công cụ là file HTML độc lập, mở trực tiếp trên trình duyệt (không cần server)
+
+---
+
+## Danh mục công cụ
+
+### Trang chính & thương hiệu
 
 | File | Mô tả |
 |------|--------|
-| [index.html](./index.html) | Danh mục công cụ — tự đọc danh sách file từ GitHub API |
+| [index.html](./index.html) | Cổng ứng dụng — danh mục, tìm kiếm, lọc |
 | [NTCONS.html](./NTCONS.html) | Trang giới thiệu NTCONS · Liên minh chuyên gia |
 | [ntcons-logo.png](./ntcons-logo.png) | Logo NTCONS |
 | [zalo-qr.png](./zalo-qr.png) | Mã QR Zalo |
 
----
-
-## Công cụ kỹ thuật & demo 3D
+### Công cụ kỹ thuật & demo 3D
 
 | File | Mô tả |
 |------|--------|
@@ -39,9 +35,7 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo kỹ thuật 3D, tiện ích
 | [Thang Long.html](./Thang%20Long.html) | Thang long thép 3D |
 | [WindNTcons-main.html](./WindNTcons-main.html) | Wind NTCONS |
 
----
-
-## Cẩm nang & quy trình
+### Cẩm nang & quy trình
 
 | File | Mô tả |
 |------|--------|
@@ -51,9 +45,7 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo kỹ thuật 3D, tiện ích
 | [renderkientruc-main.html](./renderkientruc-main.html) | Render kiến trúc |
 | [thuvienvbpl-main.html](./thuvienvbpl-main.html) | Thư viện VBPL |
 
----
-
-## Tiện ích khác
+### Tiện ích khác
 
 | File | Mô tả |
 |------|--------|
@@ -62,36 +54,38 @@ Kho công cụ HTML tĩnh của **NTCONS** — demo kỹ thuật 3D, tiện ích
 
 ---
 
-## Deploy
+## Cách sử dụng
 
-- Stack: static HTML/CSS/JS — không cần build
-- Nhánh deploy: `main`
-- Mọi file `.html` (trừ `index.html`) được `index.html` nhận diện tự động qua GitHub API và hiện trên trang chủ.
+### Online
+Truy cập: [https://ungdungxaydung.vercel.app](https://ungdungxaydung.vercel.app)
+
+### Offline
+Tải từng file `.html` và mở bằng trình duyệt (Chrome, Edge, Firefox…).
+
+### Deploy riêng
+```bash
+git clone https://github.com/xaydungnguyenthuc-hub/ungdungxaydung.git
+cd ungdungxaydung
+# Deploy lên Vercel / Netlify / GitHub Pages — không cần build
+```
 
 ---
 
-## Ghi chú
+## Stack kỹ thuật
 
-- Thương hiệu **NTCONS**
+- HTML / CSS / JS tĩnh — không framework, không build step
+- Mỗi tool là một file độc lập
+- Trang chủ tự nhận diện danh sách file HTML
+
+---
+
+## Thương hiệu & liên hệ
+
+- **NTCONS** — Liên minh chuyên gia
 - Liên hệ Zalo: quét QR trên [NTCONS.html](./NTCONS.html)
 
-```
-app-tonghop-xd/
-├── index.html
-├── NTCONS.html
-├── ntcons-logo.png
-├── zalo-qr.png
-├── Be BTCT.html
-├── Cau Kien 3D.html
-├── Dac Tinh Tiet Dien.html
-├── Thang Long.html
-├── WindNTcons-main.html
-├── camnanquanlydtxd-main.html
-├── chondamxoan-giocotsanmong-main.html
-├── quytrinhquyhoachcapxa-main.html
-├── renderkientruc-main.html
-├── thuvienvbpl-main.html
-├── Boi Bai.html
-├── Lich am Duong.html
-└── README.md
-```
+---
+
+## Đóng góp
+
+Nếu muốn bổ sung công cụ mới hoặc sửa lỗi, hãy tạo Issue / Pull Request trên repository này.
